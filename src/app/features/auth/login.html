@@ -1,0 +1,27 @@
+<section class="auth">
+  <form class="tarjeta-auth" (ngSubmit)="enviar()">
+    <h1>Iniciar sesión</h1>
+
+    <label>
+      Email
+      <input type="email" name="email" [(ngModel)]="email" required autocomplete="email" />
+    </label>
+
+    <label>
+      Contraseña
+      <input type="password" name="password" [(ngModel)]="password" required autocomplete="current-password" />
+    </label>
+
+    @if (error()) {
+      <p class="mensaje-error">{{ error() }}</p>
+    }
+
+    <button type="submit" [disabled]="cargando()">
+      {{ cargando() ? 'Entrando…' : 'Entrar' }}
+    </button>
+
+    <p class="enlace-secundario">
+      ¿No tienes cuenta? <a routerLink="/registro">Regístrate</a>
+    </p>
+  </form>
+</section>

@@ -1,0 +1,55 @@
+.encabezado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1.25rem;
+  background: var(--cafe-oscuro);
+  color: var(--crema);
+}
+
+.marca {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--crema);
+  text-decoration: none;
+}
+
+.sesion {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.9rem;
+}
+
+.sesion .usuario {
+  opacity: 0.85;
+}
+
+.sesion button {
+  background: transparent;
+  color: var(--crema);
+  border: 1px solid var(--crema);
+  border-radius: 8px;
+  padding: 0.35rem 0.9rem;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.sesion button:hover {
+  background: rgb(255 255 255 / 0.12);
+}
+
+.enlace-sesion {
+  color: var(--crema);
+  text-decoration: none;
+  padding: 0.35rem 0.9rem;
+  border-radius: 8px;
+}
+
+.enlace-sesion:hover {
+  background: rgb(255 255 255 / 0.12);
+}

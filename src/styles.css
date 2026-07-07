@@ -1,0 +1,28 @@
+/* ============================================================
+   Estilos globales - paleta "cafetería"
+   ============================================================ */
+
+:root {
+  --cafe-oscuro: #3e2723;   /* café espresso: encabezados */
+  --cafe-medio: #6d4c41;    /* café con leche: subtítulos */
+  --cafe-acento: #b5651d;   /* caramelo: precios y acciones */
+  --crema: #fff8f0;         /* fondo general */
+  --crema-borde: #e8d9c9;   /* bordes suaves */
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background: var(--crema);
+  color: #2d2118;
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font-family: inherit;
+}

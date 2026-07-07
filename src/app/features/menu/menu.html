@@ -1,0 +1,26 @@
+<section class="menu">
+  <h1>Nuestro Menú</h1>
+
+  @if (cargando()) {
+    <p class="estado">Cargando menú…</p>
+  } @else if (error()) {
+    <p class="estado error">{{ error() }}</p>
+  } @else {
+    @for (grupo of grupos(); track grupo.categoria) {
+      <h2>{{ grupo.categoria }}</h2>
+      <div class="tarjetas">
+        @for (item of grupo.items; track item.productoId) {
+          <article class="tarjeta">
+            <div class="tarjeta-info">
+              <h3>{{ item.nombre }}</h3>
+              @if (item.descripcion) {
+                <p>{{ item.descripcion }}</p>
+              }
+            </div>
+            <span class="precio">{{ item.precio | currency:'COP':'symbol-narrow':'1.0-0' }}</span>
+          </article>
+        }
+      </div>
+    }
+  }
+</section>

@@ -1,0 +1,15 @@
+<header class="encabezado">
+  <a class="marca" routerLink="/">☕ Cafetería</a>
+
+  <div class="sesion">
+    @if (auth.logueado()) {
+      <span class="usuario">{{ auth.email() }} ({{ auth.rol() }})</span>
+      <button type="button" (click)="cerrarSesion()">Salir</button>
+    } @else {
+      <a class="enlace-sesion" routerLink="/login">Iniciar sesión</a>
+      <a class="enlace-sesion" routerLink="/registro">Registrarse</a>
+    }
+  </div>
+</header>
+
+<router-outlet />
