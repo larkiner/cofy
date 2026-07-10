@@ -1,19 +1,17 @@
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
+import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../core/auth.service';
 
-/** Placeholder: el panel interno completo (tablero, entrega, inventario) se construye en el siguiente paso. */
+/** Layout del panel interno: sub-navegación según el rol + contenido. */
 @Component({
   selector: 'app-panel-interno',
-  template: `
-    <section style="max-width: 600px; margin: 3rem auto; padding: 0 1rem; text-align: center;">
-      <h1 style="color: var(--cafe-oscuro);">Panel interno</h1>
-      <p style="color: var(--cafe-medio); margin-top: 0.5rem;">
-        Sesión activa como <strong>{{ auth.rol() }}</strong> ({{ auth.email() }}).
-        El tablero de pedidos, entrega e inventario se construyen en el siguiente paso.
-      </p>
-    </section>
-  `,
+  imports: [RouterOutlet, RouterLink, RouterLinkActive],
+  templateUrl: './panel-interno.html',
+  styleUrl: './panel-interno.css',
 })
 export class PanelInterno {
   protected readonly auth = inject(AuthService);
+
+  protected readonly esSupervisorOAdmin = computed(() =>
+    ['SUPERVISOR', 'ADMIN'].includes(this.auth.rol() ?? ''));
 }

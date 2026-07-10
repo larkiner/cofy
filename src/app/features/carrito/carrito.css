@@ -1,0 +1,218 @@
+.carrito {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 40px 24px 80px;
+}
+
+h1 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 32px;
+  color: var(--color-text);
+  margin-bottom: 20px;
+}
+
+.estado {
+  color: var(--color-muted);
+  padding: 1rem 0;
+}
+
+.estado a {
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
+.lineas {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.linea {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 12px 16px;
+}
+
+.linea-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.linea-info strong {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--color-text);
+}
+
+.linea-info span {
+  font-size: 12px;
+  color: var(--color-muted-2);
+}
+
+.linea-cantidad {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.linea-cantidad button {
+  width: 22px;
+  height: 22px;
+  border: 1px solid var(--color-border-input);
+  background: transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.linea-cantidad button:hover {
+  background: rgb(0 0 0 / 0.04);
+}
+
+.linea-subtotal {
+  font-weight: 700;
+  color: var(--color-accent);
+  min-width: 70px;
+  text-align: right;
+}
+
+.quitar {
+  border: none;
+  background: transparent;
+  color: var(--color-danger);
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.total {
+  text-align: right;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0 0 22px;
+}
+
+.opciones {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.opciones label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 12px;
+  color: var(--color-muted);
+}
+
+.opciones select {
+  border: 1px solid var(--color-border-input);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 13.5px;
+  font-family: inherit;
+  background: #fff;
+  color: var(--color-text);
+}
+
+.mensaje-error {
+  color: var(--color-danger);
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+.pagar {
+  width: 100%;
+  background: var(--color-accent);
+  color: #fff;
+  border: none;
+  border-radius: 9px;
+  padding: 13px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.pagar:disabled {
+  background: var(--color-disabled);
+  cursor: not-allowed;
+}
+
+.pagar:not(:disabled):hover {
+  filter: brightness(0.92);
+}
+
+/* -------- pantalla de éxito -------- */
+
+.exito {
+  text-align: center;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  padding: 40px 28px;
+}
+
+.emoji {
+  font-size: 30px;
+  margin-bottom: 10px;
+}
+
+.exito h1 {
+  font-size: 26px;
+  margin-bottom: 8px;
+}
+
+.exito p {
+  color: var(--color-muted);
+  font-size: 13.5px;
+  margin: 0 0 16px;
+}
+
+.codigo {
+  display: inline-block;
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  color: var(--color-accent);
+  border: 2px dashed var(--color-accent);
+  border-radius: 10px;
+  padding: 12px 32px;
+  margin: 0 0 18px;
+}
+
+.detalle-exito {
+  font-size: 14px;
+  color: var(--color-text);
+  margin: 0 0 24px;
+}
+
+.acciones-exito {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+.acciones-exito a {
+  color: var(--color-text);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.acciones-exito a:hover {
+  text-decoration: underline;
+}

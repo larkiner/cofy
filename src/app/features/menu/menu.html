@@ -1,5 +1,6 @@
 <section class="menu">
-  <h1>Nuestro Menú</h1>
+  <h1>Nuestro menú</h1>
+  <p class="subtitulo">Preparado en casa, cada mañana</p>
 
   @if (cargando()) {
     <p class="estado">Cargando menú…</p>
@@ -17,7 +18,12 @@
                 <p>{{ item.descripcion }}</p>
               }
             </div>
-            <span class="precio">{{ item.precio | currency:'COP':'symbol-narrow':'1.0-0' }}</span>
+            <div class="tarjeta-accion">
+              <span class="precio">{{ item.precio | currency:'COP':'symbol-narrow':'1.0-0' }}</span>
+              @if (!auth.esPersonal()) {
+                <button type="button" class="agregar" (click)="agregar(item)">Agregar</button>
+              }
+            </div>
           </article>
         }
       </div>

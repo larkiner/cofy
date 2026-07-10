@@ -2,54 +2,91 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
-  padding: 0.85rem 1.25rem;
-  background: var(--cafe-oscuro);
-  color: var(--crema);
+  gap: 16px;
+  padding: 20px 40px;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-bg);
 }
 
 .marca {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 24px;
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.navegacion {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 1.15rem;
-  font-weight: 700;
-  color: var(--crema);
+  gap: 26px;
+  flex: 1;
+  margin-left: 32px;
+  font-size: 13px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-muted);
   text-decoration: none;
+  font-weight: 400;
+}
+
+.nav-link:hover {
+  color: var(--color-text);
+}
+
+.nav-link.activo {
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.contador {
+  background: var(--color-accent);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 1px 7px;
 }
 
 .sesion {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  font-size: 0.9rem;
+  gap: 14px;
+  font-size: 13px;
 }
 
 .sesion .usuario {
-  opacity: 0.85;
+  color: var(--color-muted);
 }
 
-.sesion button {
+.salir {
   background: transparent;
-  color: var(--crema);
-  border: 1px solid var(--crema);
-  border-radius: 8px;
-  padding: 0.35rem 0.9rem;
+  color: var(--color-text);
+  border: 1px solid var(--color-text);
+  border-radius: 999px;
+  padding: 6px 16px;
+  font-weight: 600;
+  font-size: 13px;
   cursor: pointer;
-  font-size: 0.85rem;
 }
 
-.sesion button:hover {
-  background: rgb(255 255 255 / 0.12);
+.salir:hover {
+  filter: brightness(0.92);
+  background: rgb(0 0 0 / 0.04);
 }
 
-.enlace-sesion {
-  color: var(--crema);
+.enlace-login {
+  color: var(--color-accent);
+  font-weight: 600;
   text-decoration: none;
-  padding: 0.35rem 0.9rem;
-  border-radius: 8px;
 }
 
-.enlace-sesion:hover {
-  background: rgb(255 255 255 / 0.12);
+.enlace-login:hover {
+  color: var(--color-accent-hover);
 }

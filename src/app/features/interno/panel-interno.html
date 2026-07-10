@@ -1,0 +1,16 @@
+<section class="panel">
+  <nav class="subnav">
+    <a routerLink="/interno" routerLinkActive="activo" [routerLinkActiveOptions]="{ exact: true }">Tablero</a>
+    <a routerLink="/interno/entregar" routerLinkActive="activo">Entregar</a>
+    <a routerLink="/interno/mostrador" routerLinkActive="activo">Mostrador</a>
+    @if (auth.esAdmin()) {
+      <a routerLink="/interno/inventario" routerLinkActive="activo">Inventario</a>
+    }
+    @if (esSupervisorOAdmin()) {
+      <a routerLink="/interno/metricas" routerLinkActive="activo">Métricas</a>
+    }
+    <a routerLink="/interno/turnos" routerLinkActive="activo">Turnos</a>
+  </nav>
+
+  <router-outlet />
+</section>

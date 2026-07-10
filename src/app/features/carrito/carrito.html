@@ -1,0 +1,80 @@
+<section class="carrito">
+  @if (resultado(); as pedido) {
+    <!-- Pantalla de éxito: pedido pagado con código de retiro -->
+    <div class="exito">
+      <div class="emoji">🎉</div>
+      <h1>¡Pedido confirmado!</h1>
+      <p>Presenta este código en <strong>{{ pedido.sucursalNombre }}</strong> para reclamar tu pedido:</p>
+      <p class="codigo">{{ pedido.codigoRetiro }}</p>
+      <p class="detalle-exito">
+        Total pagado: <strong>{{ pedido.total | currency:'COP':'symbol-narrow':'1.0-0' }}</strong>
+        · Estado: {{ pedido.estado }}
+      </p>
+      <div class="acciones-exito">
+        <a routerLink="/mis-pedidos">Ver mis pedidos</a>
+        <a routerLink="/">Volver al menú</a>
+      </div>
+    </div>
+  } @else {
+    <h1>Tu carrito</h1>
+
+    @if (carrito.lineas().length === 0) {
+      <p class="estado">El carrito está vacío. <a routerLink="/">Ir al menú</a></p>
+    } @else {
+      <div class="lineas">
+        @for (linea of carrito.lineas(); track linea.producto.productoId) {
+          <div class="linea">
+            <div class="linea-info">
+              <strong>{{ linea.producto.nombre }}</strong>
+              <span>{{ linea.producto.precio | currency:'COP':'symbol-narrow':'1.0-0' }} c/u</span>
+            </div>
+            <div class="linea-cantidad">
+              <button type="button" (click)="carrito.cambiarCantidad(linea.producto.productoId, -1)">−</button>
+              <span>{{ linea.cantidad }}</span>
+              <button type="button" (click)="carrito.cambiarCantidad(linea.producto.productoId, 1)">+</button>
+            </div>
+            <span class="linea-subtotal">
+              {{ linea.producto.precio * linea.cantidad | currency:'COP':'symbol-narrow':'1.0-0' }}
+            </span>
+            <button type="button" class="quitar" (click)="carrito.quitar(linea.producto.productoId)">✕</button>
+          </div>
+        }
+      </div>
+
+      <p class="total">Total: <strong>{{ carrito.total() | currency:'COP':'symbol-narrow':'1.0-0' }}</strong></p>
+
+      <div class="opciones">
+        <label>
+          Sucursal de retiro
+          <select name="sucursal" [(ngModel)]="sucursalId">
+            @for (s of sucursales(); track s.id) {
+              <option [ngValue]="s.id">{{ s.nombre }} — {{ s.direccion }}</option>
+            }
+          </select>
+        </label>
+
+        <label>
+          Método de pago
+          <select name="metodo" [(ngModel)]="metodo">
+            @for (m of metodos; track m) {
+              <option [ngValue]="m">{{ m }}</option>
+            }
+          </select>
+        </label>
+      </div>
+
+      @if (error()) {
+        <p class="mensaje-error">{{ error() }}</p>
+      }
+
+      @if (!auth.logueado()) {
+        <p class="estado">Debes <a routerLink="/login">iniciar sesión</a> para completar el pedido.</p>
+      }
+
+      <button type="button" class="pagar" [disabled]="procesando() || sucursalId === null"
+              (click)="pedirYPagar()">
+        {{ procesando() ? 'Procesando pago…' : 'Pedir y pagar' }}
+      </button>
+    }
+  }
+</section>

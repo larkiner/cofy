@@ -1,0 +1,154 @@
+<h1>Inventario</h1>
+
+@if (mensaje()) {
+  <p class="mensaje-ok">{{ mensaje() }}</p>
+}
+@if (error()) {
+  <p class="mensaje-error">{{ error() }}</p>
+}
+
+<div class="inv-grid">
+  <!-- ================= PRODUCTOS ================= -->
+  <div>
+    <h2>{{ editandoId() === null ? 'Nuevo producto' : 'Editar producto #' + editandoId() }}</h2>
+    <form class="tarjeta-panel form-producto" (ngSubmit)="guardarProducto()">
+      <label class="campo">
+        Nombre
+        <input type="text" name="prodNombre" [(ngModel)]="prodNombre" required maxlength="100" />
+      </label>
+      <label class="campo">
+        Descripción
+        <input type="text" name="prodDescripcion" [(ngModel)]="prodDescripcion" maxlength="300" />
+      </label>
+      <div class="fila-doble">
+        <label class="campo">
+          Precio (COP)
+          <input type="number" name="prodPrecio" [(ngModel)]="prodPrecio" required min="1" />
+        </label>
+        <label class="campo">
+          Categoría
+          <select name="prodCategoriaId" [(ngModel)]="prodCategoriaId" required>
+            <option [ngValue]="null" disabled>Selecciona…</option>
+            @for (c of categorias(); track c.id) {
+              <option [ngValue]="c.id">{{ c.nombre }}</option>
+            }
+          </select>
+        </label>
+      </div>
+      <div class="fila-doble">
+        <label class="campo">
+          Disponible
+          <select name="prodDisponible" [(ngModel)]="prodDisponible">
+            <option value="S">Sí</option>
+            <option value="N">No</option>
+          </select>
+        </label>
+        <label class="campo">
+          URL de imagen (opcional)
+          <input type="text" name="prodImagenUrl" [(ngModel)]="prodImagenUrl" maxlength="300" />
+        </label>
+      </div>
+      <div class="acciones-form">
+        <button type="submit" class="boton">
+          {{ editandoId() === null ? 'Crear producto' : 'Guardar cambios' }}
+        </button>
+        @if (editandoId() !== null) {
+          <button type="button" class="boton secundario" (click)="cancelarEdicion()">Cancelar</button>
+        }
+      </div>
+    </form>
+
+    <h2>Productos</h2>
+    <table class="tabla">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Categoría</th>
+          <th>Precio</th>
+          <th>Disp.</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (p of productos(); track p.id) {
+          <tr>
+            <td>{{ p.nombre }}</td>
+            <td>{{ nombreCategoria(p.categoriaId) }}</td>
+            <td>{{ p.precio | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
+            <td>{{ p.disponible === 'S' ? '✅' : '⛔' }}</td>
+            <td class="celda-acciones">
+              <button type="button" class="boton secundario" (click)="editar(p)">Editar</button>
+              <button type="button" class="boton secundario" (click)="alternarDisponible(p)">
+                {{ p.disponible === 'S' ? 'Desactivar' : 'Activar' }}
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ================= CATEGORÍAS ================= -->
+  <div>
+    <h2>Nueva categoría</h2>
+    <form class="tarjeta-panel form-producto" (ngSubmit)="crearCategoria()">
+      <label class="campo">
+        Nombre
+        <input type="text" name="catNombre" [(ngModel)]="catNombre" required maxlength="50" />
+      </label>
+      <label class="campo">
+        Descripción
+        <input type="text" name="catDescripcion" [(ngModel)]="catDescripcion" maxlength="200" />
+      </label>
+      <button type="submit" class="boton">Crear categoría</button>
+    </form>
+
+    <h2>Categorías</h2>
+    <table class="tabla">
+      <thead>
+        <tr><th>Nombre</th><th>Descripción</th></tr>
+      </thead>
+      <tbody>
+        @for (c of categorias(); track c.id) {
+          <tr>
+            <td>{{ c.nombre }}</td>
+            <td>{{ c.descripcion }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<style>
+  .inv-grid {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    gap: 1.5rem;
+  }
+  @media (max-width: 820px) {
+    .inv-grid { grid-template-columns: 1fr; }
+  }
+  .form-producto {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+  .fila-doble {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.7rem;
+  }
+  .acciones-form {
+    display: flex;
+    gap: 0.6rem;
+  }
+  .celda-acciones {
+    display: flex;
+    gap: 0.35rem;
+  }
+  .celda-acciones .boton {
+    padding: 0.25rem 0.55rem;
+    font-size: 0.75rem;
+  }
+</style>

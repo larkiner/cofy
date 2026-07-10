@@ -1,0 +1,79 @@
+<h1>Tablero de pedidos</h1>
+
+<div class="filtros">
+  <label class="campo">
+    Filtrar por estado
+    <select name="filtroEstado" [(ngModel)]="filtroEstado" (ngModelChange)="cargar()">
+      <option value="">Todos</option>
+      @for (e of estados; track e) {
+        <option [value]="e">{{ e }}</option>
+      }
+    </select>
+  </label>
+  <button type="button" class="boton secundario" (click)="cargar()">Actualizar</button>
+</div>
+
+@if (cargando()) {
+  <p class="estado-msj">Cargando pedidos…</p>
+} @else if (error()) {
+  <p class="mensaje-error">{{ error() }}</p>
+} @else if (pedidos().length === 0) {
+  <p class="estado-msj">No hay pedidos con ese filtro.</p>
+} @else {
+  <div class="lista-pedidos">
+    @for (pedido of pedidos(); track pedido.pedidoId) {
+      <article class="tarjeta-panel pedido-item">
+        <div class="pedido-fila">
+          <strong>#{{ pedido.pedidoId }}</strong>
+          <span class="estado-pill" [class]="'estado-pill ' + pedido.estado">{{ pedido.estado }}</span>
+          <span class="cliente">{{ pedido.clienteNombre ?? 'Venta de mostrador' }}</span>
+          <span class="total">{{ pedido.total | currency:'COP':'symbol-narrow':'1.0-0' }}</span>
+        </div>
+        <div class="pedido-fila secundaria">
+          <span>{{ pedido.fechaPedido | date:'dd/MM h:mm a' }}</span>
+          @if (pedido.codigoRetiro) {
+            <span>Código: <strong>{{ pedido.codigoRetiro }}</strong></span>
+          }
+          @if (accionDe(pedido); as accion) {
+            <button type="button" class="boton" (click)="avanzar(pedido)">{{ accion.etiqueta }}</button>
+          }
+        </div>
+      </article>
+    }
+  </div>
+}
+
+<style>
+  .filtros {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+  .lista-pedidos {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+  .pedido-fila {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    flex-wrap: wrap;
+  }
+  .pedido-fila .cliente {
+    flex: 1;
+    color: var(--cafe-medio);
+    font-size: 0.9rem;
+  }
+  .pedido-fila .total {
+    font-weight: 700;
+    color: var(--cafe-acento);
+  }
+  .pedido-fila.secundaria {
+    margin-top: 0.5rem;
+    font-size: 0.82rem;
+    color: var(--cafe-medio);
+    justify-content: space-between;
+  }
+</style>

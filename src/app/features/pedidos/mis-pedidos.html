@@ -1,0 +1,31 @@
+<section class="pedidos">
+  <h1>Mis pedidos</h1>
+
+  @if (cargando()) {
+    <p class="estado">Cargando pedidos…</p>
+  } @else if (error()) {
+    <p class="estado error">{{ error() }}</p>
+  } @else if (pedidos().length === 0) {
+    <p class="estado">Aún no tienes pedidos. <a routerLink="/">Ir al menú</a></p>
+  } @else {
+    <div class="lista">
+      @for (pedido of pedidos(); track pedido.pedidoId) {
+        <article class="pedido">
+          <div class="pedido-encabezado">
+            <span class="numero">Pedido #{{ pedido.pedidoId }}</span>
+            <span class="estado-pill" [class]="'estado-pill ' + pedido.estado">{{ pedido.estado }}</span>
+          </div>
+
+          @if (pedido.codigoRetiro) {
+            <p class="codigo-retiro">Código de retiro: <strong>{{ pedido.codigoRetiro }}</strong></p>
+          }
+
+          <p class="info">
+            {{ pedido.sucursalNombre }} · {{ pedido.fechaPedido | date:'dd/MM/yyyy h:mm a' }}
+          </p>
+          <p class="total">{{ pedido.total | currency:'COP':'symbol-narrow':'1.0-0' }}</p>
+        </article>
+      }
+    </div>
+  }
+</section>

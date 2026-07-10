@@ -1,5 +1,7 @@
 import { CurrencyPipe } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
+import { AuthService } from '../../core/auth.service';
+import { CarritoService } from '../../core/carrito.service';
 import { MenuService } from '../../core/menu.service';
 import { MenuItem } from '../../core/models';
 
@@ -16,6 +18,8 @@ interface GrupoCategoria {
 })
 export class Menu {
   private readonly menuService = inject(MenuService);
+  protected readonly carrito = inject(CarritoService);
+  protected readonly auth = inject(AuthService);
 
   protected readonly cargando = signal(true);
   protected readonly error = signal<string | null>(null);
@@ -43,5 +47,9 @@ export class Menu {
         this.cargando.set(false);
       },
     });
+  }
+
+  protected agregar(item: MenuItem): void {
+    this.carrito.agregar(item);
   }
 }

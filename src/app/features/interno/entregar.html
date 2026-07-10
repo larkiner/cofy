@@ -1,0 +1,44 @@
+<h1>Entregar pedido</h1>
+
+<div class="tarjeta-panel">
+  <p class="estado-msj">El cliente presenta su código de retiro (RET-XXXXXXXX); verifícalo aquí para entregarle su pedido.</p>
+
+  <form class="fila-entrega" (ngSubmit)="entregar()">
+    <label class="campo codigo-campo">
+      Código de retiro
+      <input type="text" name="codigo" [(ngModel)]="codigo" placeholder="RET-XXXXXXXX"
+             autocomplete="off" required />
+    </label>
+    <button type="submit" class="boton" [disabled]="procesando()">
+      {{ procesando() ? 'Verificando…' : 'Entregar' }}
+    </button>
+  </form>
+
+  @if (error()) {
+    <p class="mensaje-error">{{ error() }}</p>
+  }
+
+  @if (entregado(); as pedido) {
+    <p class="mensaje-ok">
+      ✅ Pedido <strong>#{{ pedido.id }}</strong> entregado
+      ({{ pedido.total | currency:'COP':'symbol-narrow':'1.0-0' }}).
+    </p>
+  }
+</div>
+
+<style>
+  .fila-entrega {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+  }
+  .codigo-campo {
+    flex: 1;
+    max-width: 300px;
+  }
+  .codigo-campo input {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+</style>

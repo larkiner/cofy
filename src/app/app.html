@@ -1,13 +1,30 @@
 <header class="encabezado">
-  <a class="marca" routerLink="/">☕ Cafetería</a>
+  <a class="marca" routerLink="/">☕ Café Amanecer</a>
+
+  <nav class="navegacion">
+    <a class="nav-link" routerLink="/" routerLinkActive="activo" [routerLinkActiveOptions]="{ exact: true }">Menú</a>
+    @if (!auth.esPersonal()) {
+      <a class="nav-link" routerLink="/carrito" routerLinkActive="activo">
+        Carrito
+        @if (carrito.cantidadTotal() > 0) {
+          <span class="contador">{{ carrito.cantidadTotal() }}</span>
+        }
+      </a>
+    }
+    @if (auth.esCliente()) {
+      <a class="nav-link" routerLink="/mis-pedidos" routerLinkActive="activo">Mis pedidos</a>
+    }
+    @if (auth.esPersonal()) {
+      <a class="nav-link" routerLink="/interno" routerLinkActive="activo">Panel interno</a>
+    }
+  </nav>
 
   <div class="sesion">
     @if (auth.logueado()) {
       <span class="usuario">{{ auth.email() }} ({{ auth.rol() }})</span>
-      <button type="button" (click)="cerrarSesion()">Salir</button>
+      <button type="button" class="salir" (click)="cerrarSesion()">Salir</button>
     } @else {
-      <a class="enlace-sesion" routerLink="/login">Iniciar sesión</a>
-      <a class="enlace-sesion" routerLink="/registro">Registrarse</a>
+      <a class="enlace-login" routerLink="/login">Iniciar sesión</a>
     }
   </div>
 </header>

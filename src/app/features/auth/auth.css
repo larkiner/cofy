@@ -1,63 +1,61 @@
 .auth {
   display: flex;
   justify-content: center;
-  padding: 3rem 1rem;
+  padding: 60px 24px;
 }
 
 .tarjeta-auth {
   width: 100%;
   max-width: 380px;
-  background: #fff;
-  border: 1px solid var(--crema-borde);
-  border-radius: 12px;
-  padding: 2rem;
-  box-shadow: 0 1px 3px rgb(0 0 0 / 0.06);
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 14px;
 }
 
 .tarjeta-auth h1 {
-  font-size: 1.35rem;
-  color: var(--cafe-oscuro);
-  margin-bottom: 0.25rem;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 28px;
+  color: var(--color-text);
+  margin-bottom: 8px;
 }
 
 label {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
-  font-size: 0.9rem;
-  color: var(--cafe-medio);
+  gap: 5px;
+  font-size: 12px;
+  color: var(--color-muted);
 }
 
 input {
-  border: 1px solid var(--crema-borde);
+  border: 1px solid var(--color-border-input);
   border-radius: 8px;
-  padding: 0.55rem 0.7rem;
-  font-size: 0.95rem;
+  padding: 10px 12px;
+  font-size: 13.5px;
   font-family: inherit;
+  color: var(--color-text);
 }
 
 input:focus {
-  outline: 2px solid var(--cafe-acento);
+  outline: 2px solid var(--color-accent);
   outline-offset: 1px;
 }
 
 button[type='submit'] {
-  background: var(--cafe-acento);
+  background: var(--color-accent);
   color: #fff;
   border: none;
-  border-radius: 8px;
-  padding: 0.65rem;
-  font-size: 0.95rem;
-  font-weight: 600;
+  border-radius: 9px;
+  padding: 12px;
+  font-size: 14px;
+  font-weight: 700;
   cursor: pointer;
-  margin-top: 0.25rem;
+  margin-top: 4px;
 }
 
 button[type='submit']:disabled {
-  opacity: 0.6;
+  background: var(--color-disabled);
   cursor: not-allowed;
 }
 
@@ -66,19 +64,19 @@ button[type='submit']:not(:disabled):hover {
 }
 
 .mensaje-error {
-  color: #b3261e;
-  font-size: 0.85rem;
-  margin: -0.25rem 0;
+  color: var(--color-danger);
+  font-size: 13px;
+  margin: -4px 0;
 }
 
 .enlace-secundario {
   text-align: center;
-  font-size: 0.85rem;
-  color: var(--cafe-medio);
+  font-size: 13px;
+  color: var(--color-muted);
 }
 
 .enlace-secundario a {
-  color: var(--cafe-acento);
+  color: var(--color-accent);
   font-weight: 600;
   text-decoration: none;
 }
@@ -88,7 +86,7 @@ button[type='submit']:not(:disabled):hover {
 }
 
 .nota {
-  font-size: 0.78rem;
-  color: #8a7968;
+  font-size: 12px;
+  color: var(--color-muted-2);
   line-height: 1.4;
 }

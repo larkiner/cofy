@@ -1,13 +1,46 @@
 /* ============================================================
-   Estilos globales - paleta "cafetería"
+   Estilos globales - sistema "Luz de Mañana"
    ============================================================ */
 
 :root {
-  --cafe-oscuro: #3e2723;   /* café espresso: encabezados */
-  --cafe-medio: #6d4c41;    /* café con leche: subtítulos */
-  --cafe-acento: #b5651d;   /* caramelo: precios y acciones */
-  --crema: #fff8f0;         /* fondo general */
-  --crema-borde: #e8d9c9;   /* bordes suaves */
+  /* Paleta nueva (oklch) */
+  --color-bg: oklch(98% 0.012 80);
+  --color-text: oklch(22% 0.02 50);
+  --color-muted: oklch(45% 0.02 50);
+  --color-muted-2: oklch(50% 0.02 50);
+  --color-accent: oklch(55% 0.15 45);
+  --color-accent-hover: oklch(48% 0.15 45);
+  --color-border: oklch(90% 0.02 70);
+  --color-border-input: oklch(88% 0.02 70);
+  --color-dark: oklch(22% 0.02 50);
+  --color-disabled: oklch(80% 0.02 70);
+  --color-danger: #b3261e;
+
+  /* Pills de estado de pedido */
+  --estado-pagado-bg: oklch(93% 0.05 145);
+  --estado-pagado-color: oklch(35% 0.08 145);
+  --estado-preparacion-bg: oklch(93% 0.06 85);
+  --estado-preparacion-color: oklch(38% 0.09 85);
+  --estado-listo-bg: oklch(93% 0.05 230);
+  --estado-listo-color: oklch(38% 0.08 230);
+  --estado-entregado-bg: oklch(92% 0.01 50);
+  --estado-entregado-color: oklch(45% 0.02 50);
+  --estado-cancelado-bg: oklch(92% 0.06 25);
+  --estado-cancelado-color: oklch(40% 0.12 25);
+  --estado-pendiente-bg: oklch(93% 0.05 60);
+  --estado-pendiente-color: oklch(40% 0.09 60);
+
+  /* Tipografía */
+  --font-display: 'Instrument Serif', serif;
+  --font-body: 'Work Sans', sans-serif;
+
+  /* Alias de la paleta anterior para compatibilidad con pantallas
+     que aún no tienen restyle detallado (inventario, mostrador, turnos…) */
+  --cafe-oscuro: var(--color-dark);
+  --cafe-medio: var(--color-muted);
+  --cafe-acento: var(--color-accent);
+  --crema: var(--color-bg);
+  --crema-borde: var(--color-border);
 }
 
 * {
@@ -17,12 +50,20 @@
 }
 
 body {
-  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  background: var(--crema);
-  color: #2d2118;
+  font-family: var(--font-body);
+  background: var(--color-bg);
+  color: var(--color-text);
   -webkit-font-smoothing: antialiased;
 }
 
 button {
   font-family: inherit;
+}
+
+a {
+  color: var(--color-accent);
+}
+
+a:hover {
+  color: var(--color-accent-hover);
 }

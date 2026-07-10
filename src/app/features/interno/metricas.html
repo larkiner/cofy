@@ -1,0 +1,30 @@
+<h1>Métricas de ventas</h1>
+
+@if (cargando()) {
+  <p class="estado-msj">Cargando métricas…</p>
+} @else if (error()) {
+  <p class="mensaje-error">{{ error() }}</p>
+} @else if (metricas().length === 0) {
+  <p class="estado-msj">Aún no hay ventas registradas.</p>
+} @else {
+  <table class="tabla">
+    <thead>
+      <tr>
+        <th>Fecha</th>
+        <th>Sucursal</th>
+        <th>Pedidos</th>
+        <th>Total ventas</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (m of metricas(); track m.sucursalId + '-' + m.fecha) {
+        <tr>
+          <td>{{ m.fecha | date:'dd/MM/yyyy' }}</td>
+          <td>{{ m.sucursalNombre }}</td>
+          <td>{{ m.cantidadPedidos }}</td>
+          <td><strong>{{ m.totalVentas | currency:'COP':'symbol-narrow':'1.0-0' }}</strong></td>
+        </tr>
+      }
+    </tbody>
+  </table>
+}

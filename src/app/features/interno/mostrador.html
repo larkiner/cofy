@@ -1,0 +1,131 @@
+<h1>Venta de mostrador</h1>
+
+@if (resultado(); as venta) {
+  <p class="mensaje-ok tarjeta-panel">
+    ✅ Venta registrada: pedido <strong>#{{ venta.pedidoId }}</strong> por
+    <strong>{{ venta.total | currency:'COP':'symbol-narrow':'1.0-0' }}</strong>
+    ({{ venta.estado }}). Ya está en la cola de preparación.
+  </p>
+}
+
+<div class="mostrador-grid">
+  <!-- Menú para agregar -->
+  <div>
+    <h2>Menú</h2>
+    <div class="lista-productos">
+      @for (item of menu(); track item.productoId) {
+        <button type="button" class="producto-btn" (click)="agregar(item)">
+          <span>{{ item.nombre }}</span>
+          <span class="precio-btn">{{ item.precio | currency:'COP':'symbol-narrow':'1.0-0' }}</span>
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- Cuenta actual -->
+  <div>
+    <h2>Cuenta</h2>
+    @if (lineas().length === 0) {
+      <p class="estado-msj">Toca un producto del menú para agregarlo.</p>
+    } @else {
+      <div class="cuenta tarjeta-panel">
+        @for (linea of lineas(); track linea.producto.productoId) {
+          <div class="cuenta-linea">
+            <span class="nombre">{{ linea.producto.nombre }}</span>
+            <span class="controles">
+              <button type="button" (click)="cambiarCantidad(linea.producto.productoId, -1)">−</button>
+              {{ linea.cantidad }}
+              <button type="button" (click)="cambiarCantidad(linea.producto.productoId, 1)">+</button>
+            </span>
+            <span class="subtotal">{{ linea.producto.precio * linea.cantidad | currency:'COP':'symbol-narrow':'1.0-0' }}</span>
+          </div>
+        }
+        <p class="cuenta-total">Total: <strong>{{ total() | currency:'COP':'symbol-narrow':'1.0-0' }}</strong></p>
+
+        <label class="campo">
+          Método de pago
+          <select name="metodo" [(ngModel)]="metodo">
+            @for (m of metodos; track m) {
+              <option [ngValue]="m">{{ m }}</option>
+            }
+          </select>
+        </label>
+
+        @if (error()) {
+          <p class="mensaje-error">{{ error() }}</p>
+        }
+
+        <button type="button" class="boton cobrar" [disabled]="procesando()" (click)="cobrar()">
+          {{ procesando() ? 'Registrando…' : 'Cobrar' }}
+        </button>
+      </div>
+    }
+  </div>
+</div>
+
+<style>
+  .mostrador-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+  @media (max-width: 720px) {
+    .mostrador-grid { grid-template-columns: 1fr; }
+  }
+  .lista-productos {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .producto-btn {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    background: #fff;
+    border: 1px solid var(--crema-borde);
+    border-radius: 8px;
+    padding: 0.55rem 0.8rem;
+    font-size: 0.88rem;
+    font-family: inherit;
+    cursor: pointer;
+    text-align: left;
+  }
+  .producto-btn:hover {
+    border-color: var(--cafe-acento);
+  }
+  .precio-btn {
+    color: var(--cafe-acento);
+    font-weight: 700;
+  }
+  .cuenta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .cuenta-linea {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.88rem;
+  }
+  .cuenta-linea .nombre { flex: 1; }
+  .cuenta-linea .controles button {
+    width: 22px; height: 22px;
+    border: 1px solid var(--crema-borde);
+    background: var(--crema);
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  .cuenta-linea .subtotal {
+    font-weight: 700;
+    color: var(--cafe-acento);
+    min-width: 4.8rem;
+    text-align: right;
+  }
+  .cuenta-total {
+    text-align: right;
+    margin: 0.5rem 0;
+    color: var(--cafe-oscuro);
+  }
+  .cobrar { margin-top: 0.5rem; }
+</style>

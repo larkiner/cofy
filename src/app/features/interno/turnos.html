@@ -1,0 +1,76 @@
+<h1>Turnos</h1>
+
+@if (mensaje()) {
+  <p class="mensaje-ok">{{ mensaje() }}</p>
+}
+@if (error()) {
+  <p class="mensaje-error">{{ error() }}</p>
+}
+
+@if (esSupervisorOAdmin()) {
+  <h2>Asignar turno</h2>
+  <form class="tarjeta-panel form-turno" (ngSubmit)="asignar()">
+    <label class="campo">
+      Trabajador
+      <select name="trabajadorId" [(ngModel)]="trabajadorId" required>
+        <option [ngValue]="null" disabled>Selecciona…</option>
+        @for (t of trabajadores(); track t.id) {
+          <option [ngValue]="t.id">{{ t.nombre }} ({{ t.rol }} · {{ t.sucursalNombre }})</option>
+        }
+      </select>
+    </label>
+    <div class="fila-turno">
+      <label class="campo">
+        Fecha
+        <input type="date" name="fecha" [(ngModel)]="fecha" required />
+      </label>
+      <label class="campo">
+        Hora inicio
+        <input type="time" name="horaInicio" [(ngModel)]="horaInicio" required />
+      </label>
+      <label class="campo">
+        Hora fin
+        <input type="time" name="horaFin" [(ngModel)]="horaFin" required />
+      </label>
+    </div>
+    <button type="submit" class="boton">Asignar turno</button>
+  </form>
+}
+
+<h2>Mis turnos</h2>
+@if (misTurnos().length === 0) {
+  <p class="estado-msj">No tienes turnos asignados.</p>
+} @else {
+  <table class="tabla">
+    <thead>
+      <tr>
+        <th>Fecha</th>
+        <th>Inicio</th>
+        <th>Fin</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (t of misTurnos(); track t.id) {
+        <tr>
+          <td>{{ t.fecha | date:'dd/MM/yyyy' }}</td>
+          <td>{{ t.horaInicio | date:'h:mm a' }}</td>
+          <td>{{ t.horaFin | date:'h:mm a' }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+}
+
+<style>
+  .form-turno {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    max-width: 520px;
+  }
+  .fila-turno {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.7rem;
+  }
+</style>

@@ -1,0 +1,128 @@
+/* Estilos compartidos por las páginas del panel interno. */
+
+h1 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 26px;
+  color: var(--color-text);
+  margin-bottom: 18px;
+}
+
+h2 {
+  font-size: 15px;
+  color: var(--color-muted);
+  font-weight: 600;
+  margin: 24px 0 12px;
+}
+
+.estado-msj {
+  color: var(--color-muted);
+  padding: 0.75rem 0;
+}
+
+.mensaje-error {
+  color: var(--color-danger);
+  font-size: 13px;
+  margin: 8px 0;
+}
+
+.mensaje-ok {
+  color: var(--estado-pagado-color);
+  font-size: 14px;
+  margin: 8px 0;
+}
+
+.tarjeta-panel {
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 14px 18px;
+}
+
+.boton {
+  background: var(--color-dark);
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.boton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.boton:not(:disabled):hover {
+  filter: brightness(0.92);
+}
+
+.boton.secundario {
+  background: transparent;
+  color: var(--color-text);
+  border: 1px solid var(--color-text);
+  border-radius: 999px;
+  padding: 6px 16px;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 12px;
+  color: var(--color-muted);
+}
+
+.campo input,
+.campo select {
+  border: 1px solid var(--color-border-input);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 13.5px;
+  font-family: inherit;
+  background: #fff;
+  color: var(--color-text);
+}
+
+.estado-pill {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.estado-pill.PAGADO { background: var(--estado-pagado-bg); color: var(--estado-pagado-color); }
+.estado-pill.EN_PREPARACION { background: var(--estado-preparacion-bg); color: var(--estado-preparacion-color); }
+.estado-pill.LISTO { background: var(--estado-listo-bg); color: var(--estado-listo-color); }
+.estado-pill.ENTREGADO { background: var(--estado-entregado-bg); color: var(--estado-entregado-color); }
+.estado-pill.PENDIENTE_PAGO { background: var(--estado-pendiente-bg); color: var(--estado-pendiente-color); }
+.estado-pill.CANCELADO { background: var(--estado-cancelado-bg); color: var(--estado-cancelado-color); }
+
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  overflow: hidden;
+  font-size: 13.5px;
+}
+
+.tabla th {
+  text-align: left;
+  background: rgb(0 0 0 / 0.02);
+  color: var(--color-muted);
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--color-border);
+  font-weight: 600;
+}
+
+.tabla td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.tabla tr:last-child td {
+  border-bottom: none;
+}
