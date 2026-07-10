@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-Angular 22 standalone-component frontend ("CafeteriaWeb") for a cafeteria ordering system, backed by a separate Spring Boot API (not in this repo) expected at `http://localhost:8080/api` (see [src/app/core/api.ts](src/app/core/api.ts)). All UI text, route names, and identifiers are in Spanish — match that convention in new code.
+Angular 22 standalone-component frontend ("CafeteriaWeb") for a cafeteria ordering system, backed by a separate Spring Boot API (not in this repo). The base URL comes from `environment.apiUrl` (see [src/app/infrastructure/api.ts](src/app/infrastructure/api.ts) and "Environments" below), defaulting to `http://localhost:8080/api`. All UI text, route names, and identifiers are in Spanish — match that convention in new code.
 
 ## Commands
 
@@ -18,6 +18,10 @@ ng generate component <name>   # scaffold a new component
 There is no lint script configured. Formatting is via Prettier (`.prettierrc`: 100 print width, single quotes, Angular parser for `.html`).
 
 To run a single test file with Vitest directly: `npx vitest run path/to/file.spec.ts`.
+
+## Environments
+
+`src/environments/environment.ts` (used by the default `production` build config) and `environment.development.ts` (swapped in for `ng serve` / `ng build --configuration development` via `fileReplacements` in [angular.json](angular.json)) each export an `environment.apiUrl`. [infrastructure/api.ts](src/app/infrastructure/api.ts) re-exports it as `API_URL`, which is the only place the rest of the app reads the backend URL from — don't hardcode `http://localhost:8080` elsewhere.
 
 ## Architecture
 
