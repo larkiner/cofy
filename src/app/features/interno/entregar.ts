@@ -1,8 +1,8 @@
 import { CurrencyPipe } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { InternoService } from '../../core/interno.service';
-import { PedidoInterno } from '../../core/models';
+import { InternoService } from '../../application/interno.service';
+import { PedidoInterno } from '../../domain/interno/interno.model';
 
 @Component({
   selector: 'app-entregar',

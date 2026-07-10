@@ -1,7 +1,7 @@
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
-import { InternoService } from '../../core/interno.service';
-import { MetricaSucursal } from '../../core/models';
+import { InternoService } from '../../application/interno.service';
+import { MetricaSucursal } from '../../domain/interno/interno.model';
 
 /** Métricas de ventas por sucursal y día (SUPERVISOR/ADMIN). */
 @Component({

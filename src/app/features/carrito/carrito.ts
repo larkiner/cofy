@@ -3,11 +3,12 @@ import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { switchMap } from 'rxjs';
-import { AuthService } from '../../core/auth.service';
-import { CarritoService } from '../../core/carrito.service';
-import { MenuService } from '../../core/menu.service';
-import { PedidoCliente, Sucursal } from '../../core/models';
-import { PedidoService } from '../../core/pedido.service';
+import { AuthService } from '../../application/auth.service';
+import { CarritoService } from '../../application/carrito.service';
+import { MenuService } from '../../application/menu.service';
+import { PedidoService } from '../../application/pedido.service';
+import { Sucursal } from '../../domain/menu/menu.model';
+import { PedidoCliente } from '../../domain/pedidos/pedido.model';
 
 const METODOS_PAGO = ['TARJETA', 'PSE', 'NEQUI', 'DAVIPLATA'];
 

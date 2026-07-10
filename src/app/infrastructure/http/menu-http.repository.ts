@@ -1,11 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { API_URL } from './api';
-import { MenuItem, Sucursal } from './models';
+import { MenuItem, Sucursal } from '../../domain/menu/menu.model';
+import { MenuRepository } from '../../domain/menu/menu.repository';
+import { API_URL } from '../api';
 
-@Injectable({ providedIn: 'root' })
-export class MenuService {
+/** Adaptador: catálogo de menú y sucursales vía HTTP. */
+@Injectable()
+export class MenuHttpRepository extends MenuRepository {
   private readonly http = inject(HttpClient);
 
   obtenerMenu(): Observable<MenuItem[]> {

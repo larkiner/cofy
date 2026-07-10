@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
-import { adminGuard, supervisorGuard } from './core/admin.guard';
-import { clienteGuard } from './core/cliente.guard';
-import { personalGuard } from './core/personal.guard';
+import { adminGuard, supervisorGuard } from './application/guards/admin.guard';
+import { clienteGuard } from './application/guards/cliente.guard';
+import { personalGuard } from './application/guards/personal.guard';
 
 export const routes: Routes = [
   {

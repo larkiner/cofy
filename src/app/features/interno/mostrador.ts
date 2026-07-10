@@ -1,9 +1,10 @@
 import { CurrencyPipe } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { InternoService } from '../../core/interno.service';
-import { MenuService } from '../../core/menu.service';
-import { MenuItem, VentaMostradorResponse } from '../../core/models';
+import { InternoService } from '../../application/interno.service';
+import { MenuService } from '../../application/menu.service';
+import { VentaMostradorResponse } from '../../domain/interno/interno.model';
+import { MenuItem } from '../../domain/menu/menu.model';
 
 interface LineaVenta {
   producto: MenuItem;
