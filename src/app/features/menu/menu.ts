@@ -1,9 +1,9 @@
 import { CurrencyPipe } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
-import { AuthService } from '../../core/auth.service';
-import { CarritoService } from '../../core/carrito.service';
-import { MenuService } from '../../core/menu.service';
-import { MenuItem } from '../../core/models';
+import { AuthService } from '../../application/auth.service';
+import { CarritoService } from '../../application/carrito.service';
+import { MenuService } from '../../application/menu.service';
+import { MenuItem } from '../../domain/menu/menu.model';
 
 interface GrupoCategoria {
   categoria: string;

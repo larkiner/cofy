@@ -1,83 +1,76 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { API_URL } from './api';
 import {
   Categoria, MetricaSucursal, PedidoEmpleado, PedidoInterno, ProductoAdmin,
   ProductoRequest, TrabajadorPerfil, Turno, TurnoRequest,
   VentaMostradorRequest, VentaMostradorResponse,
-} from './models';
+} from '../domain/interno/interno.model';
+import { InternoRepository } from '../domain/interno/interno.repository';
 
 /** Operaciones del panel interno (personal de la cafetería). */
 @Injectable({ providedIn: 'root' })
 export class InternoService {
-  private readonly http = inject(HttpClient);
-  private readonly base = `${API_URL}/interno`;
+  private readonly repo = inject(InternoRepository);
 
   // ---------------- Tablero de pedidos ----------------
 
   tablero(estado: string | null, sucursalId: number | null): Observable<PedidoEmpleado[]> {
-    let params = new HttpParams();
-    if (estado) params = params.set('estado', estado);
-    if (sucursalId !== null) params = params.set('sucursalId', sucursalId);
-    return this.http.get<PedidoEmpleado[]>(`${this.base}/pedidos`, { params });
+    return this.repo.tablero(estado, sucursalId);
   }
 
   cambiarEstado(pedidoId: number, estado: string): Observable<PedidoInterno> {
-    return this.http.put<PedidoInterno>(`${this.base}/pedidos/${pedidoId}/estado`, { estado });
+    return this.repo.cambiarEstado(pedidoId, estado);
   }
 
   entregar(codigoRetiro: string): Observable<PedidoInterno> {
-    return this.http.post<PedidoInterno>(`${this.base}/pedidos/entregar`, { codigoRetiro });
+    return this.repo.entregar(codigoRetiro);
   }
 
   ventaMostrador(request: VentaMostradorRequest): Observable<VentaMostradorResponse> {
-    return this.http.post<VentaMostradorResponse>(`${this.base}/pedidos/mostrador`, request);
+    return this.repo.ventaMostrador(request);
   }
 
   // ---------------- Inventario (admin) ----------------
 
   productos(): Observable<ProductoAdmin[]> {
-    return this.http.get<ProductoAdmin[]>(`${this.base}/productos`);
+    return this.repo.productos();
   }
 
   crearProducto(request: ProductoRequest): Observable<ProductoAdmin> {
-    return this.http.post<ProductoAdmin>(`${this.base}/productos`, request);
+    return this.repo.crearProducto(request);
   }
 
   actualizarProducto(id: number, request: ProductoRequest): Observable<ProductoAdmin> {
-    return this.http.put<ProductoAdmin>(`${this.base}/productos/${id}`, request);
+    return this.repo.actualizarProducto(id, request);
   }
 
   categorias(): Observable<Categoria[]> {
-    return this.http.get<Categoria[]>(`${this.base}/categorias`);
+    return this.repo.categorias();
   }
 
   crearCategoria(nombre: string, descripcion: string | null): Observable<Categoria> {
-    return this.http.post<Categoria>(`${this.base}/categorias`, { nombre, descripcion });
+    return this.repo.crearCategoria(nombre, descripcion);
   }
 
   // ---------------- Métricas / trabajadores / turnos ----------------
 
   metricas(sucursalId: number | null): Observable<MetricaSucursal[]> {
-    let params = new HttpParams();
-    if (sucursalId !== null) params = params.set('sucursalId', sucursalId);
-    return this.http.get<MetricaSucursal[]>(`${this.base}/metricas`, { params });
+    return this.repo.metricas(sucursalId);
   }
 
   miPerfil(): Observable<TrabajadorPerfil> {
-    return this.http.get<TrabajadorPerfil>(`${this.base}/me`);
+    return this.repo.miPerfil();
   }
 
   trabajadores(): Observable<TrabajadorPerfil[]> {
-    return this.http.get<TrabajadorPerfil[]>(`${this.base}/trabajadores`);
+    return this.repo.trabajadores();
   }
 
   misTurnos(): Observable<Turno[]> {
-    return this.http.get<Turno[]>(`${this.base}/turnos/mios`);
+    return this.repo.misTurnos();
   }
 
   crearTurno(request: TurnoRequest): Observable<Turno> {
-    return this.http.post<Turno>(`${this.base}/turnos`, request);
+    return this.repo.crearTurno(request);
   }
 }

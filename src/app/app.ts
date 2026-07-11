@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { AuthService } from './core/auth.service';
-import { CarritoService } from './core/carrito.service';
+import { AuthService } from './application/auth.service';
+import { CarritoService } from './application/carrito.service';
 
 @Component({
   selector: 'app-root',

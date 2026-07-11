@@ -1,6 +1,6 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { AuthService } from './auth.service';
+import { SesionPort } from '../../domain/auth/sesion.port';
 
 /**
  * Agrega "Authorization: Bearer <token>" a toda petición saliente
@@ -8,7 +8,7 @@ import { AuthService } from './auth.service';
  * de poner el header.
  */
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  const token = inject(AuthService).token;
+  const token = inject(SesionPort).obtenerToken();
   if (token) {
     req = req.clone({ setHeaders: { Authorization: `Bearer ${token}` } });
   }

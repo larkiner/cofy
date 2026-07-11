@@ -1,8 +1,8 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../../core/auth.service';
-import { rutaSegunRol } from '../../core/rutas-rol';
+import { AuthService } from '../../application/auth.service';
+import { rutaSegunRol } from '../../application/rutas-rol';
 
 @Component({
   selector: 'app-registro',

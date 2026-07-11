@@ -1,10 +1,6 @@
 import { Injectable, computed, signal } from '@angular/core';
-import { MenuItem } from './models';
-
-export interface LineaCarrito {
-  producto: MenuItem;
-  cantidad: number;
-}
+import { LineaCarrito } from '../domain/carrito/carrito.model';
+import { MenuItem } from '../domain/menu/menu.model';
 
 /**
  * Carrito de compras en memoria (signals). La UI reacciona sola

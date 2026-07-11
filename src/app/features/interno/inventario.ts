@@ -1,8 +1,8 @@
 import { CurrencyPipe } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { InternoService } from '../../core/interno.service';
-import { Categoria, ProductoAdmin } from '../../core/models';
+import { InternoService } from '../../application/interno.service';
+import { Categoria, ProductoAdmin } from '../../domain/interno/interno.model';
 
 /** Inventario: gestión de categorías y productos (solo ADMIN). */
 @Component({

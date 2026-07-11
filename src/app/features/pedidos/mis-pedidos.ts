@@ -1,8 +1,8 @@
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { PedidoCliente } from '../../core/models';
-import { PedidoService } from '../../core/pedido.service';
+import { PedidoService } from '../../application/pedido.service';
+import { PedidoCliente } from '../../domain/pedidos/pedido.model';
 
 @Component({
   selector: 'app-mis-pedidos',

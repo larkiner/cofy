@@ -1,9 +1,9 @@
 import { DatePipe } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { AuthService } from '../../core/auth.service';
-import { InternoService } from '../../core/interno.service';
-import { TrabajadorPerfil, Turno } from '../../core/models';
+import { AuthService } from '../../application/auth.service';
+import { InternoService } from '../../application/interno.service';
+import { TrabajadorPerfil, Turno } from '../../domain/interno/interno.model';
 
 @Component({
   selector: 'app-turnos',
