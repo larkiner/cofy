@@ -1,10 +1,10 @@
 import { CurrencyPipe } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { InternoService } from '../../application/interno.service';
-import { MenuService } from '../../application/menu.service';
-import { VentaMostradorResponse } from '../../domain/interno/interno.model';
-import { MenuItem } from '../../domain/menu/menu.model';
+import { InternoService } from '../../../application/interno.service';
+import { MenuService } from '../../../application/menu.service';
+import { VentaMostradorResponse } from '../../../domain/interno/interno.model';
+import { MenuItem } from '../../../domain/menu/menu.model';
 
 interface LineaVenta {
   producto: MenuItem;
@@ -21,7 +21,7 @@ const METODOS = ['EFECTIVO', 'TARJETA', 'NEQUI', 'DAVIPLATA', 'PSE'];
   selector: 'app-mostrador',
   imports: [CurrencyPipe, FormsModule],
   templateUrl: './mostrador.html',
-  styleUrl: './interno.css',
+  styleUrl: '../interno.css',
 })
 export class Mostrador {
   private readonly menuService = inject(MenuService);

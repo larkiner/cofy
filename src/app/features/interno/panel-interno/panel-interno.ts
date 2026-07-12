@@ -1,6 +1,6 @@
 import { Component, computed, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { AuthService } from '../../application/auth.service';
+import { AuthService } from '../../../application/auth.service';
 
 /** Layout del panel interno: sub-navegación según el rol + contenido. */
 @Component({

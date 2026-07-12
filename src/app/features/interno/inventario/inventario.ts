@@ -1,15 +1,15 @@
 import { CurrencyPipe } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { InternoService } from '../../application/interno.service';
-import { Categoria, ProductoAdmin } from '../../domain/interno/interno.model';
+import { InternoService } from '../../../application/interno.service';
+import { Categoria, ProductoAdmin } from '../../../domain/interno/interno.model';
 
 /** Inventario: gestión de categorías y productos (solo ADMIN). */
 @Component({
   selector: 'app-inventario',
   imports: [CurrencyPipe, FormsModule],
   templateUrl: './inventario.html',
-  styleUrl: './interno.css',
+  styleUrl: '../interno.css',
 })
 export class Inventario {
   private readonly interno = inject(InternoService);
