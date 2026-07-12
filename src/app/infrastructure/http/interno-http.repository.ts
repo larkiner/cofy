@@ -7,13 +7,13 @@ import {
   VentaMostradorRequest, VentaMostradorResponse,
 } from '../../domain/interno/interno.model';
 import { InternoRepository } from '../../domain/interno/interno.repository';
-import { API_URL } from '../api';
+import { environment } from '../../../environments/environment';
 
 /** Adaptador: operaciones del panel interno (personal de la cafetería) vía HTTP. */
 @Injectable()
 export class InternoHttpRepository extends InternoRepository {
   private readonly http = inject(HttpClient);
-  private readonly base = `${API_URL}/interno`;
+  private readonly base = `${environment.apiUrl}/interno`;
 
   // ---------------- Tablero de pedidos ----------------
 

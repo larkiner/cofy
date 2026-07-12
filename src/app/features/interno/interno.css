@@ -40,7 +40,7 @@ h2 {
 
 .boton {
   background: var(--color-dark);
-  color: #fff;
+  color: var(--color-on-accent);
   border: none;
   border-radius: 7px;
   padding: 6px 14px;
@@ -81,7 +81,7 @@ h2 {
   padding: 8px 12px;
   font-size: 13.5px;
   font-family: inherit;
-  background: #fff;
+  background: var(--color-input-bg);
   color: var(--color-text);
 }
 
@@ -111,7 +111,7 @@ h2 {
 
 .tabla th {
   text-align: left;
-  background: rgb(0 0 0 / 0.02);
+  background: var(--color-overlay-subtle);
   color: var(--color-muted);
   padding: 10px 12px;
   border-bottom: 1px solid var(--color-border);

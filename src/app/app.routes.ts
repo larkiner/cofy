@@ -11,12 +11,12 @@ export const routes: Routes = [
   },
   {
     path: 'login',
-    loadComponent: () => import('./features/auth/login').then(m => m.Login),
+    loadComponent: () => import('./features/auth/login/login').then(m => m.Login),
     title: 'Iniciar sesión | Cafetería',
   },
   {
     path: 'registro',
-    loadComponent: () => import('./features/auth/registro').then(m => m.Registro),
+    loadComponent: () => import('./features/auth/registro/registro').then(m => m.Registro),
     title: 'Crear cuenta | Cafetería',
   },
   {
@@ -32,35 +32,40 @@ export const routes: Routes = [
   },
   {
     path: 'interno',
-    loadComponent: () => import('./features/interno/panel-interno').then(m => m.PanelInterno),
+    loadComponent: () =>
+      import('./features/interno/panel-interno/panel-interno').then(m => m.PanelInterno),
     canActivate: [personalGuard],
     title: 'Panel interno | Cafetería',
     children: [
       {
         path: '',
-        loadComponent: () => import('./features/interno/tablero').then(m => m.Tablero),
+        loadComponent: () => import('./features/interno/tablero/tablero').then(m => m.Tablero),
       },
       {
         path: 'entregar',
-        loadComponent: () => import('./features/interno/entregar').then(m => m.Entregar),
+        loadComponent: () =>
+          import('./features/interno/entregar/entregar').then(m => m.Entregar),
       },
       {
         path: 'mostrador',
-        loadComponent: () => import('./features/interno/mostrador').then(m => m.Mostrador),
+        loadComponent: () =>
+          import('./features/interno/mostrador/mostrador').then(m => m.Mostrador),
       },
       {
         path: 'inventario',
-        loadComponent: () => import('./features/interno/inventario').then(m => m.Inventario),
+        loadComponent: () =>
+          import('./features/interno/inventario/inventario').then(m => m.Inventario),
         canActivate: [adminGuard],
       },
       {
         path: 'metricas',
-        loadComponent: () => import('./features/interno/metricas').then(m => m.Metricas),
+        loadComponent: () =>
+          import('./features/interno/metricas/metricas').then(m => m.Metricas),
         canActivate: [supervisorGuard],
       },
       {
         path: 'turnos',
-        loadComponent: () => import('./features/interno/turnos').then(m => m.Turnos),
+        loadComponent: () => import('./features/interno/turnos/turnos').then(m => m.Turnos),
       },
     ],
   },

@@ -1,15 +1,15 @@
 import { DatePipe } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { AuthService } from '../../application/auth.service';
-import { InternoService } from '../../application/interno.service';
-import { TrabajadorPerfil, Turno } from '../../domain/interno/interno.model';
+import { AuthService } from '../../../application/auth.service';
+import { InternoService } from '../../../application/interno.service';
+import { TrabajadorPerfil, Turno } from '../../../domain/interno/interno.model';
 
 @Component({
   selector: 'app-turnos',
   imports: [DatePipe, FormsModule],
   templateUrl: './turnos.html',
-  styleUrl: './interno.css',
+  styleUrl: '../interno.css',
 })
 export class Turnos {
   private readonly interno = inject(InternoService);

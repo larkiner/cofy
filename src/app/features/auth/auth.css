@@ -44,7 +44,7 @@ input:focus {
 
 button[type='submit'] {
   background: var(--color-accent);
-  color: #fff;
+  color: var(--color-on-accent);
   border: none;
   border-radius: 9px;
   padding: 12px;

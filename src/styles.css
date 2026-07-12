@@ -1,5 +1,12 @@
+@import 'tailwindcss';
+
+/* Habilita las variantes dark: de Tailwind según la clase .dark en <html>,
+   en vez del prefers-color-scheme del sistema, para que respondan al mismo
+   interruptor que las variables CSS de abajo. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* ============================================================
-   Estilos globales - sistema "Luz de Mañana"
+   Estilos globales - sistema "Luz de Mañana" (claro) / "Noche" (oscuro)
    ============================================================ */
 
 :root {
@@ -15,6 +22,12 @@
   --color-dark: oklch(22% 0.02 50);
   --color-disabled: oklch(80% 0.02 70);
   --color-danger: #b3261e;
+
+  /* Superficies e interacciones (fondos de input, overlays de hover) */
+  --color-on-accent: #fff;
+  --color-input-bg: #fff;
+  --color-overlay-hover: rgb(0 0 0 / 0.04);
+  --color-overlay-subtle: rgb(0 0 0 / 0.02);
 
   /* Pills de estado de pedido */
   --estado-pagado-bg: oklch(93% 0.05 145);
@@ -41,6 +54,38 @@
   --cafe-acento: var(--color-accent);
   --crema: var(--color-bg);
   --crema-borde: var(--color-border);
+}
+
+:root.dark {
+  --color-bg: oklch(20% 0.015 50);
+  --color-text: oklch(92% 0.015 70);
+  --color-muted: oklch(70% 0.02 60);
+  --color-muted-2: oklch(65% 0.02 60);
+  --color-accent: oklch(68% 0.15 45);
+  --color-accent-hover: oklch(74% 0.15 45);
+  --color-border: oklch(32% 0.02 60);
+  --color-border-input: oklch(35% 0.02 60);
+  --color-dark: oklch(30% 0.02 55);
+  --color-disabled: oklch(40% 0.02 60);
+  --color-danger: oklch(58% 0.19 25);
+
+  --color-on-accent: #fff;
+  --color-input-bg: oklch(26% 0.015 55);
+  --color-overlay-hover: rgb(255 255 255 / 0.06);
+  --color-overlay-subtle: rgb(255 255 255 / 0.03);
+
+  --estado-pagado-bg: oklch(30% 0.07 145);
+  --estado-pagado-color: oklch(85% 0.07 145);
+  --estado-preparacion-bg: oklch(30% 0.08 85);
+  --estado-preparacion-color: oklch(85% 0.08 85);
+  --estado-listo-bg: oklch(30% 0.07 230);
+  --estado-listo-color: oklch(85% 0.07 230);
+  --estado-entregado-bg: oklch(28% 0.015 50);
+  --estado-entregado-color: oklch(80% 0.02 50);
+  --estado-cancelado-bg: oklch(30% 0.09 25);
+  --estado-cancelado-color: oklch(85% 0.1 25);
+  --estado-pendiente-bg: oklch(30% 0.07 60);
+  --estado-pendiente-color: oklch(85% 0.08 60);
 }
 
 * {
