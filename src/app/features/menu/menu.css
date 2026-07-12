@@ -96,7 +96,7 @@ h2 {
 
 .agregar:hover {
   filter: brightness(0.92);
-  background: rgb(0 0 0 / 0.04);
+  background: var(--color-overlay-hover);
 }
 
 @media (max-width: 640px) {

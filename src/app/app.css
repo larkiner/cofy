@@ -47,7 +47,7 @@
 
 .contador {
   background: var(--color-accent);
-  color: #fff;
+  color: var(--color-on-accent);
   font-size: 10px;
   font-weight: 700;
   border-radius: 999px;
@@ -65,6 +65,24 @@
   color: var(--color-muted);
 }
 
+.alternar-tema {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.alternar-tema:hover {
+  background: var(--color-overlay-hover);
+}
+
 .salir {
   background: transparent;
   color: var(--color-text);
@@ -78,7 +96,7 @@
 
 .salir:hover {
   filter: brightness(0.92);
-  background: rgb(0 0 0 / 0.04);
+  background: var(--color-overlay-hover);
 }
 
 .enlace-login {

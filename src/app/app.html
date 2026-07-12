@@ -20,6 +20,14 @@
   </nav>
 
   <div class="sesion">
+    <button
+      type="button"
+      class="alternar-tema"
+      (click)="tema.alternar()"
+      [attr.aria-label]="tema.oscuro() ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'"
+    >
+      {{ tema.oscuro() ? '☀️' : '🌙' }}
+    </button>
     @if (auth.logueado()) {
       <span class="usuario">{{ auth.email() }} ({{ auth.rol() }})</span>
       <button type="button" class="salir" (click)="cerrarSesion()">Salir</button>

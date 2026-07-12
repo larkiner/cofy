@@ -53,3 +53,9 @@ Defined in [src/app/app.routes.ts](src/app/app.routes.ts), all lazy-loaded via `
 ### State pattern
 
 State lives in `application/` services as `signal`/`computed`, not RxJS subjects — components `inject()` the service and read signals directly in templates. Repository ports return `Observable` (thin methods, no extra state wrapping) and are consumed with `.subscribe()` in components. New client-only state should follow `CarritoService`'s shape: signals only, no port needed unless it talks to the backend.
+
+### Styling & theming
+
+Tailwind CSS 4 is installed and wired via PostCSS (`.postcssrc.json` → `@tailwindcss/postcss`; Angular's `@angular/build:application` builder auto-detects it, no `angular.json` change needed). Existing UI is still plain per-component CSS files (not Tailwind utility classes) built on CSS custom properties defined once in [src/styles.css](src/styles.css) (`--color-bg`, `--color-text`, `--color-accent`, the `--estado-*` status-pill pairs, etc.) — always reference `var(--color-*)` in component CSS instead of hardcoding colors, so both themes and any future Tailwind utilities stay in sync.
+
+Dark mode is a `.dark` class on `<html>`, toggled by [TemaService](src/app/application/tema.service.ts) (signal-based, no port — same "pure client state" shape as `CarritoService`, persisted to `localStorage` directly since it's a trivial UI preference, not domain data). `styles.css` defines a `:root.dark { --color-bg: ...; }` block that overrides every variable from `:root`, and `@custom-variant dark (&:where(.dark, .dark *));` makes Tailwind's `dark:` utilities follow the same `.dark` class rather than `prefers-color-scheme`. The toggle button lives in [app.html](src/app/app.html)'s header.

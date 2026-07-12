@@ -78,7 +78,7 @@ h1 {
 }
 
 .linea-cantidad button:hover {
-  background: rgb(0 0 0 / 0.04);
+  background: var(--color-overlay-hover);
 }
 
 .linea-subtotal {
@@ -125,7 +125,7 @@ h1 {
   padding: 10px 12px;
   font-size: 13.5px;
   font-family: inherit;
-  background: #fff;
+  background: var(--color-input-bg);
   color: var(--color-text);
 }
 
@@ -138,7 +138,7 @@ h1 {
 .pagar {
   width: 100%;
   background: var(--color-accent);
-  color: #fff;
+  color: var(--color-on-accent);
   border: none;
   border-radius: 9px;
   padding: 13px;
