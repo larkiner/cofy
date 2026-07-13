@@ -10,6 +10,10 @@ Angular 22 standalone-component frontend ("CafeteriaWeb") for a cafeteria orderi
 
 Always work on the single branch **`refactor/hexagonal-architecture`** and commit all work there. Do **not** create a new branch or git worktree per task — no `claude/*` or `agents/*` per-task branches. `master` remains the remote default (where releases are merged), but day-to-day work stays on `refactor/hexagonal-architecture`.
 
+## Running the app
+
+**Do not run the app (`ng serve` / `npm start`) after making changes — the user runs it manually.** To verify a change, use `ng build` (or the typecheck) instead of starting the dev server. The dev server always runs on **port 4200** (fixed via `serve.options.port` in [angular.json](angular.json)); do not use a different or auto-assigned port.
+
 ## Commands
 
 ```bash
