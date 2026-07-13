@@ -1,17 +1,85 @@
-<section class="menu">
-  <h1>Nuestro menú</h1>
-  <p class="subtitulo">Preparado en casa, cada mañana</p>
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-media">
+    @if (heroImagen) {
+      <img [src]="heroImagen" alt="Ambiente del café" />
+    }
+  </div>
+  <div class="hero-overlay"></div>
+  <div class="hero-contenido">
+    <span class="eyebrow eyebrow-claro">Bienvenido</span>
+    <h1 class="hero-titulo">Buenos días se sirven con café</h1>
+    <div class="hero-acciones">
+      <a href="#menu" class="btn-primario">Ver menú</a>
+      <a href="#horario" class="btn-contorno-claro">Horario</a>
+    </div>
+  </div>
+</section>
 
-  @if (cargando()) {
-    <p class="estado">Cargando menú…</p>
-  } @else if (error()) {
-    <p class="estado error">{{ error() }}</p>
-  } @else {
-    @for (grupo of grupos(); track grupo.categoria) {
-      <h2>{{ grupo.categoria }}</h2>
-      <div class="tarjetas">
-        @for (item of grupo.items; track item.productoId) {
-          <article class="tarjeta">
+@if (cargando()) {
+  <p class="estado">Cargando menú…</p>
+} @else if (error()) {
+  <p class="estado error">{{ error() }}</p>
+} @else {
+  <!-- Destacados -->
+  @if (destacados().length) {
+    <section id="destacados" class="destacados">
+      <h2 class="eyebrow">Lo más pedido</h2>
+      <div class="destacados-grid">
+        @for (item of destacados(); track item.productoId) {
+          <article class="destacado">
+            <div class="destacado-media">
+              @if (item.imagenUrl) {
+                <img [src]="item.imagenUrl" [alt]="item.nombre" />
+              }
+            </div>
+            <div class="destacado-overlay"></div>
+            <div class="destacado-info">
+              <div class="destacado-texto">
+                <div class="destacado-nombre">{{ item.nombre }}</div>
+                <div class="destacado-precio">
+                  {{ item.precio | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}
+                </div>
+              </div>
+              @if (!auth.esPersonal()) {
+                <button type="button" class="destacado-agregar" (click)="agregar(item)">
+                  + Agregar
+                </button>
+              }
+            </div>
+          </article>
+        }
+      </div>
+    </section>
+  }
+
+  <!-- Menú con pestañas -->
+  <section id="menu" class="menu">
+    <h1>Nuestro menú</h1>
+    <p class="subtitulo">Preparado en casa, cada mañana</p>
+
+    <div class="pestanas">
+      @for (categoria of categorias(); track categoria) {
+        <button
+          type="button"
+          class="pestana"
+          [class.activa]="categoria === categoriaResaltada()"
+          (click)="seleccionarCategoria(categoria)"
+        >
+          {{ categoria }}
+        </button>
+      }
+    </div>
+
+    <div class="tarjetas">
+      @for (item of itemsActivos(); track item.productoId) {
+        <article class="tarjeta">
+          <div class="tarjeta-media">
+            @if (item.imagenUrl) {
+              <img [src]="item.imagenUrl" [alt]="item.nombre" />
+            }
+          </div>
+          <div class="tarjeta-cuerpo">
             <div class="tarjeta-info">
               <h3>{{ item.nombre }}</h3>
               @if (item.descripcion) {
@@ -19,14 +87,38 @@
               }
             </div>
             <div class="tarjeta-accion">
-              <span class="precio">{{ item.precio | currency:'COP':'symbol-narrow':'1.0-0' }}</span>
+              <span class="precio">
+                {{ item.precio | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}
+              </span>
               @if (!auth.esPersonal()) {
                 <button type="button" class="agregar" (click)="agregar(item)">Agregar</button>
               }
             </div>
-          </article>
+          </div>
+        </article>
+      }
+    </div>
+  </section>
+}
+
+<!-- Horario y ubicación (contenido estático: se muestra siempre) -->
+<section id="horario" class="horario">
+  <div class="horario-grid">
+    <div class="horario-tarjeta">
+      <span class="eyebrow eyebrow-claro">Horario</span>
+      <div class="horario-lista">
+        <div class="horario-fila"><span>Lunes – Viernes</span><span>6:30 am – 8:00 pm</span></div>
+        <div class="horario-fila"><span>Sábados</span><span>7:00 am – 8:00 pm</span></div>
+        <div class="horario-fila"><span>Domingos</span><span>8:00 am – 2:00 pm</span></div>
+      </div>
+    </div>
+    <div class="ubicacion-tarjeta">
+      <div class="ubicacion-media">
+        @if (mapaImagen) {
+          <img [src]="mapaImagen" alt="Fachada del local" />
         }
       </div>
-    }
-  }
+      <span class="ubicacion-placa">Cra. 14 # 85 – 22, Bogotá</span>
+    </div>
+  </div>
 </section>

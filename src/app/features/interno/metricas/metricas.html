@@ -7,6 +7,97 @@
 } @else if (metricas().length === 0) {
   <p class="estado-msj">Aún no hay ventas registradas.</p>
 } @else {
+  @if (sucursales().length > 1) {
+    <div class="filtros">
+      <label class="campo">
+        Sucursal
+        <select name="filtroSucursal" [(ngModel)]="sucursalSeleccionada">
+          <option value="">Todas</option>
+          @for (s of sucursales(); track s.id) {
+            <option [value]="s.id">{{ s.nombre }}</option>
+          }
+        </select>
+      </label>
+    </div>
+  }
+
+  <div class="kpis">
+    <div class="kpi-tile">
+      <span class="kpi-label">Ventas totales</span>
+      <span class="kpi-valor">{{ kpis().totalVentas | currency:'COP':'symbol-narrow':'1.0-0' }}</span>
+    </div>
+    <div class="kpi-tile">
+      <span class="kpi-label">Pedidos</span>
+      <span class="kpi-valor">{{ kpis().totalPedidos }}</span>
+    </div>
+    <div class="kpi-tile">
+      <span class="kpi-label">Ticket promedio</span>
+      <span class="kpi-valor">{{ kpis().ticketPromedio | currency:'COP':'symbol-narrow':'1.0-0' }}</span>
+    </div>
+    <div class="kpi-tile">
+      <span class="kpi-label">Sucursales activas</span>
+      <span class="kpi-valor">{{ kpis().sucursalesActivas }}</span>
+    </div>
+  </div>
+
+  <div class="graficas">
+    <div class="tarjeta-panel grafica-card">
+      <h2>Ventas por día</h2>
+      @if (serieDiaria().length === 0) {
+        <p class="estado-msj">Sin datos para este filtro.</p>
+      } @else {
+        <div class="linea-wrap">
+          <svg [attr.viewBox]="'0 0 ' + lineaAncho + ' ' + lineaAlto" class="linea-svg" role="img"
+               [attr.aria-label]="'Ventas totales por día'">
+            @for (g of gridY(); track g.valor) {
+              <line class="linea-grid" x1="8" [attr.x2]="lineaAncho - 8" [attr.y1]="g.y" [attr.y2]="g.y" />
+              <text class="linea-tick" x="0" [attr.y]="g.y - 3">{{ formatCompacto(g.valor) }}</text>
+            }
+            <path class="linea-area" [attr.d]="areaPath()" />
+            <path class="linea-trazo" [attr.d]="lineaPath()" />
+            @for (p of serieDiaria(); track p.fecha; let i = $index) {
+              @if (p.mostrarEtiqueta) {
+                <text class="linea-fecha" [attr.x]="p.x" [attr.y]="lineaAlto - 8" text-anchor="middle">
+                  {{ p.fecha | date:'dd/MM' }}
+                </text>
+              }
+              <circle class="linea-punto-hit" [attr.cx]="p.x" [attr.cy]="p.y" r="12"
+                      tabindex="0" [attr.aria-label]="(p.fecha | date:'dd/MM/yyyy') + ': ' + (p.total | currency:'COP':'symbol-narrow':'1.0-0')"
+                      (pointerenter)="hoverPunto.set(i)" (pointerleave)="hoverPunto.set(null)"
+                      (focus)="hoverPunto.set(i)" (blur)="hoverPunto.set(null)" />
+              <circle class="linea-punto" [class.activo]="hoverPunto() === i" [attr.cx]="p.x" [attr.cy]="p.y" r="4" />
+            }
+          </svg>
+          @if (hoverPunto() !== null) {
+            @let punto = serieDiaria()[hoverPunto()!];
+            <div class="linea-tooltip"
+                 [style.left.%]="(punto.x / lineaAncho) * 100"
+                 [style.top.%]="(punto.y / lineaAlto) * 100">
+              <strong>{{ punto.total | currency:'COP':'symbol-narrow':'1.0-0' }}</strong>
+              <span>{{ punto.fecha | date:'dd/MM/yyyy' }} · {{ punto.pedidos }} pedidos</span>
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    <div class="tarjeta-panel grafica-card">
+      <h2>Ventas por sucursal</h2>
+      <div class="barras">
+        @for (s of porSucursal(); track s.sucursalId) {
+          <div class="barra-fila" [title]="s.nombre + ': ' + s.pedidos + ' pedidos'">
+            <span class="barra-nombre">{{ s.nombre }}</span>
+            <div class="barra-pista">
+              <div class="barra-fill" [style.width.%]="(s.total / maxBarra()) * 100"></div>
+            </div>
+            <span class="barra-valor">{{ s.total | currency:'COP':'symbol-narrow':'1.0-0' }}</span>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+
+  <h2>Detalle</h2>
   <table class="tabla">
     <thead>
       <tr>
@@ -17,7 +108,7 @@
       </tr>
     </thead>
     <tbody>
-      @for (m of metricas(); track m.sucursalId + '-' + m.fecha) {
+      @for (m of metricasFiltradas(); track m.sucursalId + '-' + m.fecha) {
         <tr>
           <td>{{ m.fecha | date:'dd/MM/yyyy' }}</td>
           <td>{{ m.sucursalNombre }}</td>
@@ -28,3 +119,181 @@
     </tbody>
   </table>
 }
+
+<style>
+  .filtros {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .kpis {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .kpi-tile {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+
+  .kpi-label {
+    font-size: 12px;
+    color: var(--color-muted);
+  }
+
+  .kpi-valor {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--color-text);
+  }
+
+  .graficas {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  @media (max-width: 800px) {
+    .graficas {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .grafica-card h2 {
+    margin: 0 0 12px;
+  }
+
+  .linea-wrap {
+    position: relative;
+  }
+
+  .linea-svg {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+
+  .linea-grid {
+    stroke: var(--color-border);
+    stroke-width: 1;
+  }
+
+  .linea-tick {
+    font-size: 9px;
+    fill: var(--color-muted);
+  }
+
+  .linea-fecha {
+    font-size: 9px;
+    fill: var(--color-muted);
+  }
+
+  .linea-area {
+    fill: var(--color-accent);
+    opacity: 0.1;
+    stroke: none;
+  }
+
+  .linea-trazo {
+    fill: none;
+    stroke: var(--color-accent);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .linea-punto {
+    fill: var(--color-accent);
+    stroke: #fff;
+    stroke-width: 2;
+  }
+
+  .linea-punto.activo {
+    r: 6;
+  }
+
+  .linea-punto-hit {
+    fill: transparent;
+    cursor: pointer;
+  }
+
+  .linea-punto-hit:focus-visible {
+    outline: none;
+  }
+
+  .linea-tooltip {
+    position: absolute;
+    transform: translate(-50%, -130%);
+    background: var(--color-dark);
+    color: #fff;
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-size: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+
+  .linea-tooltip span {
+    color: rgb(255 255 255 / 0.75);
+    font-size: 11px;
+  }
+
+  .barras {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .barra-fila {
+    display: grid;
+    grid-template-columns: minmax(0, 90px) 1fr auto;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .barra-nombre {
+    font-size: 12.5px;
+    color: var(--color-text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .barra-pista {
+    background: var(--color-border);
+    border-radius: 999px;
+    height: 14px;
+    overflow: hidden;
+  }
+
+  .barra-fill {
+    background: var(--color-accent);
+    height: 100%;
+    border-radius: 999px;
+    min-width: 4px;
+    transition: width 0.2s ease;
+  }
+
+  .barra-fila:hover .barra-fill {
+    filter: brightness(1.1);
+  }
+
+  .barra-valor {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--color-text);
+    white-space: nowrap;
+  }
+</style>

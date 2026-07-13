@@ -23,6 +23,11 @@
   --color-disabled: oklch(80% 0.02 70);
   --color-danger: #b3261e;
 
+  /* Tono claro del acento, legible sobre fondos oscuros (hero, tarjeta de horario). */
+  --color-accent-light: oklch(80% 0.09 55);
+  /* Superficie de tarjeta ligeramente diferenciada del fondo (menú, destacados). */
+  --color-card: oklch(95% 0.014 78);
+
   /* Superficies e interacciones (fondos de input, overlays de hover) */
   --color-on-accent: #fff;
   --color-input-bg: #fff;
@@ -68,6 +73,9 @@
   --color-dark: oklch(30% 0.02 55);
   --color-disabled: oklch(40% 0.02 60);
   --color-danger: oklch(58% 0.19 25);
+
+  --color-accent-light: oklch(80% 0.09 55);
+  --color-card: oklch(26% 0.018 52);
 
   --color-on-accent: #fff;
   --color-input-bg: oklch(26% 0.015 55);
