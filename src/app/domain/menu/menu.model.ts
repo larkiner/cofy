@@ -8,6 +8,8 @@ export interface MenuItem {
   imagenUrl: string | null;
   categoriaId: number;
   categoria: string;
+  /** Marca curada de "lo más pedido". Opcional: el backend puede no enviarlo. */
+  destacado?: boolean;
 }
 
 export interface Sucursal {
