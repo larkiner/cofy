@@ -3,7 +3,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding: 20px 40px;
+  padding: 20px clamp(16px, 4vw, 40px);
   border-bottom: 1px solid var(--color-border);
   background: var(--color-bg);
 }
@@ -11,9 +11,10 @@
 .marca {
   font-family: var(--font-display);
   font-style: italic;
-  font-size: 24px;
+  font-size: clamp(20px, 4.5vw, 24px);
   color: var(--color-text);
   text-decoration: none;
+  white-space: nowrap;
 }
 
 .navegacion {
@@ -107,4 +108,46 @@
 
 .enlace-login:hover {
   color: var(--color-accent-hover);
+}
+
+/* ============================================================
+   Responsive del header
+   ============================================================ */
+
+/* Tablet: aprieta separaciones y evita que el email empuje el layout. */
+@media (max-width: 820px) {
+  .navegacion {
+    gap: 18px;
+    margin-left: 24px;
+  }
+
+  .sesion .usuario {
+    max-width: 160px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+/* Móvil: la marca y la sesión quedan arriba; la navegación baja a su
+   propia línea a lo ancho. El email se oculta (es lo más largo) para
+   dejar visibles el cambio de tema y el botón de salir. */
+@media (max-width: 620px) {
+  .encabezado {
+    flex-wrap: wrap;
+    row-gap: 12px;
+  }
+
+  .navegacion {
+    order: 3;
+    flex-basis: 100%;
+    margin-left: 0;
+    flex-wrap: wrap;
+    row-gap: 8px;
+    gap: 20px;
+  }
+
+  .sesion .usuario {
+    display: none;
+  }
 }
