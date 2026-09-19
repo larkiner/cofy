@@ -10,6 +10,11 @@ interface GrupoCategoria {
   items: MenuItem[];
 }
 
+/**
+ * Vista de la Carta (menú completo con pestañas por categoría). La landing
+ * de marca (hero, destacados, historia, rewards, horario) vive en su propia
+ * vista ({@link Inicio}, ruta /).
+ */
 @Component({
   selector: 'app-menu',
   imports: [CurrencyPipe],
@@ -24,14 +29,6 @@ export class Menu {
   protected readonly cargando = signal(true);
   protected readonly error = signal<string | null>(null);
   protected readonly items = signal<MenuItem[]>([]);
-
-  /**
-   * Imágenes de ambiente pendientes de subir (hero y mapa/fachada). Mientras sean
-   * null, sus contenedores muestran el estado vacío con textura; reemplazar por la
-   * URL real cuando esté disponible.
-   */
-  protected readonly heroImagen: string | null = null;
-  protected readonly mapaImagen: string | null = null;
 
   /** Categoría seleccionada en las pestañas del menú (null = la primera disponible). */
   protected readonly categoriaActiva = signal<string | null>(null);
@@ -61,15 +58,6 @@ export class Menu {
     const activa = this.categoriaActiva();
     const grupo = grupos.find(g => g.categoria === activa) ?? grupos[0];
     return grupo?.items ?? [];
-  });
-
-  /**
-   * "Lo más pedido": ítems marcados como destacados. Si el backend aún no envía
-   * la marca, se muestran los tres primeros como selección por defecto.
-   */
-  protected readonly destacados = computed<MenuItem[]>(() => {
-    const marcados = this.items().filter(item => item.destacado);
-    return marcados.length > 0 ? marcados.slice(0, 3) : this.items().slice(0, 3);
   });
 
   constructor() {

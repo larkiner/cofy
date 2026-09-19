@@ -1,8 +1,9 @@
 <header class="encabezado">
-  <a class="marca" routerLink="/">☕ Café Amanecer</a>
+  <a class="marca" routerLink="/">La aravica</a>
 
   <nav class="navegacion">
-    <a class="nav-link" routerLink="/" routerLinkActive="activo" [routerLinkActiveOptions]="{ exact: true }">Menú</a>
+    <a class="nav-link" routerLink="/" routerLinkActive="activo" [routerLinkActiveOptions]="{ exact: true }">Inicio</a>
+    <a class="nav-link" routerLink="/menu" routerLinkActive="activo">Menú</a>
     @if (!auth.esPersonal()) {
       <a class="nav-link" routerLink="/carrito" routerLinkActive="activo">
         Carrito
@@ -13,6 +14,7 @@
     }
     @if (auth.esCliente()) {
       <a class="nav-link" routerLink="/mis-pedidos" routerLinkActive="activo">Mis pedidos</a>
+      <a class="nav-link" routerLink="/perfil" routerLinkActive="activo">Mi Perfil</a>
     }
     @if (auth.esPersonal()) {
       <a class="nav-link" routerLink="/interno" routerLinkActive="activo">Panel interno</a>
@@ -38,3 +40,20 @@
 </header>
 
 <router-outlet />
+
+@if (!auth.esPersonal()) {
+  <footer class="pie">
+    <div class="pie-marca">La aravica</div>
+    <p class="pie-lema">El ritual de la calma, en cada taza.</p>
+    <p class="pie-direccion">Cra. 14 # 85 – 22, Bogotá · Lun–Vie 6:30 am – 8:00 pm</p>
+    <nav class="pie-enlaces">
+      <a routerLink="/">Inicio</a>
+      <a routerLink="/menu">Menú</a>
+      <a routerLink="/" fragment="horario">Horario y ubicación</a>
+      @if (!auth.logueado()) {
+        <a routerLink="/registro">Únete a la Hermandad</a>
+      }
+    </nav>
+    <p class="pie-copy">© 2026 La aravica · Tostado con intención en Colombia.</p>
+  </footer>
+}

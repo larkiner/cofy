@@ -1,0 +1,17 @@
+<section class="stripe-pago" aria-label="Pago seguro con Stripe">
+  <h2>Pago seguro</h2>
+  <p>Los datos de tu tarjeta se procesan directamente con Stripe.</p>
+
+  <form (submit)="confirmar($event)">
+    <div #paymentElement class="stripe-element"></div>
+    @if (error()) {
+      <p class="mensaje-error">{{ error() }}</p>
+    }
+    <div class="stripe-acciones">
+      <button type="button" class="secundario" (click)="cancelar()" [disabled]="confirmando()">Volver</button>
+      <button type="submit" class="pagar" [disabled]="cargando() || confirmando()">
+        {{ confirmando() ? 'Confirmando…' : 'Pagar de forma segura' }}
+      </button>
+    </div>
+  </form>
+</section>

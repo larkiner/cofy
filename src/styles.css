@@ -6,33 +6,40 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* ============================================================
-   Estilos globales - sistema "Luz de Mañana" (claro) / "Noche" (oscuro)
+   Estilos globales — sistema "Heritage Hearth" (claro) /
+   "Nocturnal Brew / Warm Roast" (oscuro)
    ============================================================ */
 
 :root {
-  /* Paleta nueva (oklch) */
-  --color-bg: oklch(98% 0.012 80);
-  --color-text: oklch(22% 0.02 50);
-  --color-muted: oklch(45% 0.02 50);
-  --color-muted-2: oklch(50% 0.02 50);
-  --color-accent: oklch(55% 0.15 45);
-  --color-accent-hover: oklch(48% 0.15 45);
-  --color-border: oklch(90% 0.02 70);
-  --color-border-input: oklch(88% 0.02 70);
-  --color-dark: oklch(22% 0.02 50);
-  --color-disabled: oklch(80% 0.02 70);
+  /* Heritage Hearth (claro): espresso brown sobre crema cálida. Aireado,
+     artesanal, premium. Tipografía Plus Jakarta Sans. */
+  --color-bg: #fcf9f8;
+  --color-text: #2b1d13;
+  --color-muted: #6f5d4f;
+  --color-muted-2: #857263;
+  --color-accent: #7d562d;
+  --color-accent-hover: #664321;
+  --color-border: #ece2d9;
+  --color-border-input: #ddd0c4;
+  --color-dark: #3c2a21;
+  --color-disabled: #d8ccc2;
   --color-danger: #b3261e;
 
-  /* Tono claro del acento, legible sobre fondos oscuros (hero, tarjeta de horario). */
-  --color-accent-light: oklch(80% 0.09 55);
+  /* Tono latte del acento, legible sobre fondos oscuros (hero, tarjeta de horario). */
+  --color-accent-light: #e0b483;
   /* Superficie de tarjeta ligeramente diferenciada del fondo (menú, destacados). */
-  --color-card: oklch(95% 0.014 78);
+  --color-card: #f7efe8;
+
+  /* Elevación: sombras ambientales suaves con tinte espresso — profundidad
+     "ritual de calma" sin bordes duros. */
+  --shadow-card: 0 4px 20px rgb(61 42 33 / 0.07);
+  --shadow-card-hover: 0 12px 30px rgb(61 42 33 / 0.13);
 
   /* Superficies e interacciones (fondos de input, overlays de hover) */
   --color-on-accent: #fff;
   --color-input-bg: #fff;
-  --color-overlay-hover: rgb(0 0 0 / 0.04);
-  --color-overlay-subtle: rgb(0 0 0 / 0.02);
+  --color-overlay-hover: rgb(61 42 33 / 0.05);
+  --color-overlay-subtle: rgb(61 42 33 / 0.03);
 
   /* Pills de estado de pedido */
   --estado-pagado-bg: oklch(93% 0.05 145);
@@ -48,9 +55,9 @@
   --estado-pendiente-bg: oklch(93% 0.05 60);
   --estado-pendiente-color: oklch(40% 0.09 60);
 
-  /* Tipografía */
-  --font-display: 'Instrument Serif', serif;
-  --font-body: 'Work Sans', sans-serif;
+  /* Tipografía — Heritage Hearth (claro): Plus Jakarta Sans en todo. */
+  --font-display: 'Plus Jakarta Sans', sans-serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
 
   /* Alias de la paleta anterior para compatibilidad con pantallas
      que aún no tienen restyle detallado (inventario, mostrador, turnos…) */
@@ -62,23 +69,30 @@
 }
 
 :root.dark {
-  --color-bg: oklch(20% 0.015 50);
-  --color-text: oklch(92% 0.015 70);
-  --color-muted: oklch(70% 0.02 60);
-  --color-muted-2: oklch(65% 0.02 60);
-  --color-accent: oklch(68% 0.15 45);
-  --color-accent-hover: oklch(74% 0.15 45);
-  --color-border: oklch(32% 0.02 60);
-  --color-border-input: oklch(35% 0.02 60);
-  --color-dark: oklch(30% 0.02 55);
-  --color-disabled: oklch(40% 0.02 60);
-  --color-danger: oklch(58% 0.19 25);
+  /* Nocturnal Brew / Warm Roast (oscuro): roasted browns profundos con
+     acentos latte cálidos. Íntimo, calmado y sofisticado. */
+  --color-bg: #1a120b;
+  --color-text: #f0e4d8;
+  --color-muted: #c3ad9b;
+  --color-muted-2: #ab9482;
+  --color-accent: #d9b68f;
+  --color-accent-hover: #e6c8a6;
+  --color-border: #45342a;
+  --color-border-input: #52402f;
+  --color-dark: #3c2a21;
+  --color-disabled: #4a3a2e;
+  --color-danger: #e0918a;
 
-  --color-accent-light: oklch(80% 0.09 55);
-  --color-card: oklch(26% 0.018 52);
+  --color-accent-light: #e0b483;
+  --color-card: #2a1c13;
 
-  --color-on-accent: #fff;
-  --color-input-bg: oklch(26% 0.015 55);
+  /* En oscuro la profundidad se logra con sombras negras más marcadas. */
+  --shadow-card: 0 4px 20px rgb(0 0 0 / 0.42);
+  --shadow-card-hover: 0 12px 32px rgb(0 0 0 / 0.55);
+
+  /* El acento es latte (claro): el texto encima debe ser espresso oscuro. */
+  --color-on-accent: #241610;
+  --color-input-bg: #241812;
   --color-overlay-hover: rgb(255 255 255 / 0.06);
   --color-overlay-subtle: rgb(255 255 255 / 0.03);
 
@@ -94,6 +108,44 @@
   --estado-cancelado-color: oklch(85% 0.1 25);
   --estado-pendiente-bg: oklch(30% 0.07 60);
   --estado-pendiente-color: oklch(85% 0.08 60);
+
+  /* Tipografía compartida con el tema claro para evitar cambios al alternar. */
+  --font-display: 'Plus Jakarta Sans', sans-serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
+}
+
+/* ============================================================
+   Capa "moderna" — tokens transversales de forma, elevación y
+   movimiento. No tocan la paleta (ya cálida y accesible); añaden
+   el lenguaje visual actual: radios generosos, degradados suaves,
+   grano sutil, foco visible y revelado al hacer scroll.
+   ============================================================ */
+:root {
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 22px;
+  --radius-xl: 28px;
+  --radius-pill: 999px;
+
+  /* Degradado de marca (espresso → latte) para héroes y acentos. */
+  --gradient-hero: radial-gradient(
+      120% 120% at 12% 8%,
+      #3c2a21 0%,
+      #2a1c13 42%,
+      #170f0a 100%
+    );
+  --gradient-accent: linear-gradient(135deg, var(--color-accent), var(--color-accent-light));
+
+  /* Superficie translúcida para el header "glass". */
+  --glass-bg: color-mix(in oklch, var(--color-bg) 72%, transparent);
+  --glass-border: color-mix(in oklch, var(--color-border) 70%, transparent);
+
+  --ring: 0 0 0 3px color-mix(in oklch, var(--color-accent) 42%, transparent);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Silueta de taza de café (Lucide "coffee") para placeholders de imagen,
+     aplicada como máscara para que tome el color del acento en cada tema. */
+  --icono-cafe: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M17 8h1a4 4 0 1 1 0 8h-1'/%3E%3Cpath d='M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z'/%3E%3Cline x1='6' y1='1' x2='6' y2='4'/%3E%3Cline x1='10' y1='1' x2='10' y2='4'/%3E%3Cline x1='14' y1='1' x2='14' y2='4'/%3E%3C/svg%3E");
 }
 
 * {
@@ -107,14 +159,149 @@ body {
   background: var(--color-bg);
   color: var(--color-text);
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Desplazamiento suave al navegar por anclas (#menu, #historia…),
+   respetando a quien prefiere menos movimiento. */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Deja aire bajo el header pegajoso al saltar a una sección con ancla. */
+:where(section[id]) {
+  scroll-margin-top: 88px;
+}
+
+/* Foco visible y consistente para navegación por teclado (accesibilidad). */
+:where(a, button, input, textarea, select, [tabindex]):focus-visible {
+  outline: none;
+  box-shadow: var(--ring);
+  border-radius: var(--radius-sm);
+}
+
+::selection {
+  background: color-mix(in oklch, var(--color-accent) 30%, transparent);
+  color: var(--color-text);
+}
+
+/* ---------- Revelado al hacer scroll (JS-free) ----------
+   Progressive enhancement: solo se activa donde el navegador soporta
+   scroll-driven animations y el usuario no pidió reducir movimiento.
+   Si no hay soporte, el contenido se muestra normal (nunca oculto). */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .reveal {
+      animation: reveal-up both linear;
+      animation-timeline: view();
+      animation-range: entry 0% cover 26%;
+    }
+  }
+}
+
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================================
+   Utilidades compartidas entre Inicio y Menú (globales para que
+   ambas vistas standalone las reutilicen sin duplicar CSS).
+   ============================================================ */
+
+/* Etiqueta pequeña en mayúsculas ("Recomendaciones", "Horario"). */
+.eyebrow {
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  font-weight: 600;
+  margin: 0;
+}
+
+.eyebrow-claro {
+  color: var(--color-accent-light);
+}
+
+/* Estados de carga / error de las vistas que traen el menú. */
+.estado {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem 24px;
+  color: var(--color-muted);
+}
+
+.estado.error {
+  color: var(--color-danger);
+}
+
+/* ---------- Placeholder de imagen (motivo café) ----------
+   Mientras no haya foto, el hueco muestra un degradado cálido con la
+   silueta de una taza — intencional, no "roto". Global porque los
+   contenedores viven en dos componentes distintos (Inicio y Menú).
+   Se retira solo cuando hay una <img> real (:has). */
+.destacado-media,
+.tarjeta-media,
+.ubicacion-media {
+  background: radial-gradient(
+    130% 120% at 50% 0%,
+    color-mix(in oklch, var(--color-accent) 12%, var(--color-card)),
+    var(--color-card)
+  );
+}
+
+.destacado-media::before,
+.tarjeta-media::before,
+.ubicacion-media::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 54px;
+  height: 54px;
+  background: color-mix(in oklch, var(--color-accent) 55%, transparent);
+  -webkit-mask: var(--icono-cafe) center / contain no-repeat;
+  mask: var(--icono-cafe) center / contain no-repeat;
+}
+
+.destacado-media:has(img)::before,
+.tarjeta-media:has(img)::before,
+.ubicacion-media:has(img)::before {
+  content: none;
+}
+
+.destacado-media:has(img),
+.tarjeta-media:has(img),
+.ubicacion-media:has(img) {
+  background: var(--color-card);
 }
 
 button {
   font-family: inherit;
 }
 
+/* Micro-interacciones premium: todo control interactivo responde al hover
+   y al clic con una transición y una escala sutil ("active scale"). */
+button {
+  transition: transform 0.12s ease, background-color 0.18s ease,
+    color 0.18s ease, filter 0.18s ease, box-shadow 0.18s ease;
+}
+
+button:not(:disabled):active {
+  transform: scale(0.97);
+}
+
 a {
   color: var(--color-accent);
+  transition: color 0.18s ease;
 }
 
 a:hover {

@@ -78,9 +78,9 @@ export class Mostrador {
         this.resultado.set(venta);
         this.lineas.set([]);
       },
-      error: () => {
+      error: err => {
         this.procesando.set(false);
-        this.error.set('No se pudo registrar la venta.');
+        this.error.set(err.mensaje ?? 'No se pudo registrar la venta.');
       },
     });
   }
