@@ -1,4 +1,5 @@
 export const environment = {
   production: true,
-  apiUrl: 'http://localhost:8080/api',
+  apiUrl: 'https://desktop-pi8i9i0.tail5ecdfa.ts.net/api',
+  stripePublishableKey: '',
 };

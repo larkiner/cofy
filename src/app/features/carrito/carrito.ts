@@ -9,12 +9,13 @@ import { MenuService } from '../../application/menu.service';
 import { PedidoService } from '../../application/pedido.service';
 import { Sucursal } from '../../domain/menu/menu.model';
 import { PedidoCliente } from '../../domain/pedidos/pedido.model';
+import { StripePago } from './stripe-pago';
 
 const METODOS_PAGO = ['TARJETA', 'PSE', 'NEQUI', 'DAVIPLATA'];
 
 @Component({
   selector: 'app-carrito',
-  imports: [CurrencyPipe, FormsModule, RouterLink],
+  imports: [CurrencyPipe, FormsModule, RouterLink, StripePago],
   templateUrl: './carrito.html',
   styleUrl: './carrito.css',
 })
@@ -34,6 +35,8 @@ export class Carrito {
   protected readonly error = signal<string | null>(null);
   /** Pedido pagado con su código de retiro (pantalla de éxito). */
   protected readonly resultado = signal<PedidoCliente | null>(null);
+  protected readonly stripeClientSecret = signal<string | null>(null);
+  private pedidoStripeId: number | null = null;
 
   constructor() {
     this.menuService.obtenerSucursales().subscribe({
@@ -64,6 +67,22 @@ export class Carrito {
       cantidad: l.cantidad,
     }));
 
+    if (this.metodo === 'TARJETA') {
+      this.pedidoService.crear({ sucursalId: this.sucursalId, items }).pipe(
+        switchMap(pedido => {
+          this.pedidoStripeId = pedido.pedidoId;
+          return this.pedidoService.iniciarPagoStripe(pedido.pedidoId);
+        }),
+      ).subscribe({
+        next: stripe => {
+          this.procesando.set(false);
+          this.stripeClientSecret.set(stripe.clientSecret);
+        },
+        error: err => this.mostrarErrorPago(err),
+      });
+      return;
+    }
+
     this.pedidoService.crear({ sucursalId: this.sucursalId, items }).pipe(
       switchMap(pedido => this.pedidoService.pagar(pedido.pedidoId, this.metodo).pipe(
         switchMap(() => this.pedidoService.confirmarPago(pedido.pedidoId)))),
@@ -73,12 +92,47 @@ export class Carrito {
         this.resultado.set(pedidoPagado);
         this.carrito.vaciar();
       },
-      error: err => {
-        this.procesando.set(false);
-        this.error.set(err.status === 401
-          ? 'Tu sesión expiró. Inicia sesión de nuevo.'
-          : 'No se pudo procesar el pedido. Intenta de nuevo.');
-      },
+      error: err => this.mostrarErrorPago(err),
     });
+  }
+
+  protected cancelarPagoStripe(): void {
+    this.stripeClientSecret.set(null);
+    this.pedidoStripeId = null;
+  }
+
+  protected pagoStripeConfirmado(): void {
+    if (this.pedidoStripeId === null) return;
+    this.procesando.set(true);
+    this.esperarConfirmacionStripe(this.pedidoStripeId, 0);
+  }
+
+  private esperarConfirmacionStripe(pedidoId: number, intento: number): void {
+    this.pedidoService.misPedidos().subscribe({
+      next: pedidos => {
+        const pedido = pedidos.find(p => p.pedidoId === pedidoId);
+        if (pedido?.estado === 'PAGADO') {
+          this.procesando.set(false);
+          this.stripeClientSecret.set(null);
+          this.resultado.set(pedido);
+          this.carrito.vaciar();
+          return;
+        }
+        if (intento < 10) {
+          window.setTimeout(() => this.esperarConfirmacionStripe(pedidoId, intento + 1), 1_000);
+          return;
+        }
+        this.procesando.set(false);
+        this.error.set('El pago fue recibido; estamos esperando la confirmación de Stripe.');
+      },
+      error: err => this.mostrarErrorPago(err),
+    });
+  }
+
+  private mostrarErrorPago(err: { status?: number; mensaje?: string }): void {
+    this.procesando.set(false);
+    this.error.set(err.status === 401
+      ? 'Tu sesión expiró. Inicia sesión de nuevo.'
+      : err.mensaje ?? 'No se pudo procesar el pedido. Intenta de nuevo.');
   }
 }

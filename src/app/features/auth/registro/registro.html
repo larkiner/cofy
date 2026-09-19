@@ -1,38 +1,50 @@
 <section class="auth">
-  <form class="tarjeta-auth" (ngSubmit)="enviar()">
-    <h1>Crear cuenta</h1>
+  <div class="auth-panel">
+    <form class="tarjeta-auth" (ngSubmit)="enviar()">
+      <h1>Únete a la Hermandad</h1>
+      <p class="sub-auth">Crea tu cuenta y gana Granos con cada pedido.</p>
 
-    <label>
-      Nombre
-      <input type="text" name="nombre" [(ngModel)]="nombre" required autocomplete="name" />
-    </label>
+      <label>
+        Nombre
+        <input type="text" name="nombre" [(ngModel)]="nombre" required autocomplete="name" />
+      </label>
 
-    <label>
-      Email
-      <input type="email" name="email" [(ngModel)]="email" required autocomplete="email" />
-    </label>
+      <label>
+        Email
+        <input type="email" name="email" [(ngModel)]="email" required autocomplete="email" />
+      </label>
 
-    <label>
-      Teléfono (opcional)
-      <input type="tel" name="telefono" [(ngModel)]="telefono" autocomplete="tel" />
-    </label>
+      <label>
+        Teléfono (opcional)
+        <input type="tel" name="telefono" [(ngModel)]="telefono" autocomplete="tel" />
+      </label>
 
-    <label>
-      Contraseña
-      <input type="password" name="password" [(ngModel)]="password" required minlength="6"
-             autocomplete="new-password" />
-    </label>
+      <label>
+        Contraseña
+        <input type="password" name="password" [(ngModel)]="password" required minlength="6"
+               autocomplete="new-password" />
+      </label>
 
-    @if (error()) {
-      <p class="mensaje-error">{{ error() }}</p>
-    }
+      @if (error()) {
+        <p class="mensaje-error">{{ error() }}</p>
+      }
 
-    <button type="submit" [disabled]="cargando()">
-      {{ cargando() ? 'Creando cuenta…' : 'Crear cuenta' }}
-    </button>
+      <button type="submit" [disabled]="cargando()">
+        {{ cargando() ? 'Creando cuenta…' : 'Crear cuenta' }}
+      </button>
 
-    <p class="enlace-secundario">
-      ¿Ya tienes cuenta? <a routerLink="/login">Inicia sesión</a>
-    </p>
-  </form>
+      <p class="enlace-secundario">
+        ¿Ya tienes cuenta? <a routerLink="/login">Inicia sesión</a>
+      </p>
+    </form>
+  </div>
+
+  <div class="auth-media" aria-hidden="true">
+    <img src="/img/auth/registro.jpg" alt="" />
+    <div class="auth-media-overlay"></div>
+    <div class="auth-media-texto">
+      <span class="eyebrow eyebrow-claro">Programa Rewards</span>
+      <p class="auth-media-frase">Gana Granos con cada visita y canjéalos por tus preparaciones favoritas.</p>
+    </div>
+  </div>
 </section>

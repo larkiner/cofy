@@ -1,0 +1,342 @@
+.perfil {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 48px 24px 80px;
+}
+
+.eyebrow {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  margin-bottom: 8px;
+}
+
+h1 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(32px, 5vw, 40px);
+  line-height: 1.1;
+  color: var(--color-text);
+}
+
+.bienvenida {
+  color: var(--color-muted);
+  font-size: 15px;
+  margin: 6px 0 24px;
+}
+
+/* Franja del programa de fidelidad */
+.rewards-perfil {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--color-dark);
+  color: #f4efe8;
+  border-radius: 16px;
+  box-shadow: var(--shadow-card);
+  padding: 16px 20px;
+  margin-bottom: 28px;
+}
+
+.rp-icono {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.rp-texto {
+  font-size: 13.5px;
+  line-height: 1.5;
+  opacity: 0.92;
+}
+
+.rp-titulo {
+  display: block;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 11px;
+  color: var(--color-accent-light);
+  margin-bottom: 2px;
+}
+
+.rp-texto strong {
+  color: var(--color-accent-light);
+  font-weight: 700;
+}
+
+h2 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 22px;
+  color: var(--color-text);
+}
+
+.estado {
+  color: var(--color-muted);
+  padding: 1rem 0;
+}
+
+.estado.error {
+  color: var(--color-danger);
+}
+
+.estado a {
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
+/* ---------- Tarjeta de datos ---------- */
+.tarjeta {
+  border-radius: 20px;
+  padding: 24px 26px;
+  background: var(--color-card);
+  box-shadow: var(--shadow-card);
+}
+
+.tarjeta-encabezado {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.btn-editar {
+  background: transparent;
+  border: 1px solid var(--color-border-input);
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-accent);
+  cursor: pointer;
+}
+
+.btn-editar:hover {
+  background: var(--color-overlay-hover);
+}
+
+.mensaje-ok {
+  background: var(--estado-pagado-bg);
+  color: var(--estado-pagado-color);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin-bottom: 14px;
+}
+
+.datos {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dato {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 12px;
+}
+
+.dato:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.dato dt {
+  font-size: 12px;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.dato dd {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text);
+  text-align: right;
+}
+
+/* Chip verde de estado (ACTIVO), reutiliza el par de color "pagado". */
+.estado-chip {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--estado-pagado-bg);
+  color: var(--estado-pagado-color);
+}
+
+/* ---------- Formulario de edición ---------- */
+.form-editar {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.form-editar label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 12px;
+  color: var(--color-muted);
+}
+
+.form-editar input {
+  border: 1px solid var(--color-border-input);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 13.5px;
+  font-family: inherit;
+  color: var(--color-text);
+  background: var(--color-input-bg);
+}
+
+.form-editar input:focus {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 1px;
+}
+
+.campo-bloqueado input:disabled {
+  background: var(--color-overlay-subtle);
+  color: var(--color-muted-2);
+  cursor: not-allowed;
+}
+
+.nota {
+  font-size: 12px;
+  color: var(--color-muted-2);
+  line-height: 1.4;
+}
+
+.mensaje-error {
+  color: var(--color-danger);
+  font-size: 13px;
+  margin: -4px 0;
+}
+
+.acciones {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.btn-primario,
+.btn-secundario {
+  flex: 1;
+  border-radius: 9px;
+  padding: 11px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn-primario {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  border: none;
+}
+
+.btn-primario:disabled {
+  background: var(--color-disabled);
+  cursor: not-allowed;
+}
+
+.btn-primario:not(:disabled):hover {
+  filter: brightness(0.92);
+}
+
+.btn-secundario {
+  background: transparent;
+  border: 1px solid var(--color-border-input);
+  color: var(--color-text);
+}
+
+.btn-secundario:not(:disabled):hover {
+  background: var(--color-overlay-hover);
+}
+
+/* ---------- Historial de compras ---------- */
+.titulo-historial {
+  margin: 36px 0 16px;
+}
+
+.lista {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.pedido {
+  border-radius: 16px;
+  padding: 18px 20px;
+  background: var(--color-card);
+  box-shadow: var(--shadow-card);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.pedido:hover {
+  box-shadow: var(--shadow-card-hover);
+  transform: translateY(-2px);
+}
+
+.pedido-encabezado {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.numero {
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.estado-pill {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.estado-pill.PAGADO { background: var(--estado-pagado-bg); color: var(--estado-pagado-color); }
+.estado-pill.EN_PREPARACION { background: var(--estado-preparacion-bg); color: var(--estado-preparacion-color); }
+.estado-pill.LISTO { background: var(--estado-listo-bg); color: var(--estado-listo-color); }
+.estado-pill.ENTREGADO { background: var(--estado-entregado-bg); color: var(--estado-entregado-color); }
+.estado-pill.CANCELADO { background: var(--estado-cancelado-bg); color: var(--estado-cancelado-color); }
+
+.codigo-retiro {
+  font-size: 13px;
+  color: var(--color-text);
+  border: 1px dashed var(--color-accent);
+  border-radius: 8px;
+  padding: 6px 10px;
+  margin: 6px 0;
+  display: inline-block;
+}
+
+.codigo-retiro strong {
+  color: var(--color-accent);
+  letter-spacing: 0.08em;
+}
+
+.info {
+  font-size: 13px;
+  color: var(--color-muted-2);
+  margin-bottom: 4px;
+}
+
+.total {
+  margin-top: 4px;
+  font-weight: 700;
+  color: var(--color-accent);
+}
