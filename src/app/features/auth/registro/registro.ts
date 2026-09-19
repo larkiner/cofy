@@ -37,9 +37,7 @@ export class Registro {
       },
       error: err => {
         this.cargando.set(false);
-        this.error.set(err.status === 409
-          ? 'Ya existe una cuenta con ese email'
-          : 'No se pudo completar el registro. Revisa los datos.');
+        this.error.set(err.mensaje ?? 'No se pudo completar el registro. Revisa los datos.');
       },
     });
   }

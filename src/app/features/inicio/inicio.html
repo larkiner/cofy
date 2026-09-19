@@ -1,0 +1,105 @@
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-media" aria-hidden="true"></div>
+
+  <div class="hero-inner">
+    <div class="hero-contenido">
+      <span class="eyebrow eyebrow-claro">Tueste artesanal · Medellín</span>
+      <h1 class="hero-titulo">El ritual de la calma, en cada taza</h1>
+      <div class="hero-acciones">
+        <a routerLink="/menu" class="btn-primario">Explorar el menú</a>
+        <a href="#historia" class="btn-contorno-claro">Nuestra historia</a>
+      </div>
+    </div>
+    
+  </div>
+
+  
+</section>
+
+<!-- Destacados -->
+@if (destacados().length) {
+  <section id="destacados" class="destacados reveal">
+    <div class="destacados-encabezado">
+      <h2 class="eyebrow">Recomendaciones de temporada</h2>
+      <a routerLink="/menu" class="ver-carta">Ver la carta completa →</a>
+    </div>
+    <div class="destacados-grid">
+      @for (item of destacados(); track item.productoId) {
+        <article class="destacado">
+          <div class="destacado-media">
+            @if (item.imagenUrl) {
+              <img [src]="item.imagenUrl" [alt]="item.nombre" />
+            }
+          </div>
+          <div class="destacado-overlay"></div>
+          <div class="destacado-info">
+            <div class="destacado-texto">
+              <div class="destacado-nombre">{{ item.nombre }}</div>
+              <div class="destacado-precio">
+                {{ item.precio | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}
+              </div>
+            </div>
+            @if (!auth.esPersonal()) {
+              <button type="button" class="destacado-agregar" (click)="agregar(item)">
+                + Agregar
+              </button>
+            }
+          </div>
+        </article>
+      }
+    </div>
+  </section>
+}
+
+<!-- Historia de marca -->
+<section id="historia" class="historia reveal">
+  <div class="historia-inner">
+    <span class="eyebrow">Nuestra historia</span>
+    <h2 class="historia-titulo">Del grano a tu taza, con intención</h2>
+    <p class="historia-texto">
+      En La aravica tostamos en pequeños lotes granos de origen colombiano,
+      cultivados por manos que conocen su tierra. Cada preparación es una pausa
+      deliberada: el ritual de la calma, hecho café.
+    </p>
+  </div>
+</section>
+
+<!-- Heritage Rewards -->
+<section class="rewards reveal">
+  <div class="rewards-inner">
+    <div class="rewards-texto">
+      <span class="eyebrow eyebrow-claro">Programa Rewards</span>
+      <h2 class="rewards-titulo">Gana Granos con cada visita</h2>
+      <p>
+        Únete a la Hermandad y acumula <strong>Granos</strong> en cada pedido
+        para canjearlos por tus preparaciones favoritas.
+      </p>
+    </div>
+    @if (!auth.logueado()) {
+      <a routerLink="/registro" class="rewards-cta">Únete a la Hermandad</a>
+    }
+  </div>
+</section>
+
+<!-- Horario y ubicación -->
+<section id="horario" class="horario reveal">
+  <div class="horario-grid">
+    <div class="horario-tarjeta">
+      <span class="eyebrow eyebrow-claro">Horario</span>
+      <div class="horario-lista">
+        <div class="horario-fila"><span>Lunes – Viernes</span><span>6:30 am – 8:00 pm</span></div>
+        <div class="horario-fila"><span>Sábados</span><span>7:00 am – 8:00 pm</span></div>
+        <div class="horario-fila"><span>Domingos</span><span>8:00 am – 2:00 pm</span></div>
+      </div>
+    </div>
+    <div class="ubicacion-tarjeta">
+      <div class="ubicacion-media">
+        @if (mapaImagen) {
+          <img [src]="mapaImagen" alt="Fachada del local" />
+        }
+      </div>
+      <span class="ubicacion-placa">Cra. 14 # 85 – 22, Bogotá</span>
+    </div>
+  </div>
+</section>

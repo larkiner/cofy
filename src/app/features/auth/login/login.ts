@@ -30,9 +30,7 @@ export class Login {
       },
       error: err => {
         this.cargando.set(false);
-        this.error.set(err.status === 401
-          ? 'Email o contraseña incorrectos'
-          : 'No se pudo iniciar sesión. Intenta de nuevo.');
+        this.error.set(err.mensaje ?? 'No se pudo iniciar sesión. Intenta de nuevo.');
       },
     });
   }

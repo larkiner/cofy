@@ -2,6 +2,7 @@ import { CurrencyPipe } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { InternoService } from '../../../application/interno.service';
+import { MenuService } from '../../../application/menu.service';
 import { Categoria, ProductoAdmin } from '../../../domain/interno/interno.model';
 
 /** Inventario: gestión de categorías y productos (solo ADMIN). */
@@ -13,6 +14,7 @@ import { Categoria, ProductoAdmin } from '../../../domain/interno/interno.model'
 })
 export class Inventario {
   private readonly interno = inject(InternoService);
+  private readonly menuService = inject(MenuService);
 
   protected readonly categorias = signal<Categoria[]>([]);
   protected readonly productos = signal<ProductoAdmin[]>([]);
@@ -60,9 +62,7 @@ export class Inventario {
         this.catDescripcion = '';
         this.cargar();
       },
-      error: err => this.error.set(err.status === 409
-        ? 'Ya existe una categoría con ese nombre.'
-        : 'No se pudo crear la categoría.'),
+      error: err => this.error.set(err.mensaje ?? 'No se pudo crear la categoría.'),
     });
   }
 
@@ -104,11 +104,12 @@ export class Inventario {
 
     operacion.subscribe({
       next: () => {
+        this.menuService.invalidarMenu(); // el catálogo público cambió
         this.mensaje.set(id === null ? 'Producto creado.' : 'Producto actualizado.');
         this.cancelarEdicion();
         this.cargar();
       },
-      error: () => this.error.set('No se pudo guardar el producto.'),
+      error: err => this.error.set(err.mensaje ?? 'No se pudo guardar el producto.'),
     });
   }
 
@@ -123,8 +124,11 @@ export class Inventario {
       disponible: producto.disponible === 'S' ? 'N' : 'S',
       imagenUrl: producto.imagenUrl ?? undefined,
     }).subscribe({
-      next: () => this.cargar(),
-      error: () => this.error.set('No se pudo cambiar la disponibilidad.'),
+      next: () => {
+        this.menuService.invalidarMenu(); // el catálogo público cambió
+        this.cargar();
+      },
+      error: err => this.error.set(err.mensaje ?? 'No se pudo cambiar la disponibilidad.'),
     });
   }
 

@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { CrearPedidoRequest, PedidoCliente, PedidoCreado } from '../../domain/pedidos/pedido.model';
+import { CrearPedidoRequest, PedidoCliente, PedidoCreado, StripePaymentIntent } from '../../domain/pedidos/pedido.model';
 import { PedidoRepository } from '../../domain/pedidos/pedido.repository';
 import { environment } from '../../../environments/environment';
 
@@ -21,6 +21,10 @@ export class PedidoHttpRepository extends PedidoRepository {
   /** Simula la confirmación de la pasarela; devuelve el pedido con su código. */
   confirmarPago(pedidoId: number): Observable<PedidoCliente> {
     return this.http.post<PedidoCliente>(`${environment.apiUrl}/pedidos/${pedidoId}/pago/confirmar`, {});
+  }
+
+  iniciarPagoStripe(pedidoId: number): Observable<StripePaymentIntent> {
+    return this.http.post<StripePaymentIntent>(`${environment.apiUrl}/pedidos/${pedidoId}/pago/stripe`, {});
   }
 
   misPedidos(): Observable<PedidoCliente[]> {
