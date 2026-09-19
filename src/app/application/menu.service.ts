@@ -14,4 +14,9 @@ export class MenuService {
   obtenerSucursales(): Observable<Sucursal[]> {
     return this.repo.obtenerSucursales();
   }
+
+  /** Fuerza recargar el menú en la próxima lectura (tras editar inventario). */
+  invalidarMenu(): void {
+    this.repo.invalidarMenu();
+  }
 }

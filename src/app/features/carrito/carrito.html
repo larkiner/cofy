@@ -16,6 +16,16 @@
       </div>
     </div>
   } @else {
+    @if (stripeClientSecret(); as clientSecret) {
+      <app-stripe-pago
+        [clientSecret]="clientSecret"
+        (completado)="pagoStripeConfirmado()"
+        (cancelado)="cancelarPagoStripe()"
+      />
+      @if (procesando()) {
+        <p class="estado">Confirmando tu pago con Stripe…</p>
+      }
+    } @else {
     <h1>Tu carrito</h1>
 
     @if (carrito.lineas().length === 0) {
@@ -75,6 +85,7 @@
               (click)="pedirYPagar()">
         {{ procesando() ? 'Procesando pago…' : 'Pedir y pagar' }}
       </button>
+    }
     }
   }
 </section>

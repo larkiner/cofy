@@ -216,3 +216,21 @@ h1 {
 .acciones-exito a:hover {
   text-decoration: underline;
 }
+.stripe-pago {
+  max-width: 34rem;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  background: var(--superficie, #fff);
+}
+
+.stripe-element {
+  min-height: 2.75rem;
+  margin: 1rem 0;
+}
+
+.stripe-acciones {
+  display: flex;
+  gap: .75rem;
+  justify-content: flex-end;
+}

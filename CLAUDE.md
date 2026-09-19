@@ -8,7 +8,7 @@ Angular 22 standalone-component frontend ("CafeteriaWeb") for a cafeteria orderi
 
 ## Branch workflow
 
-Always work on the single branch **`refactor/hexagonal-architecture`** and commit all work there. Do **not** create a new branch or git worktree per task — no `claude/*` or `agents/*` per-task branches. `master` remains the remote default (where releases are merged), but day-to-day work stays on `refactor/hexagonal-architecture`.
+Three branches only: **`prod`** (production/deployed), **`qa`** (staging/testing), **`dev`** (day-to-day work). Commit and push directly to `dev`; promote to `qa` then `prod` by fast-forward merge when ready to release. Do **not** create a new branch or git worktree per task — no `claude/*` or `agents/*` per-task branches, and no other long-lived branches.
 
 ## Running the app
 
