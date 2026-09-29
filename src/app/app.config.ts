@@ -11,6 +11,7 @@ import { InternoRepository } from './domain/interno/interno.repository';
 import { ClienteRepository } from './domain/cliente/cliente.repository';
 import { authInterceptor } from './infrastructure/http/auth.interceptor';
 import { errorInterceptor } from './infrastructure/http/error.interceptor';
+import { ngrokWarningInterceptor } from './infrastructure/http/ngrok-warning.interceptor';
 import { AuthHttpRepository } from './infrastructure/http/auth-http.repository';
 import { MenuHttpRepository } from './infrastructure/http/menu-http.repository';
 import { PedidoHttpRepository } from './infrastructure/http/pedido-http.repository';
@@ -25,7 +26,7 @@ export const appConfig: ApplicationConfig = {
       routes,
       withInMemoryScrolling({ anchorScrolling: 'enabled', scrollPositionRestoration: 'enabled' }),
     ),
-    provideHttpClient(withInterceptors([authInterceptor, errorInterceptor])),
+    provideHttpClient(withInterceptors([authInterceptor, ngrokWarningInterceptor, errorInterceptor])),
     { provide: AuthRepository, useClass: AuthHttpRepository },
     { provide: SesionPort, useClass: LocalStorageSesionAdapter },
     { provide: MenuRepository, useClass: MenuHttpRepository },
