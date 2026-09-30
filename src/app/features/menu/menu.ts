@@ -1,6 +1,7 @@
 import { CurrencyPipe, NgTemplateOutlet } from '@angular/common';
 import { Component, ElementRef, computed, inject, signal, viewChild } from '@angular/core';
 import { AuthService } from '../../application/auth.service';
+import { AvisoService } from '../../application/aviso.service';
 import { CarritoService } from '../../application/carrito.service';
 import { MenuService } from '../../application/menu.service';
 import { MenuItem } from '../../domain/menu/menu.model';
@@ -27,6 +28,7 @@ export class Menu {
   private readonly menuService = inject(MenuService);
   protected readonly carrito = inject(CarritoService);
   protected readonly auth = inject(AuthService);
+  private readonly avisos = inject(AvisoService);
 
   private readonly contenido = viewChild<ElementRef<HTMLElement>>('contenido');
 
@@ -132,6 +134,7 @@ export class Menu {
 
   protected agregar(item: MenuItem): void {
     this.carrito.agregar(item);
+    this.avisos.avisarProductoAgregado(item.nombre, this.carrito.cantidadTotal());
   }
 
   /** Minúsculas y sin tildes, para que «cafe» encuentre «Café». */

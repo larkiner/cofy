@@ -94,6 +94,24 @@
   text-decoration: none;
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  .contador.rebota {
+    animation: rebote-contador 400ms var(--ease-out);
+  }
+}
+
+@keyframes rebote-contador {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.35);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 .contador {
   position: absolute;
   top: 2px;
