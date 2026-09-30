@@ -1,16 +1,76 @@
-import { expect, test } from '@playwright/test';
+import { expect, type Page, test } from '@playwright/test';
 
 /**
  * Mejoras visuales: header, carta con barra lateral y "Sucursales y horario".
  *
- * Corre contra el `ng serve` (http://localhost:4200) y la API de desarrollo
- * (http://localhost:8080). Solo lee: no crea cuentas ni pedidos.
+ * Corre contra el `ng serve` (http://localhost:4200). La API se simula aquí
+ * (`/api/menu` y `/api/sucursales`), así que no necesita backend ni depende de
+ * los datos de la base: funciona igual en local y en CI (donde no hay backend).
  *
  *   npx playwright test tests/mejoras-visuales.spec.ts --project=chromium
  *
- * No correr la suite completa: `seed.spec.ts` crea cientos de cuentas en la base de datos.
+ * No correr la suite completa en local: `seed.spec.ts` crea cientos de cuentas en la base de datos.
  */
 test.use({ viewport: { width: 1280, height: 800 } });
+
+const MENU = [
+  ['Bebidas Calientes', 1, 'Americano', 5000, 'Espresso con agua caliente'],
+  ['Bebidas Calientes', 1, 'Cappuccino', 7500, 'Espresso con leche vaporizada y espuma'],
+  ['Bebidas Calientes', 1, 'Latte', 8000, 'Espresso con leche cremosa'],
+  ['Bebidas Especiales', 5, 'Latte de Vainilla', 9000, 'Con jarabe de vainilla natural'],
+  ['Bebidas Frías', 2, 'Café Helado', 8500, 'Café frío con hielo y crema'],
+  ['Panadería', 4, 'Pan de Bono', 3500, 'Tradicional, recién horneado'],
+  ['Postres', 3, 'Brownie con Helado', 12000, 'Brownie de chocolate con helado de vainilla'],
+].map(([categoria, categoriaId, nombre, precio, descripcion], i) => ({
+  productoId: i + 1,
+  nombre,
+  descripcion,
+  precio,
+  imagenUrl: null,
+  categoriaId,
+  categoria,
+}));
+
+const SUCURSALES = [
+  {
+    id: 1,
+    nombre: 'Cafetería Centro',
+    direccion: 'Calle 10 # 5-23, Centro',
+    telefono: '6012345678',
+  },
+  {
+    id: 2,
+    nombre: 'Cafetería Norte',
+    direccion: 'Carrera 15 # 85-40, Zona Norte',
+    telefono: '6018765432',
+  },
+];
+
+async function simularApi(page: Page) {
+  const cors = {
+    'access-control-allow-origin': '*',
+    'access-control-allow-headers': '*',
+    'access-control-allow-methods': 'GET,OPTIONS',
+  };
+  await page.route(/\/api\/(menu|sucursales)(\?.*)?$/, async (route) => {
+    const peticion = route.request();
+    if (peticion.method() === 'OPTIONS') {
+      await route.fulfill({ status: 204, headers: cors });
+      return;
+    }
+    const cuerpo = /\/api\/menu/.test(peticion.url()) ? MENU : SUCURSALES;
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      headers: cors,
+      body: JSON.stringify(cuerpo),
+    });
+  });
+}
+
+test.beforeEach(async ({ page }) => {
+  await simularApi(page);
+});
 
 test.describe('header', () => {
   test('muestra la navegación principal y los botones de tema, carrito y cuenta', async ({
