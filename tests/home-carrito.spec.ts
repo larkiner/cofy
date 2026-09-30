@@ -82,3 +82,75 @@ test('en móvil el resumen queda bajo las líneas y sin desbordar', async ({ pag
   const desborda = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
   expect(desborda).toBe(false);
 });
+
+test.describe('aviso al agregar', () => {
+  test('aparece con el producto y el conteo, y lleva al carrito', async ({ page }) => {
+    await page.goto('/');
+    await page.getByRole('button', { name: 'Agregar Americano al carrito' }).click();
+
+    const aviso = page.locator('.aviso');
+    await expect(aviso).toContainText('Americano agregado al carrito');
+    await expect(aviso).toContainText('Llevas 1 producto en el carrito.');
+    await expect(page.getByRole('status').filter({ hasText: 'Americano agregado' })).toHaveCount(1);
+
+    await aviso.getByRole('link', { name: /Ver carrito/ }).click();
+    await expect(page).toHaveURL(/\/carrito$/);
+    await expect(page.locator('.aviso')).toHaveCount(0);
+  });
+
+  test('se cierra solo a los 4 segundos', async ({ page }) => {
+    await page.clock.install();
+    await page.goto('/');
+    await page.getByRole('button', { name: 'Agregar Latte al carrito' }).click();
+    await expect(page.locator('.aviso')).toBeVisible();
+    await page.clock.fastForward(4500);
+    await expect(page.locator('.aviso')).toHaveCount(0);
+  });
+
+  test('se pausa con el mouse encima y sigue al salir', async ({ page }) => {
+    await page.clock.install();
+    await page.goto('/');
+    await page.getByRole('button', { name: 'Agregar Latte al carrito' }).click();
+    await page.locator('.aviso').hover();
+    await page.clock.fastForward(6000);
+    await expect(page.locator('.aviso')).toBeVisible();
+    await page.mouse.move(0, 0);
+    await page.clock.fastForward(4500);
+    await expect(page.locator('.aviso')).toHaveCount(0);
+  });
+
+  test('un aviso nuevo reemplaza al anterior y se puede cerrar a mano', async ({ page }) => {
+    await page.goto('/');
+    await page.getByRole('button', { name: 'Agregar Americano al carrito' }).click();
+    await page.getByRole('button', { name: 'Agregar Latte al carrito' }).click();
+    await expect(page.locator('.aviso')).toHaveCount(1);
+    await expect(page.locator('.aviso')).toContainText('Llevas 2 productos');
+
+    await page.getByRole('button', { name: 'Cerrar aviso' }).click();
+    await expect(page.locator('.aviso')).toHaveCount(0);
+  });
+
+  test('Escape con el foco dentro del aviso lo cierra', async ({ page }) => {
+    await page.goto('/');
+    await page.getByRole('button', { name: 'Agregar Latte al carrito' }).click();
+    await page.getByRole('button', { name: 'Cerrar aviso' }).focus();
+    await page.keyboard.press('Escape');
+    await expect(page.locator('.aviso')).toHaveCount(0);
+  });
+
+  test('también avisa al agregar desde la carta', async ({ page }) => {
+    await page.goto('/menu');
+    await page.locator('.tarjeta .agregar').first().click();
+    await expect(page.locator('.aviso')).toContainText('agregado al carrito');
+  });
+
+  test('en móvil ocupa casi todo el ancho y no desborda', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/');
+    await page.getByRole('button', { name: 'Agregar Americano al carrito' }).click();
+    const caja = await page.locator('.aviso').boundingBox();
+    expect(caja!.width).toBeGreaterThan(340);
+    const desborda = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
+    expect(desborda).toBe(false);
+  });
+});

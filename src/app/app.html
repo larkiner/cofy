@@ -48,7 +48,7 @@
       >
         <app-icono nombre="shopping-bag" />
         @if (carrito.cantidadTotal() > 0) {
-          <span class="contador" aria-hidden="true">{{ carrito.cantidadTotal() }}</span>
+          <span class="contador" [class.rebota]="contadorRebota()" aria-hidden="true">{{ carrito.cantidadTotal() }}</span>
         }
       </a>
     }
@@ -96,6 +96,7 @@
 </header>
 
 <router-outlet />
+<app-aviso />
 
 @if (!auth.esPersonal()) {
   <footer class="pie">

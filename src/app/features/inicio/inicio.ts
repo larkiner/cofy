@@ -2,6 +2,7 @@ import { CurrencyPipe } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../application/auth.service';
+import { AvisoService } from '../../application/aviso.service';
 import { CarritoService } from '../../application/carrito.service';
 import { MenuService } from '../../application/menu.service';
 import { MenuItem, Sucursal } from '../../domain/menu/menu.model';
@@ -23,6 +24,7 @@ export class Inicio {
   private readonly menuService = inject(MenuService);
   protected readonly carrito = inject(CarritoService);
   protected readonly auth = inject(AuthService);
+  private readonly avisos = inject(AvisoService);
 
   protected readonly cargando = signal(true);
   protected readonly error = signal<string | null>(null);
@@ -60,5 +62,6 @@ export class Inicio {
 
   protected agregar(item: MenuItem): void {
     this.carrito.agregar(item);
+    this.avisos.avisarProductoAgregado(item.nombre, this.carrito.cantidadTotal());
   }
 }
