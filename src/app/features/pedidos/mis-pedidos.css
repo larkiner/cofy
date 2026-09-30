@@ -6,8 +6,8 @@
 
 h1 {
   font-family: var(--font-display);
-  font-weight: 400;
-  font-size: 32px;
+  font-weight: 600;
+  font-size: 35px;
   color: var(--color-text);
   margin-bottom: 24px;
 }

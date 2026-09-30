@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { CrearPedidoRequest, PedidoCliente, PedidoCreado } from '../domain/pedidos/pedido.model';
+import { CrearPedidoRequest, PedidoCliente, PedidoCreado, StripePaymentIntent } from '../domain/pedidos/pedido.model';
 import { PedidoRepository } from '../domain/pedidos/pedido.repository';
 
 /** Pedidos del cliente autenticado (el JWT lo agrega el interceptor). */
@@ -19,6 +19,10 @@ export class PedidoService {
   /** Simula la confirmación de la pasarela; devuelve el pedido con su código. */
   confirmarPago(pedidoId: number): Observable<PedidoCliente> {
     return this.repo.confirmarPago(pedidoId);
+  }
+
+  iniciarPagoStripe(pedidoId: number): Observable<StripePaymentIntent> {
+    return this.repo.iniciarPagoStripe(pedidoId);
   }
 
   misPedidos(): Observable<PedidoCliente[]> {

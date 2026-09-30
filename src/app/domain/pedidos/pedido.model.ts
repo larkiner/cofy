@@ -16,6 +16,12 @@ export interface PedidoCreado {
   estado: string;
 }
 
+/** Respuesta del API para inicializar Stripe.js; no contiene claves privadas. */
+export interface StripePaymentIntent {
+  clientSecret: string;
+  paymentIntentId: string;
+}
+
 export interface PedidoCliente {
   pedidoId: number;
   clienteId: number;

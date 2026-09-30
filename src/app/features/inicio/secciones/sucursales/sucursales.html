@@ -1,0 +1,43 @@
+<section id="horario" class="sucursales reveal">
+  <h2>Sucursales y horario</h2>
+
+  @if (sucursales(); as lista) {
+    @if (lista.length) {
+      <div class="sucursales-grid">
+        @for (s of lista; track s.id) {
+          <article class="sucursal">
+            <h3>{{ s.nombre }}</h3>
+            <p class="sucursal-direccion">{{ s.direccion }}</p>
+            @if (s.telefono) {
+              <a class="sucursal-telefono" [href]="telefonoHref(s.telefono)">
+                {{ formatearTelefono(s.telefono) }}
+              </a>
+            }
+            <a
+              class="sucursal-mapa"
+              [href]="enlaceMapa(s)"
+              target="_blank"
+              rel="noopener"
+              [attr.aria-label]="etiquetaMapa(s)"
+            >
+              <app-icono nombre="map-pin" [tamano]="16" />
+              Cómo llegar
+            </a>
+          </article>
+        }
+      </div>
+    } @else {
+      <p class="sucursales-vacio">Nuestras sucursales están en Medellín.</p>
+    }
+  }
+
+  <div class="horario-tabla">
+    <h3 class="visualmente-oculto">Horario de atención</h3>
+    @for (fila of horario; track fila.dia) {
+      <div class="horario-fila">
+        <span>{{ fila.dia }}</span>
+        <span>{{ fila.horas }}</span>
+      </div>
+    }
+  </div>
+</section>
