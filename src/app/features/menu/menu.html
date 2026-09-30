@@ -1,52 +1,97 @@
-<section id="menu" class="menu">
-  <header class="menu-cabecera">
-    <span class="eyebrow">Nuestra carta</span>
-    <h1>Tostado en pequeños lotes, preparado con calma</h1>
-    <p class="subtitulo">Elige tu categoría y arma tu pedido.</p>
-  </header>
+<section class="carta">
+  <div class="carta-layout">
+    <div class="carta-sidebar">
+      <h1 class="carta-titulo">Carta</h1>
 
-  @if (cargando()) {
-    <p class="estado">Cargando menú…</p>
-  } @else if (error()) {
-    <p class="estado error">{{ error() }}</p>
-  } @else {
-    <div class="pestanas">
-      @for (categoria of categorias(); track categoria) {
-        <button
-          type="button"
-          class="pestana"
-          [class.activa]="categoria === categoriaResaltada()"
-          (click)="seleccionarCategoria(categoria)"
-        >
-          {{ categoria }}
-        </button>
-      }
+      <label class="buscador" for="buscar-carta">
+        <app-icono nombre="search" [tamano]="18" />
+        <span class="visualmente-oculto">Buscar en la carta</span>
+        <input
+          id="buscar-carta"
+          type="search"
+          placeholder="Buscar en la carta"
+          autocomplete="off"
+          [value]="busqueda()"
+          (input)="buscar($any($event.target).value)"
+        />
+      </label>
+
+      <nav class="indice-categorias" aria-label="Categorías">
+        @for (categoria of categorias(); track categoria) {
+          <button
+            type="button"
+            class="indice-enlace"
+            [class.activo]="esActiva(categoria)"
+            [attr.aria-current]="esActiva(categoria) ? 'true' : null"
+            (click)="seleccionarCategoria(categoria)"
+          >
+            {{ categoria }}
+          </button>
+        }
+      </nav>
     </div>
 
-    <div class="tarjetas">
-      @for (item of itemsActivos(); track item.productoId) {
-        <article class="tarjeta">
-          <div class="tarjeta-media">
-            @if (item.imagenUrl) {
-              <img [src]="item.imagenUrl" [alt]="item.nombre" />
-            }
-          </div>
-          <div class="tarjeta-encabezado">
-            <h3>{{ item.nombre }}</h3>
-            <span class="precio">
-              {{ item.precio | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}
-            </span>
-          </div>
-          <div class="tarjeta-detalle">
-            @if (item.descripcion) {
-              <p>{{ item.descripcion }}</p>
-            }
-            @if (!auth.esPersonal()) {
-              <button type="button" class="agregar" (click)="agregar(item)">Agregar</button>
-            }
-          </div>
-        </article>
+    <div class="carta-contenido" #contenido>
+      <p class="visualmente-oculto" role="status" aria-live="polite">{{ mensajeResultados() }}</p>
+
+      @if (cargando()) {
+        <p class="estado">Cargando menú…</p>
+      } @else if (error()) {
+        <p class="estado error">{{ error() }}</p>
+      } @else if (sinResultados()) {
+        <div class="sin-resultados">
+          <p>
+            No hay productos que coincidan con «{{ busqueda().trim() }}». Prueba con otra palabra.
+          </p>
+          <button type="button" class="btn-borrar" (click)="borrarBusqueda()">
+            Borrar búsqueda
+          </button>
+        </div>
+      } @else if (resultadosBusqueda().length) {
+        @for (grupo of resultadosBusqueda(); track grupo.categoria) {
+          <section class="grupo-categoria">
+            <h2 class="grupo-titulo">{{ grupo.categoria }}</h2>
+            <ng-container
+              [ngTemplateOutlet]="tarjetas"
+              [ngTemplateOutletContext]="{ $implicit: grupo.items }"
+            />
+          </section>
+        }
+      } @else if (categoriaResaltada(); as categoria) {
+        <h2 class="grupo-titulo">{{ categoria }}</h2>
+        <ng-container
+          [ngTemplateOutlet]="tarjetas"
+          [ngTemplateOutletContext]="{ $implicit: itemsActivos() }"
+        />
       }
     </div>
-  }
+  </div>
 </section>
+
+<ng-template #tarjetas let-items>
+  <div class="tarjetas">
+    @for (item of items; track item.productoId) {
+      <article class="tarjeta">
+        <div class="tarjeta-media">
+          @if (item.imagenUrl) {
+            <img [src]="item.imagenUrl" [alt]="item.nombre" />
+          }
+        </div>
+        <div class="tarjeta-encabezado">
+          <h3>{{ item.nombre }}</h3>
+          <span class="precio">
+            {{ item.precio | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}
+          </span>
+        </div>
+        <div class="tarjeta-detalle">
+          @if (item.descripcion) {
+            <p>{{ item.descripcion }}</p>
+          }
+          @if (!auth.esPersonal()) {
+            <button type="button" class="agregar" (click)="agregar(item)">Agregar</button>
+          }
+        </div>
+      </article>
+    }
+  </div>
+</ng-template>

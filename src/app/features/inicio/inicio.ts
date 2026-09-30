@@ -4,16 +4,17 @@ import { RouterLink } from '@angular/router';
 import { AuthService } from '../../application/auth.service';
 import { CarritoService } from '../../application/carrito.service';
 import { MenuService } from '../../application/menu.service';
-import { MenuItem } from '../../domain/menu/menu.model';
+import { MenuItem, Sucursal } from '../../domain/menu/menu.model';
+import { InicioSucursales } from './secciones/sucursales/sucursales';
 
 /**
  * Vista de Inicio (landing de marca): hero, recomendaciones destacadas,
- * historia, programa de fidelidad y horario/ubicación. La carta completa
- * con pestañas vive en su propia vista ({@link Menu}, ruta /menu).
+ * historia, programa de fidelidad y sucursales/horario. La carta completa
+ * vive en su propia vista ({@link Menu}, ruta /menu).
  */
 @Component({
   selector: 'app-inicio',
-  imports: [CurrencyPipe, RouterLink],
+  imports: [CurrencyPipe, RouterLink, InicioSucursales],
   templateUrl: './inicio.html',
   styleUrl: './inicio.css',
 })
@@ -26,10 +27,8 @@ export class Inicio {
   protected readonly error = signal<string | null>(null);
   protected readonly items = signal<MenuItem[]>([]);
 
-                    
-  /** Imagen de fachada/ubicación pendiente de subir; mientras sea null, se
-   * muestra el placeholder con motivo de café. */
-  protected readonly mapaImagen: string | null = null;
+  /** `null` mientras cargan; `[]` si la API falla o no devuelve sucursales. */
+  protected readonly sucursales = signal<Sucursal[] | null>(null);
 
   /**
    * "Lo más pedido": ítems marcados como destacados. Si el backend aún no
@@ -50,6 +49,11 @@ export class Inicio {
         this.error.set('No se pudo cargar el menú. ¿Está corriendo el backend?');
         this.cargando.set(false);
       },
+    });
+
+    this.menuService.obtenerSucursales().subscribe({
+      next: lista => this.sucursales.set(lista),
+      error: () => this.sucursales.set([]),
     });
   }
 
