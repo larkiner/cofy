@@ -1,71 +1,180 @@
 /* ============================================================
    Menú / Carta — Heritage Hearth
-   Solo la carta con pestañas por categoría. El hero, destacados,
+   Barra lateral (título, buscador e índice de categorías) junto a la
+   rejilla de tarjetas, una categoría a la vez. El hero, destacados,
    historia, rewards y horario viven en la vista Inicio (ruta /).
-   Utilidades compartidas (.eyebrow, .estado, placeholder de café)
-   están en styles.css global.
+   Utilidades compartidas (.estado, .visualmente-oculto, placeholder de
+   café) están en styles.css global.
    ============================================================ */
 
-.menu {
-  max-width: 1080px;
+.carta {
+  max-width: 1200px;
   margin: 0 auto;
-  padding: clamp(40px, 6vw, 72px) clamp(20px, 4vw, 28px) clamp(56px, 8vw, 88px);
+  padding: clamp(28px, 5vw, 48px) clamp(20px, 4vw, 28px) clamp(56px, 8vw, 88px);
 }
 
-.menu-cabecera {
-  margin-bottom: 28px;
+/* Móvil: todo apilado. minmax(0, 1fr) evita que el índice con scroll horizontal ensanche la columna. */
+.carta-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 20px;
 }
 
-.menu-cabecera .eyebrow {
-  margin-bottom: 12px;
+.carta-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
 }
 
-.menu h1 {
+.carta-contenido {
+  min-width: 0;
+  scroll-margin-top: calc(var(--alto-header) + 16px);
+}
+
+.carta-contenido .estado {
+  margin: 0;
+  padding: 8px 0 32px;
+}
+
+.carta-titulo {
   font-family: var(--font-display);
-  font-weight: 400;
-  font-size: clamp(28px, 5vw, 40px);
+  font-weight: 600;
+  font-size: 36px;
   line-height: 1.1;
   color: var(--color-text);
-  margin-bottom: 8px;
-  max-width: 620px;
+  margin: 0;
 }
 
-.subtitulo {
+/* ---------- Buscador ---------- */
+.buscador {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 44px;
+  padding: 0 16px;
+  border: 1px solid var(--color-border-input);
+  border-radius: var(--radius-pill);
+  background: var(--color-input-bg);
+  color: var(--color-muted);
+  cursor: text;
+}
+
+/* El foco lo muestra la píldora completa, no el input. */
+.buscador:focus-within {
+  border-color: var(--color-text);
+  box-shadow: var(--ring);
+}
+
+.buscador input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 16px;
+  color: var(--color-text);
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.buscador input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.buscador input::placeholder {
+  color: var(--color-muted);
+  opacity: 1;
+}
+
+/* ---------- Índice de categorías ---------- */
+/* Móvil: fila con scroll horizontal. El relleno de 4px deja espacio al anillo de foco,
+   que el scroll recortaría. */
+.indice-categorias {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  border-bottom: 1px solid var(--color-border);
+  padding: 4px;
+  margin-inline: -4px;
+}
+
+.indice-categorias::-webkit-scrollbar {
+  display: none;
+}
+
+.indice-enlace {
+  flex: 0 0 auto;
+  padding: 8px 14px;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: transparent;
   font-size: 14px;
+  font-weight: 600;
+  color: var(--color-muted);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.indice-enlace:hover {
+  color: var(--color-text);
+}
+
+.indice-enlace.activo {
+  color: var(--color-text);
+  border-bottom-color: var(--color-indicador);
+}
+
+.indice-enlace:focus-visible {
+  box-shadow: var(--ring);
+}
+
+/* ---------- Títulos de categoría ---------- */
+.grupo-titulo {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 26px;
+  line-height: 1.15;
+  color: var(--color-text);
+  margin: 0 0 16px;
+}
+
+.grupo-categoria + .grupo-categoria {
+  margin-top: 40px;
+}
+
+/* ---------- Búsqueda sin coincidencias ---------- */
+.sin-resultados {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 8px 0 32px;
   color: var(--color-muted);
 }
 
-.pestanas {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  border-bottom: 1px solid var(--color-border);
-  padding-bottom: 20px;
-  margin-bottom: 28px;
+.sin-resultados p {
+  max-width: 100%;
+  overflow-wrap: anywhere;
 }
 
-.pestana {
-  border: none;
-  cursor: pointer;
-  font-size: 13px;
-  font-weight: 600;
-  padding: 8px 18px;
+.btn-borrar {
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-pill);
   background: transparent;
-  color: var(--color-muted);
+  color: var(--color-text);
+  padding: 8px 18px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
 }
 
-.pestana:hover {
+.btn-borrar:hover {
   background: var(--color-overlay-hover);
-}
-
-.pestana.activa {
-  background: var(--color-accent);
-  color: var(--color-on-accent);
-}
-
-.pestana.activa:hover {
-  background: var(--color-accent);
 }
 
 /* Grid que refluye solo: 2+ columnas cuando caben, 1 cuando no. */
@@ -179,11 +288,17 @@
 }
 
 /* ---------- Responsive ---------- */
-@media (max-width: 560px) {
-  .pestana {
-    padding: 10px 18px;
+@media (min-width: 640px) {
+  .carta-titulo {
+    font-size: 48px;
   }
 
+  .grupo-titulo {
+    font-size: 30px;
+  }
+}
+
+@media (max-width: 560px) {
   .agregar {
     padding: 10px 18px;
   }
@@ -193,5 +308,43 @@
 @media (max-width: 380px) {
   .tarjeta-detalle {
     flex-wrap: wrap;
+  }
+}
+
+/* Escritorio: barra lateral fija junto al contenido, índice en vertical. */
+@media (min-width: 900px) {
+  .carta-layout {
+    grid-template-columns: 220px minmax(0, 1fr);
+    column-gap: 40px;
+    align-items: start;
+  }
+
+  .carta-sidebar {
+    position: sticky;
+    top: calc(var(--alto-header) + 24px);
+    align-self: start;
+    gap: 24px;
+  }
+
+  .indice-categorias {
+    flex-direction: column;
+    gap: 2px;
+    overflow: visible;
+    border-bottom: none;
+    padding: 0;
+    margin-inline: 0;
+  }
+
+  .indice-enlace {
+    width: 100%;
+    text-align: left;
+    padding: 8px 0 8px 14px;
+    border-bottom: none;
+    border-left: 2px solid transparent;
+  }
+
+  .indice-enlace.activo {
+    border-left-color: var(--color-indicador);
+    border-bottom-color: transparent;
   }
 }

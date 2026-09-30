@@ -1,41 +1,97 @@
-<header class="encabezado">
+<header class="encabezado" #encabezado>
   <a class="marca" routerLink="/">La aravica</a>
 
-  <nav class="navegacion">
-    <a class="nav-link" routerLink="/" routerLinkActive="activo" [routerLinkActiveOptions]="{ exact: true }">Inicio</a>
-    <a class="nav-link" routerLink="/menu" routerLinkActive="activo">Menú</a>
-    @if (!auth.esPersonal()) {
-      <a class="nav-link" routerLink="/carrito" routerLinkActive="activo">
-        Carrito
-        @if (carrito.cantidadTotal() > 0) {
-          <span class="contador">{{ carrito.cantidadTotal() }}</span>
-        }
+  <nav class="navegacion" aria-label="Navegación principal">
+    <a class="nav-link" routerLink="/menu" routerLinkActive="activo" ariaCurrentWhenActive="page">
+      Carta
+    </a>
+    <a class="nav-link" routerLink="/" fragment="horario">Sucursales</a>
+    @if (auth.esCliente()) {
+      <a
+        class="nav-link"
+        routerLink="/mis-pedidos"
+        routerLinkActive="activo"
+        ariaCurrentWhenActive="page"
+      >
+        Mis pedidos
       </a>
     }
-    @if (auth.esCliente()) {
-      <a class="nav-link" routerLink="/mis-pedidos" routerLinkActive="activo">Mis pedidos</a>
-      <a class="nav-link" routerLink="/perfil" routerLinkActive="activo">Mi Perfil</a>
-    }
     @if (auth.esPersonal()) {
-      <a class="nav-link" routerLink="/interno" routerLinkActive="activo">Panel interno</a>
+      <a
+        class="nav-link"
+        routerLink="/interno"
+        routerLinkActive="activo"
+        ariaCurrentWhenActive="page"
+      >
+        Panel interno
+      </a>
     }
   </nav>
 
-  <div class="sesion">
+  <div class="acciones-encabezado">
     <button
       type="button"
-      class="alternar-tema"
+      class="boton-icono"
       (click)="tema.alternar()"
       [attr.aria-label]="tema.oscuro() ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'"
     >
-      {{ tema.oscuro() ? '☀️' : '🌙' }}
+      <app-icono [nombre]="tema.oscuro() ? 'sun' : 'moon'" />
     </button>
-    @if (auth.logueado()) {
-      <span class="usuario">{{ auth.email() }} ({{ auth.rol() }})</span>
-      <button type="button" class="salir" (click)="cerrarSesion()">Salir</button>
-    } @else {
-      <a class="enlace-login" routerLink="/login">Iniciar sesión</a>
+
+    @if (!auth.esPersonal()) {
+      <a
+        class="boton-icono enlace-carrito"
+        routerLink="/carrito"
+        routerLinkActive="activo"
+        ariaCurrentWhenActive="page"
+        [attr.aria-label]="etiquetaCarrito()"
+      >
+        <app-icono nombre="shopping-bag" />
+        @if (carrito.cantidadTotal() > 0) {
+          <span class="contador" aria-hidden="true">{{ carrito.cantidadTotal() }}</span>
+        }
+      </a>
     }
+
+    <div class="cuenta" #contenedorCuenta>
+      <button
+        type="button"
+        class="boton-icono"
+        (click)="alternarCuenta()"
+        [attr.aria-expanded]="cuentaAbierta()"
+        aria-controls="panel-cuenta"
+        aria-label="Cuenta"
+        #botonCuenta
+      >
+        <app-icono nombre="user" />
+      </button>
+
+      @if (cuentaAbierta()) {
+        <div class="panel-cuenta" id="panel-cuenta">
+          @if (auth.logueado()) {
+            <p class="panel-cuenta-usuario">{{ auth.email() }}</p>
+            <p class="panel-cuenta-rol">{{ auth.rol() }}</p>
+            @if (auth.esCliente()) {
+              <a class="panel-cuenta-enlace" routerLink="/perfil" (click)="cerrarCuenta()">
+                <app-icono nombre="user" [tamano]="16" />
+                Mi cuenta
+              </a>
+            }
+            <button type="button" class="salir" (click)="cerrarSesion()">
+              <app-icono nombre="log-out" [tamano]="16" />
+              Salir
+            </button>
+          } @else {
+            <a class="panel-cuenta-enlace" routerLink="/login" (click)="cerrarCuenta()"
+              >Iniciar sesión</a
+            >
+            <a class="panel-cuenta-enlace" routerLink="/registro" (click)="cerrarCuenta()"
+              >Unirme a la Hermandad</a
+            >
+          }
+        </div>
+      }
+    </div>
   </div>
 </header>
 
@@ -45,7 +101,7 @@
   <footer class="pie">
     <div class="pie-marca">La aravica</div>
     <p class="pie-lema">El ritual de la calma, en cada taza.</p>
-    <p class="pie-direccion">Cra. 14 # 85 – 22, Bogotá · Lun–Vie 6:30 am – 8:00 pm</p>
+    <p class="pie-direccion">Tostado en Medellín, Antioquia · Lun–Vie 6:30 am – 8:00 pm</p>
     <nav class="pie-enlaces">
       <a routerLink="/">Inicio</a>
       <a routerLink="/menu">Menú</a>

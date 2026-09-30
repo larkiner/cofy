@@ -1,0 +1,127 @@
+/* ============================================================
+   Sucursales y horario — una columna por sucursal + tabla fija.
+   Paleta de prod: texto, muted y borde; sin caja de foto.
+   ============================================================ */
+
+:host {
+  display: block;
+}
+
+.sucursales {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 16px clamp(24px, 6vw, 64px) clamp(56px, 9vw, 88px);
+}
+
+.sucursales > h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 30px;
+  line-height: 1.15;
+  color: var(--color-text);
+  margin-bottom: 28px;
+}
+
+.sucursales-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: 28px;
+}
+
+.sucursal {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-left: 16px;
+  border-left: 2px solid var(--color-border);
+}
+
+.sucursal h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 21px;
+  line-height: 1.2;
+  color: var(--color-text);
+}
+
+.sucursal-direccion {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-muted);
+}
+
+.sucursal-telefono,
+.sucursal-mapa {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text);
+  text-decoration: none;
+  align-self: flex-start;
+  border-radius: var(--radius-sm);
+}
+
+.sucursal-telefono:hover,
+.sucursal-mapa:hover {
+  color: var(--color-text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.sucursal-telefono:focus-visible,
+.sucursal-mapa:focus-visible {
+  outline: none;
+  box-shadow: var(--ring);
+}
+
+.sucursal-mapa {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.sucursales-vacio {
+  font-size: 14px;
+  color: var(--color-muted);
+}
+
+.horario-tabla {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 420px;
+  margin-top: 28px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border);
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--color-muted);
+}
+
+.horario-fila {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+@media (min-width: 640px) {
+  .sucursales > h2 {
+    font-size: 36px;
+  }
+}
+
+/* Desde 900px el horario pasa a una fila a todo el ancho bajo las
+   sucursales, con el día arriba y las horas debajo. */
+@media (min-width: 900px) {
+  .horario-tabla {
+    max-width: none;
+    flex-direction: row;
+    gap: 40px;
+  }
+
+  .horario-fila {
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 4px;
+  }
+}

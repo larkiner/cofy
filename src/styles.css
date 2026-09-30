@@ -12,7 +12,7 @@
 
 :root {
   /* Heritage Hearth (claro): espresso brown sobre crema cálida. Aireado,
-     artesanal, premium. Tipografía Plus Jakarta Sans. */
+     artesanal, premium. Títulos en EB Garamond, cuerpo en Plus Jakarta Sans. */
   --color-bg: #fcf9f8;
   --color-text: #2b1d13;
   --color-muted: #6f5d4f;
@@ -55,8 +55,8 @@
   --estado-pendiente-bg: oklch(93% 0.05 60);
   --estado-pendiente-color: oklch(40% 0.09 60);
 
-  /* Tipografía — Heritage Hearth (claro): Plus Jakarta Sans en todo. */
-  --font-display: 'Plus Jakarta Sans', sans-serif;
+  /* Tipografía — títulos en serif (EB Garamond), cuerpo en Plus Jakarta Sans. */
+  --font-display: 'EB Garamond', serif;
   --font-body: 'Plus Jakarta Sans', sans-serif;
 
   /* Alias de la paleta anterior para compatibilidad con pantallas
@@ -110,7 +110,7 @@
   --estado-pendiente-color: oklch(85% 0.08 60);
 
   /* Tipografía compartida con el tema claro para evitar cambios al alternar. */
-  --font-display: 'Plus Jakarta Sans', sans-serif;
+  --font-display: 'EB Garamond', serif;
   --font-body: 'Plus Jakarta Sans', sans-serif;
 }
 
@@ -142,6 +142,13 @@
 
   --ring: 0 0 0 3px color-mix(in oklch, var(--color-accent) 42%, transparent);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Color de los indicadores de estado activo (subrayado de la navegación,
+     línea del índice de la carta): el mismo del texto, no el acento. */
+  --color-indicador: var(--color-text);
+
+  /* Alto del header sticky: padding 12px + botones de 44px + 12px + borde de 1px. */
+  --alto-header: 69px;
 
   /* Silueta de taza de café (Lucide "coffee") para placeholders de imagen,
      aplicada como máscara para que tome el color del acento en cada tema. */
@@ -249,8 +256,7 @@ body {
    contenedores viven en dos componentes distintos (Inicio y Menú).
    Se retira solo cuando hay una <img> real (:has). */
 .destacado-media,
-.tarjeta-media,
-.ubicacion-media {
+.tarjeta-media {
   background: radial-gradient(
     130% 120% at 50% 0%,
     color-mix(in oklch, var(--color-accent) 12%, var(--color-card)),
@@ -259,8 +265,7 @@ body {
 }
 
 .destacado-media::before,
-.tarjeta-media::before,
-.ubicacion-media::before {
+.tarjeta-media::before {
   content: '';
   position: absolute;
   inset: 0;
@@ -273,15 +278,27 @@ body {
 }
 
 .destacado-media:has(img)::before,
-.tarjeta-media:has(img)::before,
-.ubicacion-media:has(img)::before {
+.tarjeta-media:has(img)::before {
   content: none;
 }
 
 .destacado-media:has(img),
-.tarjeta-media:has(img),
-.ubicacion-media:has(img) {
+.tarjeta-media:has(img) {
   background: var(--color-card);
+}
+
+/* Texto disponible para lectores de pantalla pero oculto visualmente
+   (p. ej. la etiqueta de un buscador que solo muestra un ícono). */
+.visualmente-oculto {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 button {

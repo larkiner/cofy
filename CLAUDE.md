@@ -6,9 +6,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Angular 22 standalone-component frontend ("CafeteriaWeb") for a cafeteria ordering system, backed by a separate Spring Boot API (not in this repo). The base URL comes from `environment.apiUrl` (see "Environments" below), defaulting to `http://localhost:8080/api`. All UI text, route names, and identifiers are in Spanish — match that convention in new code.
 
-## Branch workflow
+## Branch workflow (Git Flow)
 
-Three branches only: **`prod`** (production/deployed), **`qa`** (staging/testing), **`dev`** (day-to-day work). Commit and push directly to `dev`; promote to `qa` then `prod` by fast-forward merge when ready to release. Do **not** create a new branch or git worktree per task — no `claude/*` or `agents/*` per-task branches, and no other long-lived branches.
+Git Flow mapped onto the three long-lived branches: **`prod`** = main (production, deployed by Vercel), **`dev`** = develop (integration), **`qa`** = where each release is tested before production. Never commit directly to `prod`, `qa` or `dev`.
+
+- **Feature**: `feature/<descripcion-en-espanol>` from `dev`. Push it and open the PR **with base `dev`** (`https://github.com/larkiner/cofy/compare/dev...feature/<nombre>`); GitHub's default base may point elsewhere. Merge into `dev` with `--no-ff`.
+- **Release**: `release/<x.y.z>` from `dev` → push to `qa` and test → merge into `prod` with `--no-ff` + annotated tag `v<x.y.z>` → merge back into `dev` → delete the release branch. Push tags by name, never `--tags` (there are local-only archive tags).
+- **Hotfix**: `hotfix/<descripcion>` from `prod` → merge into `prod` (patch tag) and back into `dev`.
+- No `claude/*` or `agents/*` branches and no git worktree per task.
+- After pushing `prod`, confirm Vercel built a **Production** deployment, not a Preview (see `documentación/05-infraestructura-despliegue.md`, P4, in the parent workspace).
 
 ## Running the app
 
