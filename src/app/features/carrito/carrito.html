@@ -2,7 +2,7 @@
   @if (resultado(); as pedido) {
     <!-- Pantalla de éxito: pedido pagado con código de retiro -->
     <div class="exito">
-      <div class="emoji">🎉</div>
+      <div class="exito-icono"><app-icono nombre="check" [tamano]="28" /></div>
       <h1>¡Pedido confirmado!</h1>
       <p>Presenta este código en <strong>{{ pedido.sucursalNombre }}</strong> para reclamar tu pedido:</p>
       <p class="codigo">{{ pedido.codigoRetiro }}</p>
@@ -12,7 +12,7 @@
       </p>
       <div class="acciones-exito">
         <a routerLink="/mis-pedidos">Ver mis pedidos</a>
-        <a routerLink="/">Volver al menú</a>
+        <a routerLink="/menu">Volver a la carta</a>
       </div>
     </div>
   } @else {
@@ -29,62 +29,91 @@
     <h1>Tu carrito</h1>
 
     @if (carrito.lineas().length === 0) {
-      <p class="estado">El carrito está vacío. <a routerLink="/">Ir al menú</a></p>
+      <div class="vacio">
+        <div class="vacio-icono"><app-icono nombre="shopping-bag" [tamano]="28" /></div>
+        <p class="estado">El carrito está vacío. <a routerLink="/menu">Ir al menú</a></p>
+        <a routerLink="/menu" class="vacio-cta">Explorar la carta</a>
+      </div>
     } @else {
-      <div class="lineas">
-        @for (linea of carrito.lineas(); track linea.producto.productoId) {
-          <div class="linea">
-            <div class="linea-info">
-              <strong>{{ linea.producto.nombre }}</strong>
-              <span>{{ linea.producto.precio | currency:'COP':'symbol-narrow':'1.0-0' }} c/u</span>
-            </div>
-            <div class="linea-cantidad">
-              <button type="button" (click)="carrito.cambiarCantidad(linea.producto.productoId, -1)">−</button>
-              <span>{{ linea.cantidad }}</span>
-              <button type="button" (click)="carrito.cambiarCantidad(linea.producto.productoId, 1)">+</button>
-            </div>
-            <span class="linea-subtotal">
-              {{ linea.producto.precio * linea.cantidad | currency:'COP':'symbol-narrow':'1.0-0' }}
-            </span>
-            <button type="button" class="quitar" (click)="carrito.quitar(linea.producto.productoId)">✕</button>
+      <div class="carrito-layout">
+        <ul class="lineas" aria-label="Productos en tu carrito">
+          @for (linea of carrito.lineas(); track linea.producto.productoId) {
+            <li class="linea">
+              <div class="linea-media">
+                @if (linea.producto.imagenUrl) {
+                  <img [src]="linea.producto.imagenUrl" alt="" />
+                } @else {
+                  <app-icono nombre="coffee" [tamano]="22" />
+                }
+              </div>
+              <div class="linea-info">
+                <strong>{{ linea.producto.nombre }}</strong>
+                <span>{{ linea.producto.precio | currency:'COP':'symbol-narrow':'1.0-0' }} c/u</span>
+              </div>
+              <div class="linea-cantidad" role="group" [attr.aria-label]="'Cantidad de ' + linea.producto.nombre">
+                <button type="button"
+                        [attr.aria-label]="'Quitar una unidad de ' + linea.producto.nombre"
+                        (click)="carrito.cambiarCantidad(linea.producto.productoId, -1)">
+                  <app-icono nombre="minus" [tamano]="14" />
+                </button>
+                <span aria-live="polite">{{ linea.cantidad }}</span>
+                <button type="button"
+                        [attr.aria-label]="'Agregar una unidad de ' + linea.producto.nombre"
+                        (click)="carrito.cambiarCantidad(linea.producto.productoId, 1)">
+                  <app-icono nombre="plus" [tamano]="14" />
+                </button>
+              </div>
+              <span class="linea-subtotal">
+                {{ linea.producto.precio * linea.cantidad | currency:'COP':'symbol-narrow':'1.0-0' }}
+              </span>
+              <button type="button" class="quitar"
+                      [attr.aria-label]="'Quitar ' + linea.producto.nombre + ' del carrito'"
+                      (click)="carrito.quitar(linea.producto.productoId)">
+                <app-icono nombre="x" [tamano]="16" />
+              </button>
+            </li>
+          }
+        </ul>
+
+        <div class="resumen">
+          <h2 class="resumen-titulo">Resumen del pedido</h2>
+
+          <p class="total"><span>Total</span> <strong>{{ carrito.total() | currency:'COP':'symbol-narrow':'1.0-0' }}</strong></p>
+
+          <div class="opciones">
+            <label>
+              Sucursal de retiro
+              <select name="sucursal" [(ngModel)]="sucursalId">
+                @for (s of sucursales(); track s.id) {
+                  <option [ngValue]="s.id">{{ s.nombre }} — {{ s.direccion }}</option>
+                }
+              </select>
+            </label>
+
+            <label>
+              Método de pago
+              <select name="metodo" [(ngModel)]="metodo">
+                @for (m of metodos; track m) {
+                  <option [ngValue]="m">{{ m }}</option>
+                }
+              </select>
+            </label>
           </div>
-        }
+
+          @if (error()) {
+            <p class="mensaje-error" role="alert">{{ error() }}</p>
+          }
+
+          @if (!auth.logueado()) {
+            <p class="estado">Debes <a routerLink="/login">iniciar sesión</a> para completar el pedido.</p>
+          }
+
+          <button type="button" class="pagar" [disabled]="procesando() || sucursalId === null"
+                  (click)="pedirYPagar()">
+            {{ procesando() ? 'Procesando pago…' : 'Pedir y pagar' }}
+          </button>
+        </div>
       </div>
-
-      <p class="total">Total: <strong>{{ carrito.total() | currency:'COP':'symbol-narrow':'1.0-0' }}</strong></p>
-
-      <div class="opciones">
-        <label>
-          Sucursal de retiro
-          <select name="sucursal" [(ngModel)]="sucursalId">
-            @for (s of sucursales(); track s.id) {
-              <option [ngValue]="s.id">{{ s.nombre }} — {{ s.direccion }}</option>
-            }
-          </select>
-        </label>
-
-        <label>
-          Método de pago
-          <select name="metodo" [(ngModel)]="metodo">
-            @for (m of metodos; track m) {
-              <option [ngValue]="m">{{ m }}</option>
-            }
-          </select>
-        </label>
-      </div>
-
-      @if (error()) {
-        <p class="mensaje-error">{{ error() }}</p>
-      }
-
-      @if (!auth.logueado()) {
-        <p class="estado">Debes <a routerLink="/login">iniciar sesión</a> para completar el pedido.</p>
-      }
-
-      <button type="button" class="pagar" [disabled]="procesando() || sucursalId === null"
-              (click)="pedirYPagar()">
-        {{ procesando() ? 'Procesando pago…' : 'Pedir y pagar' }}
-      </button>
     }
     }
   }

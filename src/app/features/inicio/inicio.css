@@ -25,7 +25,7 @@
   background-image:
     radial-gradient(60% 55% at 82% 12%, rgb(224 180 131 / 0.15), transparent 60%),
     radial-gradient(50% 50% at 12% 90%, rgb(125 86 45 / 0.2), transparent 62%),
-    linear-gradient(135deg, rgb(0 0 0 / 0.4), rgb(0 0 0 / 0.3)),
+    linear-gradient(90deg, rgb(0 0 0 / 0.58), rgb(0 0 0 / 0.28) 65%, rgb(0 0 0 / 0.2)),
     url('/img/hero/home.jpg.png');
   background-size: cover;
   background-position: center;
@@ -60,10 +60,40 @@
 .hero-titulo {
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(36px, 7.5vw, 60px);
-  line-height: 1.05;
-  margin: 12px 0 clamp(20px, 3vw, 26px);
-  max-width: 640px;
+  font-size: clamp(38px, 8vw, 72px);
+  line-height: 1.02;
+  letter-spacing: -0.01em;
+  margin: 14px 0 clamp(22px, 3vw, 30px);
+  max-width: 680px;
+  text-wrap: balance;
+}
+
+/* Datos de confianza bajo los botones: chips de vidrio sobre la foto. */
+.hero-datos {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: clamp(24px, 4vw, 36px);
+}
+
+.hero-datos li {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgb(255 255 255 / 0.22);
+  background: rgb(255 255 255 / 0.1);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  font-size: 13px;
+  font-weight: 500;
+  color: #fff;
+}
+
+.hero-datos app-icono {
+  color: var(--color-accent-light);
 }
 
 .hero-acciones {
@@ -271,8 +301,24 @@
   margin-bottom: 24px;
 }
 
+.destacados-encabezado {
+  align-items: flex-end;
+}
+
+.destacados-titulo {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(28px, 4.5vw, 40px);
+  line-height: 1.1;
+  color: var(--color-text);
+  margin-top: 6px;
+}
+
 .ver-carta {
-  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--color-accent);
   text-decoration: none;
@@ -291,9 +337,9 @@
 
 .destacado {
   position: relative;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   overflow: hidden;
-  height: 260px;
+  height: 300px;
   display: flex;
   flex-direction: column;
   box-shadow: var(--shadow-card);
@@ -319,7 +365,7 @@
 .destacado-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0.65));
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 35%, rgba(0, 0, 0, 0.75));
   pointer-events: none;
 }
 
@@ -343,7 +389,7 @@
 
 .destacado-nombre {
   font-weight: 600;
-  font-size: 14.5px;
+  font-size: 16px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -358,12 +404,16 @@
 .destacado-agregar {
   flex-shrink: 0;
   white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   background: #fff;
   color: #2b1d13;
   border: none;
   border-radius: var(--radius-pill);
-  padding: 6px 14px;
-  font-size: 12px;
+  min-height: 36px;
+  padding: 0 14px;
+  font-size: 13px;
   font-weight: 700;
   cursor: pointer;
 }
@@ -380,7 +430,25 @@
   text-align: center;
 }
 
+.historia-ornamento {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  color: var(--color-accent);
+  margin-bottom: 20px;
+}
+
+.historia-ornamento::before,
+.historia-ornamento::after {
+  content: '';
+  width: 56px;
+  height: 1px;
+  background: var(--color-border-input);
+}
+
 .historia .eyebrow {
+  display: block;
   margin-bottom: 16px;
 }
 
@@ -407,7 +475,9 @@
 }
 
 .rewards-inner {
-  background: var(--color-dark);
+  background:
+    radial-gradient(60% 90% at 100% 0%, rgb(224 180 131 / 0.16), transparent 65%),
+    var(--color-dark);
   color: #f4efe8;
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-card);
