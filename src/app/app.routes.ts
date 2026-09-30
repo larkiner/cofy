@@ -6,36 +6,47 @@ import { personalGuard } from './application/guards/personal.guard';
 export const routes: Routes = [
   {
     path: '',
+    loadComponent: () => import('./features/inicio/inicio').then(m => m.Inicio),
+    title: 'La aravica · Coffee Roasters',
+  },
+  {
+    path: 'menu',
     loadComponent: () => import('./features/menu/menu').then(m => m.Menu),
-    title: 'Menú | Cafetería',
+    title: 'Nuestra carta | La aravica',
   },
   {
     path: 'login',
     loadComponent: () => import('./features/auth/login/login').then(m => m.Login),
-    title: 'Iniciar sesión | Cafetería',
+    title: 'Iniciar sesión | La aravica',
   },
   {
     path: 'registro',
     loadComponent: () => import('./features/auth/registro/registro').then(m => m.Registro),
-    title: 'Crear cuenta | Cafetería',
+    title: 'Crear cuenta | La aravica',
   },
   {
     path: 'carrito',
     loadComponent: () => import('./features/carrito/carrito').then(m => m.Carrito),
-    title: 'Carrito | Cafetería',
+    title: 'Carrito | La aravica',
   },
   {
     path: 'mis-pedidos',
     loadComponent: () => import('./features/pedidos/mis-pedidos').then(m => m.MisPedidos),
     canActivate: [clienteGuard],
-    title: 'Mis pedidos | Cafetería',
+    title: 'Mis pedidos | La aravica',
+  },
+  {
+    path: 'perfil',
+    loadComponent: () => import('./features/cliente/perfil').then(m => m.Perfil),
+    canActivate: [clienteGuard],
+    title: 'Mi Perfil | La aravica',
   },
   {
     path: 'interno',
     loadComponent: () =>
       import('./features/interno/panel-interno/panel-interno').then(m => m.PanelInterno),
     canActivate: [personalGuard],
-    title: 'Panel interno | Cafetería',
+    title: 'Panel interno | La aravica',
     children: [
       {
         path: '',

@@ -1,0 +1,121 @@
+/* Toast global: esquina inferior derecha en escritorio, ancho casi completo en móvil.
+   Mismo par de colores que la tarjeta Rewards (contrasta en ambos temas). */
+
+.aviso {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 70;
+  width: min(380px, calc(100vw - 32px));
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 12px;
+  align-items: start;
+  padding: 14px 14px 14px 16px;
+  background: var(--color-dark);
+  color: #f4efe8;
+  border: 1px solid color-mix(in oklch, var(--color-accent-light) 22%, transparent);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card-hover);
+}
+
+.aviso-icono {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-pill);
+  background: color-mix(in oklch, var(--color-accent-light) 20%, transparent);
+  color: var(--color-accent-light);
+}
+
+.aviso-texto {
+  min-width: 0;
+}
+
+.aviso-titulo {
+  font-size: 14px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.aviso-detalle {
+  font-size: 13px;
+  opacity: 0.8;
+}
+
+.aviso-accion {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-accent-light);
+  text-decoration: none;
+}
+
+.aviso-accion:hover {
+  color: var(--color-accent-light);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.aviso-cerrar {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: inherit;
+  opacity: 0.75;
+  cursor: pointer;
+}
+
+.aviso-cerrar:hover {
+  opacity: 1;
+  background: rgb(255 255 255 / 0.08);
+}
+
+@media (pointer: coarse) {
+  .aviso-cerrar {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+@media (max-width: 620px) {
+  .aviso {
+    left: 16px;
+    right: 16px;
+    width: auto;
+    bottom: calc(16px + env(safe-area-inset-bottom));
+  }
+}
+
+/* Entrada algo más lenta que la salida. */
+@media (prefers-reduced-motion: no-preference) {
+  .aviso-entra {
+    animation: aviso-entra 220ms var(--ease-out);
+  }
+
+  .aviso-sale {
+    animation: aviso-sale 150ms ease-in forwards;
+  }
+}
+
+@keyframes aviso-entra {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+@keyframes aviso-sale {
+  to {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}

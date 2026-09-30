@@ -1,0 +1,107 @@
+<svg
+  [attr.width]="tamano()"
+  [attr.height]="tamano()"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  [attr.role]="etiqueta() ? 'img' : null"
+  [attr.aria-hidden]="etiqueta() ? null : 'true'"
+  [attr.aria-label]="etiqueta()"
+>
+  @switch (nombre()) {
+    @case ('sun') {
+      <circle cx="12" cy="12" r="4" />
+      <line x1="12" y1="2" x2="12" y2="4" />
+      <line x1="12" y1="20" x2="12" y2="22" />
+      <line x1="4.2" y1="4.2" x2="5.6" y2="5.6" />
+      <line x1="18.4" y1="18.4" x2="19.8" y2="19.8" />
+      <line x1="2" y1="12" x2="4" y2="12" />
+      <line x1="20" y1="12" x2="22" y2="12" />
+      <line x1="4.2" y1="19.8" x2="5.6" y2="18.4" />
+      <line x1="18.4" y1="5.6" x2="19.8" y2="4.2" />
+    }
+    @case ('moon') {
+      <path d="M20 13.5A8 8 0 1 1 10.5 4 6.3 6.3 0 0 0 20 13.5Z" />
+    }
+    @case ('plus') {
+      <line x1="12" y1="4" x2="12" y2="20" />
+      <line x1="4" y1="12" x2="20" y2="12" />
+    }
+    @case ('minus') {
+      <line x1="4" y1="12" x2="20" y2="12" />
+    }
+    @case ('x') {
+      <line x1="5" y1="5" x2="19" y2="19" />
+      <line x1="19" y1="5" x2="5" y2="19" />
+    }
+    @case ('check') {
+      <polyline points="4,13 9,18 20,6" />
+    }
+    @case ('ban') {
+      <circle cx="12" cy="12" r="9" />
+      <line x1="6" y1="18" x2="18" y2="6" />
+    }
+    @case ('home') {
+      <path d="M4 11.5 12 4l8 7.5" />
+      <path d="M6 10v9a1 1 0 0 0 1 1h3v-5h4v5h3a1 1 0 0 0 1-1v-9" />
+    }
+    @case ('coffee') {
+      <path d="M5 9h11v6a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4Z" />
+      <path d="M16 10h1.5a2.5 2.5 0 0 1 0 5H16" />
+      <line x1="8" y1="3" x2="8" y2="6" />
+      <line x1="11.5" y1="3" x2="11.5" y2="6" />
+    }
+    @case ('shopping-bag') {
+      <path d="M6 8h12l-1 12a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1Z" />
+      <path d="M9 8V6a3 3 0 0 1 6 0v2" />
+    }
+    @case ('user') {
+      <circle cx="12" cy="8" r="3.5" />
+      <path d="M5 20a7 7 0 0 1 14 0" />
+    }
+    @case ('search') {
+      <circle cx="10.5" cy="10.5" r="6.5" />
+      <line x1="15.5" y1="15.5" x2="20" y2="20" />
+    }
+    @case ('refresh-cw') {
+      <path d="M20 11a8 8 0 0 0-14.5-4.5M4 4v5h5" />
+      <path d="M4 13a8 8 0 0 0 14.5 4.5M20 20v-5h-5" />
+    }
+    @case ('map-pin') {
+      <path d="M12 22s7-7.2 7-12a7 7 0 1 0-14 0c0 4.8 7 12 7 12Z" />
+      <circle cx="12" cy="10" r="2.5" />
+    }
+    @case ('phone') {
+      <path
+        d="M6 3h3l2 5-2.5 2a12 12 0 0 0 5.5 5.5l2-2.5 5 2v3a2 2 0 0 1-2.2 2A17 17 0 0 1 4 6.2 2 2 0 0 1 6 3Z"
+      />
+    }
+    @case ('log-out') {
+      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+      <line x1="20" y1="12" x2="9" y2="12" />
+      <polyline points="15,7 20,12 15,17" />
+    }
+    @case ('layout-dashboard') {
+      <rect x="3" y="3" width="8" height="8" rx="1.5" />
+      <rect x="13" y="3" width="8" height="5" rx="1.5" />
+      <rect x="13" y="10" width="8" height="11" rx="1.5" />
+      <rect x="3" y="13" width="8" height="8" rx="1.5" />
+    }
+    @case ('chevron-right') {
+      <polyline points="9,5 16,12 9,19" />
+    }
+    @case ('eye') {
+      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z" />
+      <circle cx="12" cy="12" r="3" />
+    }
+    @case ('eye-off') {
+      <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a13.16 13.16 0 0 1-1.67 2.68" />
+      <path d="M6.61 6.61A13.526 13.526 0 0 0 1 12s4 8 11 8a9.26 9.26 0 0 0 5.39-1.61" />
+      <path d="M14.12 14.12a3 3 0 1 1-4.24-4.24" />
+      <line x1="1" y1="1" x2="23" y2="23" />
+    }
+  }
+</svg>
