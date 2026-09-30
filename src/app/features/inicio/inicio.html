@@ -10,19 +10,26 @@
         <a routerLink="/menu" class="btn-primario">Explorar el menú</a>
         <a href="#historia" class="btn-contorno-claro">Nuestra historia</a>
       </div>
+      <ul class="hero-datos" aria-label="Por qué La aravica">
+        <li><app-icono nombre="coffee" [tamano]="18" /> Tostado en pequeños lotes</li>
+        <li><app-icono nombre="map-pin" [tamano]="18" /> Dos sucursales en Medellín</li>
+        <li><app-icono nombre="shopping-bag" [tamano]="18" /> Retira con tu código</li>
+      </ul>
     </div>
-    
   </div>
-
-  
 </section>
 
 <!-- Destacados -->
 @if (destacados().length) {
   <section id="destacados" class="destacados reveal">
     <div class="destacados-encabezado">
-      <h2 class="eyebrow">Recomendaciones de temporada</h2>
-      <a routerLink="/menu" class="ver-carta">Ver la carta completa →</a>
+      <div>
+        <span class="eyebrow">Lo más pedido</span>
+        <h2 class="destacados-titulo">Recomendaciones de temporada</h2>
+      </div>
+      <a routerLink="/menu" class="ver-carta">
+        Ver la carta completa <app-icono nombre="chevron-right" [tamano]="16" />
+      </a>
     </div>
     <div class="destacados-grid">
       @for (item of destacados(); track item.productoId) {
@@ -41,8 +48,10 @@
               </div>
             </div>
             @if (!auth.esPersonal()) {
-              <button type="button" class="destacado-agregar" (click)="agregar(item)">
-                + Agregar
+              <button type="button" class="destacado-agregar"
+                      [attr.aria-label]="'Agregar ' + item.nombre + ' al carrito'"
+                      (click)="agregar(item)">
+                <app-icono nombre="plus" [tamano]="14" /> Agregar
               </button>
             }
           </div>
@@ -55,6 +64,9 @@
 <!-- Historia de marca -->
 <section id="historia" class="historia reveal">
   <div class="historia-inner">
+    <div class="historia-ornamento" aria-hidden="true">
+      <app-icono nombre="coffee" [tamano]="22" />
+    </div>
     <span class="eyebrow">Nuestra historia</span>
     <h2 class="historia-titulo">Del grano a tu taza, con intención</h2>
     <p class="historia-texto">

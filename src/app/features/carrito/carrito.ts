@@ -9,13 +9,14 @@ import { MenuService } from '../../application/menu.service';
 import { PedidoService } from '../../application/pedido.service';
 import { Sucursal } from '../../domain/menu/menu.model';
 import { PedidoCliente } from '../../domain/pedidos/pedido.model';
+import { Icono } from '../../shared/ui/icono/icono';
 import { StripePago } from './stripe-pago';
 
 const METODOS_PAGO = ['TARJETA', 'PSE', 'NEQUI', 'DAVIPLATA'];
 
 @Component({
   selector: 'app-carrito',
-  imports: [CurrencyPipe, FormsModule, RouterLink, StripePago],
+  imports: [CurrencyPipe, FormsModule, Icono, RouterLink, StripePago],
   templateUrl: './carrito.html',
   styleUrl: './carrito.css',
 })
