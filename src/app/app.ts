@@ -4,6 +4,7 @@ import {
   ElementRef,
   HostListener,
   computed,
+  effect,
   inject,
   signal,
   viewChild,
@@ -20,11 +21,12 @@ import { filter } from 'rxjs';
 import { AuthService } from './application/auth.service';
 import { CarritoService } from './application/carrito.service';
 import { TemaService } from './application/tema.service';
+import { AvisoFlotante } from './shared/ui/aviso/aviso';
 import { Icono } from './shared/ui/icono/icono';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, Icono],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, Icono, AvisoFlotante],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
@@ -39,6 +41,8 @@ export class App {
   private readonly botonCuenta = viewChild<ElementRef<HTMLButtonElement>>('botonCuenta');
 
   protected readonly cuentaAbierta = signal(false);
+  protected readonly contadorRebota = signal(false);
+  private cantidadPrevia = 0;
 
   /** El número del contador es aria-hidden, así que este texto es el único que lo anuncia. */
   protected readonly etiquetaCarrito = computed(() => {
@@ -49,6 +53,20 @@ export class App {
   });
 
   constructor() {
+    // Rebote del badge al agregar: se apaga y se prende en el siguiente frame para que la
+    // animación se repita aunque se agregue varias veces seguidas.
+    effect(() => {
+      const cantidad = this.carrito.cantidadTotal();
+      if (cantidad > this.cantidadPrevia) {
+        this.contadorRebota.set(false);
+        requestAnimationFrame(() => {
+          this.contadorRebota.set(true);
+          setTimeout(() => this.contadorRebota.set(false), 400);
+        });
+      }
+      this.cantidadPrevia = cantidad;
+    });
+
     // Angular ignora scroll-margin-top con routerLink + fragment: el offset evita que el ancla
     // quede bajo el encabezado pegajoso.
     inject(ViewportScroller).setOffset(() => [
