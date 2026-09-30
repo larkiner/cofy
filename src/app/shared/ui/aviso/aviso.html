@@ -1,0 +1,31 @@
+<!-- Región viva siempre presente y solo con texto: la lee el lector de pantalla sin los botones. -->
+<p class="visualmente-oculto" role="status" aria-live="polite" aria-atomic="true">{{ anuncio() }}</p>
+
+@if (avisos.aviso(); as aviso) {
+  <div
+    class="aviso"
+    animate.enter="aviso-entra"
+    animate.leave="aviso-sale"
+    (mouseenter)="avisos.pausar()"
+    (mouseleave)="avisos.reanudar()"
+    (focusin)="avisos.pausar()"
+    (focusout)="alPerderFoco($event)"
+    (keydown.escape)="avisos.cerrar()"
+  >
+    <span class="aviso-icono" aria-hidden="true"><app-icono nombre="check" [tamano]="18" /></span>
+    <div class="aviso-texto">
+      <p class="aviso-titulo">{{ aviso.titulo }}</p>
+      @if (aviso.detalle) {
+        <p class="aviso-detalle">{{ aviso.detalle }}</p>
+      }
+      @if (aviso.accion; as accion) {
+        <a class="aviso-accion" [routerLink]="accion.ruta" (click)="avisos.cerrar()">
+          {{ accion.texto }} <app-icono nombre="chevron-right" [tamano]="14" />
+        </a>
+      }
+    </div>
+    <button type="button" class="aviso-cerrar" aria-label="Cerrar aviso" (click)="avisos.cerrar()">
+      <app-icono nombre="x" [tamano]="16" />
+    </button>
+  </div>
+}
