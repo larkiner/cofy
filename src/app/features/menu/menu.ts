@@ -6,6 +6,7 @@ import { CarritoService } from '../../application/carrito.service';
 import { MenuService } from '../../application/menu.service';
 import { MenuItem } from '../../domain/menu/menu.model';
 import { Icono } from '../../shared/ui/icono/icono';
+import { Esqueleto } from '../../shared/ui/esqueleto/esqueleto';
 
 interface GrupoCategoria {
   categoria: string;
@@ -20,7 +21,7 @@ interface GrupoCategoria {
  */
 @Component({
   selector: 'app-menu',
-  imports: [CurrencyPipe, NgTemplateOutlet, Icono],
+  imports: [CurrencyPipe, NgTemplateOutlet, Esqueleto, Icono],
   templateUrl: './menu.html',
   styleUrl: './menu.css',
 })

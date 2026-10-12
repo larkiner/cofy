@@ -5,6 +5,7 @@ import { InternoService } from '../../../application/interno.service';
 import { MenuService } from '../../../application/menu.service';
 import { VentaMostradorResponse } from '../../../domain/interno/interno.model';
 import { MenuItem } from '../../../domain/menu/menu.model';
+import { Esqueleto } from '../../../shared/ui/esqueleto/esqueleto';
 
 interface LineaVenta {
   producto: MenuItem;
@@ -19,7 +20,7 @@ const METODOS = ['EFECTIVO', 'TARJETA', 'NEQUI', 'DAVIPLATA', 'PSE'];
  */
 @Component({
   selector: 'app-mostrador',
-  imports: [CurrencyPipe, FormsModule],
+  imports: [CurrencyPipe, Esqueleto, FormsModule],
   templateUrl: './mostrador.html',
   styleUrl: '../interno.css',
 })
@@ -31,6 +32,7 @@ export class Mostrador {
   protected metodo = 'EFECTIVO';
 
   protected readonly menu = signal<MenuItem[]>([]);
+  protected readonly cargandoMenu = signal(true);
   protected readonly lineas = signal<LineaVenta[]>([]);
   protected readonly procesando = signal(false);
   protected readonly error = signal<string | null>(null);
@@ -41,8 +43,14 @@ export class Mostrador {
 
   constructor() {
     this.menuService.obtenerMenu().subscribe({
-      next: items => this.menu.set(items),
-      error: () => this.error.set('No se pudo cargar el menú.'),
+      next: items => {
+        this.menu.set(items);
+        this.cargandoMenu.set(false);
+      },
+      error: () => {
+        this.error.set('No se pudo cargar el menú.');
+        this.cargandoMenu.set(false);
+      },
     });
   }
 

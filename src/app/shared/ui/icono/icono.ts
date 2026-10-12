@@ -21,7 +21,8 @@ export type NombreIcono =
   | 'layout-dashboard'
   | 'chevron-right'
   | 'eye'
-  | 'eye-off';
+  | 'eye-off'
+  | 'menu';
 
 /**
  * Ícono en línea (SVG inline, sin sprite ni fuente de íconos). Decorativo

@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { adminGuard, supervisorGuard } from './application/guards/admin.guard';
+import { carritoConProductosGuard } from './application/guards/carrito.guard';
 import { clienteGuard } from './application/guards/cliente.guard';
 import { personalGuard } from './application/guards/personal.guard';
 
@@ -28,6 +29,12 @@ export const routes: Routes = [
     path: 'carrito',
     loadComponent: () => import('./features/carrito/carrito').then(m => m.Carrito),
     title: 'Carrito | La aravica',
+  },
+  {
+    path: 'checkout',
+    loadComponent: () => import('./features/checkout/checkout').then(m => m.Checkout),
+    canActivate: [carritoConProductosGuard],
+    title: 'Finalizar pedido | La aravica',
   },
   {
     path: 'mis-pedidos',

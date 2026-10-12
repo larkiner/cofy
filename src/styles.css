@@ -324,3 +324,29 @@ a {
 a:hover {
   color: var(--color-accent-hover);
 }
+
+/* ============================================================
+   Animación al cambiar de vista: la vista recién activada (el hermano
+   siguiente de cada <router-outlet>, también en las rutas hijas del panel
+   interno) entra con un fundido y un leve ascenso. Es CSS puro (no usa la
+   View Transitions API: en WebKit podía dejar la página en blanco) y con
+   "reducir movimiento" no hay animación. `backwards` evita que quede un
+   `transform` aplicado después de terminar.
+   ============================================================ */
+/* Los hosts de componente son `inline` por defecto y un `transform` no aplica a un inline. */
+router-outlet + * {
+  display: block;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  router-outlet + * {
+    animation: 320ms var(--ease-out) backwards vista-entra;
+  }
+}
+
+@keyframes vista-entra {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}

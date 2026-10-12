@@ -366,30 +366,96 @@ test.describe('móvil (360x740)', () => {
 test.describe('móvil (390x844)', () => {
   test.use({ viewport: { width: 390, height: 844 } });
 
-  test('la navegación queda en el header, sin barra inferior', async ({ page }) => {
+  test('el header solo muestra la marca, el carrito y el botón del menú, sin barra inferior', async ({
+    page,
+  }) => {
     await page.goto('/');
 
-    const navegacion = page
-      .locator('header.encabezado')
-      .getByRole('navigation', { name: 'Navegación principal' });
-    await expect(navegacion).toBeVisible();
-    await expect(navegacion.getByRole('link', { name: 'Carta' })).toBeVisible();
-    await expect(navegacion.getByRole('link', { name: 'Sucursales' })).toBeVisible();
+    const encabezado = page.locator('header.encabezado');
+    await expect(encabezado.getByRole('link', { name: 'La aravica' })).toBeVisible();
+    await expect(encabezado.getByRole('link', { name: /^Ver el carrito/ })).toBeVisible();
+    await expect(encabezado.getByRole('button', { name: 'Menú' })).toBeVisible();
+
+    // Lo demás baja al menú desplegable.
+    await expect(
+      encabezado.getByRole('navigation', { name: 'Navegación principal' }),
+    ).toBeHidden();
+    await expect(encabezado.getByRole('button', { name: /^Cambiar a modo/ })).toBeHidden();
+    await expect(encabezado.getByRole('button', { name: 'Cuenta' })).toBeHidden();
 
     await expect(page.locator('.nav-inferior')).toHaveCount(0);
   });
 
-  test('el panel de cuenta ocupa el ancho de la pantalla', async ({ page }) => {
+  test('el menú se abre con navegación, tema y cuenta, y ocupa el ancho de la pantalla', async ({
+    page,
+  }) => {
     await page.goto('/');
 
-    await page.getByRole('button', { name: 'Cuenta' }).click();
+    const boton = page.getByRole('button', { name: 'Menú' });
+    const menu = page.locator('#menu-movil');
+    await expect(boton).toHaveAttribute('aria-expanded', 'false');
+    await expect(menu).toHaveCount(0);
 
-    const panel = page.locator('#panel-cuenta');
-    await expect(panel).toBeVisible();
-    await expect(panel.getByRole('link', { name: 'Iniciar sesión' })).toBeVisible();
+    await boton.click();
+    await expect(boton).toHaveAttribute('aria-expanded', 'true');
+    await expect(menu).toBeVisible();
+    await expect(menu.getByRole('link', { name: 'Carta' })).toBeVisible();
+    await expect(menu.getByRole('link', { name: 'Sucursales' })).toBeVisible();
+    await expect(menu.getByRole('link', { name: 'Iniciar sesión' })).toBeVisible();
+    await expect(menu.getByRole('link', { name: 'Unirme a la Hermandad' })).toBeVisible();
+    await expect(menu.getByRole('button', { name: /modo (oscuro|claro)/i })).toBeVisible();
 
-    const caja = await panel.boundingBox();
+    const caja = await menu.boundingBox();
     expect(caja).not.toBeNull();
     expect(caja!.width).toBeGreaterThanOrEqual(300);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+  });
+
+  test('el menú se cierra con Escape (devolviendo el foco), con un toque fuera y al navegar', async ({
+    page,
+  }) => {
+    await page.goto('/');
+    const boton = page.getByRole('button', { name: 'Menú' });
+    const menu = page.locator('#menu-movil');
+
+    await boton.click();
+    await expect(menu).toBeVisible();
+    await page.keyboard.press('Escape');
+    await expect(menu).toHaveCount(0);
+    await expect(boton).toBeFocused();
+
+    await boton.click();
+    await expect(menu).toBeVisible();
+    // Toque en la parte baja de la pantalla, fuera del header y del panel.
+    await page.mouse.click(195, 830);
+    await expect(menu).toHaveCount(0);
+
+    await boton.click();
+    await menu.getByRole('link', { name: 'Carta' }).click();
+    await expect(page).toHaveURL(/\/menu$/);
+    await expect(menu).toHaveCount(0);
+    await expect(boton).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  test('desde el menú se puede cambiar el tema', async ({ page }) => {
+    await page.goto('/');
+    const oscuroAntes = await page.evaluate(() => document.documentElement.classList.contains('dark'));
+
+    await page.getByRole('button', { name: 'Menú' }).click();
+    await page.locator('#menu-movil').getByRole('button', { name: /modo (oscuro|claro)/i }).click();
+
+    await expect
+      .poll(() => page.evaluate(() => document.documentElement.classList.contains('dark')))
+      .toBe(!oscuroAntes);
+  });
+});
+
+test.describe('escritorio: el menú móvil no se ve', () => {
+  test('sin botón de menú y con la navegación a la vista en el header', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.getByRole('button', { name: 'Menú' })).toBeHidden();
+    await expect(
+      page.getByRole('navigation', { name: 'Navegación principal' }).getByRole('link', { name: 'Carta' }),
+    ).toBeVisible();
   });
 });

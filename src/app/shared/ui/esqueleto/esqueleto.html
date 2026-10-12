@@ -1,0 +1,73 @@
+<div class="esqueleto" role="status" aria-busy="true">
+  <span class="visualmente-oculto">{{ etiqueta() }}</span>
+
+  <div class="piezas" [class]="'piezas ' + variante()" aria-hidden="true">
+    @switch (variante()) {
+      @case ('producto') {
+        @for (i of piezas(); track i) {
+          <div class="pieza tarjeta">
+            <div class="bloque imagen"></div>
+            <div class="cuerpo">
+              <div class="bloque linea ancho-70"></div>
+              <div class="bloque linea ancho-100"></div>
+              <div class="bloque linea ancho-40"></div>
+            </div>
+          </div>
+        }
+      }
+      @case ('destacado') {
+        @for (i of piezas(); track i) {
+          <div class="pieza bloque destacado-bloque"></div>
+        }
+      }
+      @case ('fila') {
+        @for (i of piezas(); track i) {
+          <div class="pieza tarjeta fila-tarjeta">
+            <div class="par">
+              <div class="bloque linea ancho-40"></div>
+              <div class="bloque pildora"></div>
+            </div>
+            <div class="bloque linea ancho-70"></div>
+            <div class="bloque linea ancho-30"></div>
+          </div>
+        }
+      }
+      @case ('sucursal') {
+        @for (i of piezas(); track i) {
+          <div class="pieza columna">
+            <div class="bloque linea titulo ancho-70"></div>
+            <div class="bloque linea ancho-100"></div>
+            <div class="bloque linea ancho-40"></div>
+          </div>
+        }
+      }
+      @case ('texto') {
+        @for (i of piezas(); track i) {
+          <div class="bloque linea" [class.ancho-70]="$last" [class.ancho-100]="!$last"></div>
+        }
+      }
+      @case ('tabla') {
+        @for (i of piezas(); track i) {
+          <div class="pieza fila-tabla">
+            <div class="bloque linea ancho-100"></div>
+          </div>
+        }
+      }
+      @case ('metricas') {
+        <div class="kpis">
+          @for (i of [0, 1, 2, 3]; track i) {
+            <div class="kpi tarjeta">
+              <div class="bloque linea ancho-70"></div>
+              <div class="bloque linea valor ancho-100"></div>
+            </div>
+          }
+        </div>
+        <div class="graficas">
+          @for (i of [0, 1]; track i) {
+            <div class="grafica tarjeta bloque"></div>
+          }
+        </div>
+      }
+    }
+  </div>
+</div>

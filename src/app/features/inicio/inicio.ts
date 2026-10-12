@@ -7,6 +7,7 @@ import { CarritoService } from '../../application/carrito.service';
 import { MenuService } from '../../application/menu.service';
 import { MenuItem, Sucursal } from '../../domain/menu/menu.model';
 import { Icono } from '../../shared/ui/icono/icono';
+import { Esqueleto } from '../../shared/ui/esqueleto/esqueleto';
 import { InicioSucursales } from './secciones/sucursales/sucursales';
 
 /**
@@ -16,7 +17,7 @@ import { InicioSucursales } from './secciones/sucursales/sucursales';
  */
 @Component({
   selector: 'app-inicio',
-  imports: [CurrencyPipe, Icono, RouterLink, InicioSucursales],
+  imports: [CurrencyPipe, Esqueleto, Icono, RouterLink, InicioSucursales],
   templateUrl: './inicio.html',
   styleUrl: './inicio.css',
 })

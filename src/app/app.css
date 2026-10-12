@@ -94,9 +94,34 @@
   text-decoration: none;
 }
 
+/* El menú desplegable es solo de móvil (ver el bloque ≤620px al final). */
+.boton-menu {
+  display: none;
+}
+
+/* El contenedor no genera caja: el botón se alinea con los demás íconos del header y el
+   panel se ancla al header (bloque contenedor sticky) para ocupar todo el ancho. */
+.contenedor-menu-movil {
+  display: contents;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .contador.rebota {
     animation: rebote-contador 400ms var(--ease-out);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .panel-cuenta,
+  .menu-movil {
+    animation: panel-entra 200ms var(--ease-out);
+  }
+}
+
+@keyframes panel-entra {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
   }
 }
 
@@ -277,31 +302,139 @@
   }
 }
 
-/* Móvil: la marca y los tres íconos quedan arriba; la navegación baja a
-   su propia línea a lo ancho. El panel de cuenta se ancla al header (el
-   bloque contenedor sticky) para ocupar todo el ancho. */
+/* Móvil: el header solo muestra la marca, el carrito y el botón del menú. La navegación, el
+   tema y la cuenta bajan al menú desplegable (`.menu-movil`), anclado al header para ocupar
+   todo el ancho. */
 @media (max-width: 620px) {
-  .encabezado {
-    flex-wrap: wrap;
-    row-gap: 12px;
+  .navegacion,
+  .solo-escritorio {
+    display: none;
   }
 
-  .navegacion {
-    order: 3;
-    flex-basis: 100%;
-    margin-left: 0;
-    flex-wrap: wrap;
-    gap: 8px 20px;
+  .boton-menu {
+    display: flex;
   }
 
-  .cuenta {
-    position: static;
-  }
-
-  .panel-cuenta {
+  .menu-movil {
+    position: absolute;
     top: 100%;
     left: 8px;
     right: 8px;
-    min-width: 0;
+    z-index: 60;
+    max-height: calc(100dvh - var(--alto-header) - 16px);
+    overflow-y: auto;
+    padding: 8px;
+    background: var(--color-bg);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-card-hover);
+  }
+}
+
+@media (min-width: 621px) {
+  .menu-movil {
+    display: none;
+  }
+}
+
+.menu-movil-nav {
+  display: flex;
+  flex-direction: column;
+}
+
+.menu-movil-enlace {
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 0 12px;
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.menu-movil-enlace:hover,
+.menu-movil-enlace.activo,
+.menu-movil-tema:hover {
+  background: var(--color-overlay-hover);
+  color: var(--color-text);
+}
+
+.menu-movil-enlace.activo {
+  font-weight: 700;
+}
+
+.menu-movil-cuenta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+  padding: 12px 12px 8px;
+  border-top: 1px solid var(--color-border);
+}
+
+.menu-movil-tema {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 48px;
+  margin-top: 4px;
+  padding: 0 12px;
+  background: transparent;
+  color: var(--color-text);
+  border: none;
+  border-top: 1px solid var(--color-border);
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* ============================================================
+   Barra de progreso de navegación: solo aparece si la página tarda
+   (p. ej. descargando su código) y se omite con "reducir movimiento".
+   ============================================================ */
+.progreso-navegacion {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .progreso-navegacion {
+    opacity: 0;
+    animation: progreso-aparece 150ms 200ms forwards;
+  }
+
+  .progreso-navegacion::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    width: 40%;
+    border-radius: 2px;
+    background: var(--color-accent);
+    animation: progreso-corre 1.1s ease-in-out infinite;
+  }
+}
+
+@keyframes progreso-aparece {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes progreso-corre {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(250%);
   }
 }

@@ -6,6 +6,7 @@ import { ClienteService } from '../../application/cliente.service';
 import { PedidoService } from '../../application/pedido.service';
 import { ClientePerfil } from '../../domain/cliente/cliente.model';
 import { PedidoCliente } from '../../domain/pedidos/pedido.model';
+import { Esqueleto } from '../../shared/ui/esqueleto/esqueleto';
 
 /**
  * Vista "Mi cuenta": datos del cliente autenticado, edición de nombre/teléfono
@@ -13,7 +14,7 @@ import { PedidoCliente } from '../../domain/pedidos/pedido.model';
  */
 @Component({
   selector: 'app-perfil',
-  imports: [FormsModule, RouterLink, CurrencyPipe, DatePipe],
+  imports: [FormsModule, RouterLink, CurrencyPipe, DatePipe, Esqueleto],
   templateUrl: './perfil.html',
   styleUrl: './perfil.css',
 })

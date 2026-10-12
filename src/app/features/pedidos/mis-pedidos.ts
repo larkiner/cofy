@@ -3,10 +3,11 @@ import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { PedidoService } from '../../application/pedido.service';
 import { PedidoCliente } from '../../domain/pedidos/pedido.model';
+import { Esqueleto } from '../../shared/ui/esqueleto/esqueleto';
 
 @Component({
   selector: 'app-mis-pedidos',
-  imports: [CurrencyPipe, DatePipe, RouterLink],
+  imports: [CurrencyPipe, DatePipe, Esqueleto, RouterLink],
   templateUrl: './mis-pedidos.html',
   styleUrl: './mis-pedidos.css',
 })

@@ -3,6 +3,7 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { InternoService } from '../../../application/interno.service';
 import { MetricaSucursal } from '../../../domain/interno/interno.model';
+import { Esqueleto } from '../../../shared/ui/esqueleto/esqueleto';
 
 interface PuntoSerie {
   fecha: string;
@@ -27,7 +28,7 @@ const MARGEN = { arriba: 16, abajo: 28, izquierda: 8, derecha: 8 };
 /** Métricas de ventas por sucursal y día, como dashboard (SUPERVISOR/ADMIN). */
 @Component({
   selector: 'app-metricas',
-  imports: [CurrencyPipe, DatePipe, FormsModule],
+  imports: [CurrencyPipe, DatePipe, Esqueleto, FormsModule],
   templateUrl: './metricas.html',
   styleUrl: '../interno.css',
 })

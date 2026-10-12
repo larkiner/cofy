@@ -59,6 +59,9 @@
     </form>
 
     <h2>Productos</h2>
+    @if (cargandoProductos()) {
+      <app-esqueleto variante="tabla" [cantidad]="5" etiqueta="Cargando productos…" />
+    } @else {
     <table class="tabla">
       <thead>
         <tr>
@@ -86,6 +89,7 @@
         }
       </tbody>
     </table>
+    }
   </div>
 
   <!-- ================= CATEGORÍAS ================= -->
@@ -104,6 +108,9 @@
     </form>
 
     <h2>Categorías</h2>
+    @if (cargandoCategorias()) {
+      <app-esqueleto variante="tabla" [cantidad]="3" etiqueta="Cargando categorías…" />
+    } @else {
     <table class="tabla">
       <thead>
         <tr><th>Nombre</th><th>Descripción</th></tr>
@@ -117,6 +124,7 @@
         }
       </tbody>
     </table>
+    }
   </div>
 </div>
 

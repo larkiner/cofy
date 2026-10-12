@@ -1,0 +1,151 @@
+import { CurrencyPipe } from '@angular/common';
+import { Component, inject, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
+import { switchMap } from 'rxjs';
+import { AuthService } from '../../application/auth.service';
+import { CarritoService } from '../../application/carrito.service';
+import { MenuService } from '../../application/menu.service';
+import { PedidoService } from '../../application/pedido.service';
+import { Sucursal } from '../../domain/menu/menu.model';
+import { PedidoCliente } from '../../domain/pedidos/pedido.model';
+import { Esqueleto } from '../../shared/ui/esqueleto/esqueleto';
+import { Icono } from '../../shared/ui/icono/icono';
+import { StripePago } from './stripe-pago';
+
+const METODOS_PAGO = ['TARJETA', 'PSE', 'NEQUI', 'DAVIPLATA'];
+
+/**
+ * Checkout (/checkout): sucursal de retiro, método de pago y confirmación del pedido. Es el
+ * paso siguiente al carrito (/carrito); la ruta solo se abre con productos en el carrito
+ * (`carritoConProductosGuard`).
+ */
+@Component({
+  selector: 'app-checkout',
+  imports: [CurrencyPipe, Esqueleto, FormsModule, Icono, RouterLink, StripePago],
+  templateUrl: './checkout.html',
+  styleUrl: './checkout.css',
+})
+export class Checkout {
+  protected readonly carrito = inject(CarritoService);
+  protected readonly auth = inject(AuthService);
+  private readonly menuService = inject(MenuService);
+  private readonly pedidoService = inject(PedidoService);
+  private readonly router = inject(Router);
+
+  protected readonly metodos = METODOS_PAGO;
+  protected readonly sucursales = signal<Sucursal[]>([]);
+  protected readonly cargandoSucursales = signal(true);
+  protected sucursalId: number | null = null;
+  protected metodo = 'TARJETA';
+
+  protected readonly procesando = signal(false);
+  protected readonly error = signal<string | null>(null);
+  /** Pedido pagado con su código de retiro (pantalla de éxito). */
+  protected readonly resultado = signal<PedidoCliente | null>(null);
+  protected readonly stripeClientSecret = signal<string | null>(null);
+  private pedidoStripeId: number | null = null;
+
+  constructor() {
+    this.menuService.obtenerSucursales().subscribe({
+      next: sucursales => {
+        this.sucursales.set(sucursales);
+        if (sucursales.length > 0) {
+          this.sucursalId = sucursales[0].id;
+        }
+        this.cargandoSucursales.set(false);
+      },
+      error: () => {
+        this.error.set('No se pudieron cargar las sucursales. Intenta de nuevo.');
+        this.cargandoSucursales.set(false);
+      },
+    });
+  }
+
+  /** Flujo completo: crear pedido -> pagar -> confirmar (pasarela simulada). */
+  protected pedirYPagar(): void {
+    if (!this.auth.logueado()) {
+      this.router.navigateByUrl('/login');
+      return;
+    }
+    if (this.sucursalId === null || this.carrito.lineas().length === 0) {
+      return;
+    }
+
+    this.error.set(null);
+    this.procesando.set(true);
+
+    const items = this.carrito.lineas().map(l => ({
+      productoId: l.producto.productoId,
+      cantidad: l.cantidad,
+    }));
+
+    if (this.metodo === 'TARJETA') {
+      this.pedidoService.crear({ sucursalId: this.sucursalId, items }).pipe(
+        switchMap(pedido => {
+          this.pedidoStripeId = pedido.pedidoId;
+          return this.pedidoService.iniciarPagoStripe(pedido.pedidoId);
+        }),
+      ).subscribe({
+        next: stripe => {
+          this.procesando.set(false);
+          this.stripeClientSecret.set(stripe.clientSecret);
+        },
+        error: err => this.mostrarErrorPago(err),
+      });
+      return;
+    }
+
+    this.pedidoService.crear({ sucursalId: this.sucursalId, items }).pipe(
+      switchMap(pedido => this.pedidoService.pagar(pedido.pedidoId, this.metodo).pipe(
+        switchMap(() => this.pedidoService.confirmarPago(pedido.pedidoId)))),
+    ).subscribe({
+      next: pedidoPagado => {
+        this.procesando.set(false);
+        this.resultado.set(pedidoPagado);
+        this.carrito.vaciar();
+      },
+      error: err => this.mostrarErrorPago(err),
+    });
+  }
+
+  protected cancelarPagoStripe(): void {
+    this.stripeClientSecret.set(null);
+    this.pedidoStripeId = null;
+  }
+
+  protected pagoStripeConfirmado(): void {
+    if (this.pedidoStripeId === null) return;
+    this.procesando.set(true);
+    this.esperarConfirmacionStripe(this.pedidoStripeId, 0);
+  }
+
+  private esperarConfirmacionStripe(pedidoId: number, intento: number): void {
+    this.pedidoService.misPedidos().subscribe({
+      next: pedidos => {
+        const pedido = pedidos.find(p => p.pedidoId === pedidoId);
+        if (pedido?.estado === 'PAGADO') {
+          this.procesando.set(false);
+          this.stripeClientSecret.set(null);
+          this.resultado.set(pedido);
+          this.carrito.vaciar();
+          return;
+        }
+        if (intento < 10) {
+          window.setTimeout(() => this.esperarConfirmacionStripe(pedidoId, intento + 1), 1_000);
+          return;
+        }
+        this.procesando.set(false);
+        this.error.set('El pago fue recibido; estamos esperando la confirmación de Stripe.');
+      },
+      error: err => this.mostrarErrorPago(err),
+    });
+  }
+
+  private mostrarErrorPago(err: { status?: number; mensaje?: string }): void {
+    this.procesando.set(false);
+    this.error.set(err.status === 401
+      ? 'Tu sesión expiró. Inicia sesión de nuevo.'
+      : err.mensaje ?? 'No se pudo procesar el pedido. Intenta de nuevo.');
+  }
+}

@@ -16,7 +16,9 @@
 
   <!-- ============ Datos del cliente ============ -->
   @if (cargandoPerfil()) {
-    <p class="estado">Cargando tus datos…</p>
+    <div class="tarjeta">
+      <app-esqueleto variante="texto" [cantidad]="4" etiqueta="Cargando tus datos…" />
+    </div>
   } @else if (errorPerfil()) {
     <p class="estado error">{{ errorPerfil() }}</p>
   } @else if (perfil(); as p) {
@@ -103,7 +105,7 @@
   <h2 class="titulo-historial">Historial de compras</h2>
 
   @if (cargandoPedidos()) {
-    <p class="estado">Cargando historial…</p>
+    <app-esqueleto variante="fila" [cantidad]="2" etiqueta="Cargando historial…" />
   } @else if (errorPedidos()) {
     <p class="estado error">{{ errorPedidos() }}</p>
   } @else if (pedidos().length === 0) {

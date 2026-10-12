@@ -20,7 +20,11 @@
 </section>
 
 <!-- Destacados -->
-@if (destacados().length) {
+@if (cargando()) {
+  <section class="destacados" aria-label="Recomendaciones de temporada">
+    <app-esqueleto variante="destacado" etiqueta="Cargando recomendaciones…" />
+  </section>
+} @else if (destacados().length) {
   <section id="destacados" class="destacados reveal">
     <div class="destacados-encabezado">
       <div>

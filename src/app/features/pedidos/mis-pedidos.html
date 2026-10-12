@@ -2,7 +2,7 @@
   <h1>Mis pedidos</h1>
 
   @if (cargando()) {
-    <p class="estado">Cargando pedidos…</p>
+    <app-esqueleto variante="fila" etiqueta="Cargando pedidos…" />
   } @else if (error()) {
     <p class="estado error">{{ error() }}</p>
   } @else if (pedidos().length === 0) {
