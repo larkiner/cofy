@@ -20,7 +20,11 @@
 
       <label>
         Contraseña
-        <input type="password" name="password" [(ngModel)]="password" required autocomplete="current-password" />
+        <span class="campo-password">
+          <input [type]="verPassword() ? 'text' : 'password'" name="password" [(ngModel)]="password"
+                 required autocomplete="current-password" />
+          <app-alternar-password [(visible)]="verPassword" />
+        </span>
       </label>
 
       @if (error()) {

@@ -3,10 +3,11 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../application/auth.service';
 import { rutaSegunRol } from '../../../application/rutas-rol';
+import { AlternarPassword } from '../../../shared/ui/alternar-password/alternar-password';
 
 @Component({
   selector: 'app-login',
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink, AlternarPassword],
   templateUrl: './login.html',
   styleUrl: '../auth.css',
 })
@@ -16,6 +17,7 @@ export class Login {
 
   protected email = '';
   protected password = '';
+  protected readonly verPassword = signal(false);
   protected readonly cargando = signal(false);
   protected readonly error = signal<string | null>(null);
 

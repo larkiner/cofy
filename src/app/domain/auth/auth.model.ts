@@ -3,7 +3,7 @@
 export interface RegistroRequest {
   nombre: string;
   email: string;
-  telefono?: string;
+  telefono: string;
   password: string;
   sucursalId?: number;
 }

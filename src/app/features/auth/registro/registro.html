@@ -1,7 +1,7 @@
 <section class="auth">
   <div class="auth-panel">
     <form class="tarjeta-auth" (ngSubmit)="enviar()">
-      <h1>Únete a la Hermandad</h1>
+      <h1>Únete a la comunidad</h1>
       <p class="sub-auth">Crea tu cuenta y gana Granos con cada pedido.</p>
 
       <label>
@@ -15,14 +15,19 @@
       </label>
 
       <label>
-        Teléfono (opcional)
-        <input type="tel" name="telefono" [(ngModel)]="telefono" autocomplete="tel" />
+        Teléfono
+        <input type="tel" name="telefono" [(ngModel)]="telefono" required inputmode="numeric"
+               maxlength="10" placeholder="10 dígitos" autocomplete="tel" />
       </label>
 
       <label>
         Contraseña
-        <input type="password" name="password" [(ngModel)]="password" required minlength="6"
-               autocomplete="new-password" />
+        <span class="campo-password">
+          <input [type]="verPassword() ? 'text' : 'password'" name="password" [(ngModel)]="password"
+                 required minlength="8" maxlength="72" autocomplete="new-password" />
+          <app-alternar-password [(visible)]="verPassword" />
+        </span>
+        <span class="nota">Mínimo 8 caracteres.</span>
       </label>
 
       @if (error()) {

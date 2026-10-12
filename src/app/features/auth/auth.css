@@ -115,6 +115,29 @@ input:focus {
   box-shadow: var(--ring);
 }
 
+/* Campo de contraseña: el botón de ojo (app-alternar-password) se ancla
+   al borde derecho de este contenedor. El input deja sitio a la derecha
+   y se oculta el botón nativo de Edge/Chromium para no duplicarlo. */
+.campo-password {
+  position: relative;
+  display: flex;
+}
+
+.campo-password input {
+  flex: 1;
+  min-width: 0;
+  padding-right: 48px;
+}
+
+input::-ms-reveal,
+input::-ms-clear {
+  display: none;
+}
+
+label .nota {
+  font-weight: 400;
+}
+
 button[type='submit'] {
   background: var(--gradient-accent);
   color: var(--color-on-accent);
@@ -169,15 +192,48 @@ button[type='submit']:not(:disabled):hover {
 }
 
 /* ---------- Responsive ----------
-   Bajo 900px el panel de imagen se oculta: el formulario ocupa todo
-   el ancho. Mantiene la pantalla enfocada en la tarea en móvil, sin
-   descartar contenido: la foto es decorativa (aria-hidden). */
+   Bajo 900px no hay espacio para dos columnas: la foto pasa a ser el
+   fondo de toda la pantalla (decorativa, aria-hidden) y el formulario
+   queda como tarjeta translúcida encima. La frase de marca se oculta
+   porque taparía el formulario. El velo se oscurece un poco más que en
+   desktop para que el texto siga legible sobre cualquier foto. */
 @media (max-width: 900px) {
   .auth {
+    position: relative;
+    isolation: isolate;
     grid-template-columns: 1fr;
   }
 
   .auth-media {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
+
+  /* login.jpg trae ~4 % de barra negra arriba y abajo incrustada en el
+     archivo; el zoom la deja fuera del recorte del contenedor. */
+  .auth-media img {
+    transform: scale(1.1);
+  }
+
+  .auth-media-overlay {
+    background: linear-gradient(180deg, rgba(20, 14, 10, 0.2) 0%, rgba(20, 14, 10, 0.55) 100%);
+  }
+
+  .auth-media-texto {
     display: none;
+  }
+
+  .auth-panel {
+    background: transparent;
+  }
+
+  .tarjeta-auth {
+    padding: 28px 22px;
+    background: color-mix(in srgb, var(--color-bg) 74%, transparent);
+    border: 1px solid var(--color-border-input);
+    border-radius: var(--radius-lg, 20px);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
   }
 }
