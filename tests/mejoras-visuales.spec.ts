@@ -139,7 +139,7 @@ test.describe('header', () => {
     await expect(botonCuenta).toHaveAttribute('aria-expanded', 'true');
     await expect(panel).toBeVisible();
     await expect(panel.getByRole('link', { name: 'Iniciar sesión' })).toBeVisible();
-    await expect(panel.getByRole('link', { name: 'Unirme a la Hermandad' })).toBeVisible();
+    await expect(panel.getByRole('link', { name: 'Unirme a la comunidad' })).toBeVisible();
 
     // Escape lo cierra y el foco vuelve al botón.
     await page.keyboard.press('Escape');
@@ -402,7 +402,7 @@ test.describe('móvil (390x844)', () => {
     await expect(menu.getByRole('link', { name: 'Carta' })).toBeVisible();
     await expect(menu.getByRole('link', { name: 'Sucursales' })).toBeVisible();
     await expect(menu.getByRole('link', { name: 'Iniciar sesión' })).toBeVisible();
-    await expect(menu.getByRole('link', { name: 'Unirme a la Hermandad' })).toBeVisible();
+    await expect(menu.getByRole('link', { name: 'Unirme a la comunidad' })).toBeVisible();
     await expect(menu.getByRole('button', { name: /modo (oscuro|claro)/i })).toBeVisible();
 
     const caja = await menu.boundingBox();

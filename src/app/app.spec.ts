@@ -91,7 +91,7 @@ describe('App', () => {
       expect(texto).toContain('Carta');
       expect(texto).toContain('Sucursales');
       expect(texto).toContain('Iniciar sesión');
-      expect(texto).toContain('Unirme a la Hermandad');
+      expect(texto).toContain('Unirme a la comunidad');
       expect(texto).toMatch(/modo (oscuro|claro)/i);
     });
 

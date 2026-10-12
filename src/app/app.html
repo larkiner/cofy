@@ -157,7 +157,7 @@
   } @else {
     <a class="panel-cuenta-enlace" routerLink="/login" (click)="cerrarMenus()">Iniciar sesión</a>
     <a class="panel-cuenta-enlace" routerLink="/registro" (click)="cerrarMenus()"
-      >Unirme a la Hermandad</a
+      >Unirme a la comunidad</a
     >
   }
 </ng-template>
@@ -175,7 +175,7 @@
       <a routerLink="/menu">Menú</a>
       <a routerLink="/" fragment="horario">Horario y ubicación</a>
       @if (!auth.logueado()) {
-        <a routerLink="/registro">Únete a la Hermandad</a>
+        <a routerLink="/registro">Únete a la comunidad</a>
       }
     </nav>
     <p class="pie-copy">© 2026 La aravica · Tostado con intención en Colombia.</p>
