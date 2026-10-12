@@ -11,6 +11,9 @@
     </select>
   </label>
   <button type="button" class="boton secundario" (click)="cargar()">Actualizar</button>
+  @if (actualizadoEn(); as hora) {
+    <span class="actualizado">Actualizado {{ hora | date:'h:mm:ss a' }} · se refresca solo cada 15 s</span>
+  }
 </div>
 
 @if (cargando()) {
@@ -47,8 +50,13 @@
   .filtros {
     display: flex;
     align-items: flex-end;
+    flex-wrap: wrap;
     gap: 0.75rem;
     margin-bottom: 1rem;
+  }
+  .actualizado {
+    font-size: 0.85rem;
+    color: var(--color-muted);
   }
   .lista-pedidos {
     display: flex;
