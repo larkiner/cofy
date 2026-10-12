@@ -6,15 +6,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Angular 22 standalone-component frontend ("CafeteriaWeb") for a cafeteria ordering system, backed by a separate Spring Boot API (not in this repo). The base URL comes from `environment.apiUrl` (see "Environments" below), defaulting to `http://localhost:8080/api`. All UI text, route names, and identifiers are in Spanish — match that convention in new code.
 
-## Branch workflow (Git Flow)
+## Branch workflow (two branches)
 
-Git Flow mapped onto the three long-lived branches: **`prod`** = main (production, deployed by Vercel), **`dev`** = develop (integration), **`qa`** = where each release is tested before production. Never commit directly to `prod`, `qa` or `dev`.
+Two long-lived branches only (Git Flow was dropped on 2026-10-12: a single developer): **`maestro`** = production (deployed by Vercel), **`dev`** = day-to-day development. There is no `qa` and no `release/*`/`hotfix/*` flow.
 
-- **Feature**: `feature/<descripcion-en-espanol>` from `dev`. Push it and open the PR **with base `dev`** (`https://github.com/larkiner/cofy/compare/dev...feature/<nombre>`); GitHub's default base may point elsewhere. Merge into `dev` with `--no-ff`.
-- **Release**: `release/<x.y.z>` from `dev` → push to `qa` and test → merge into `prod` with `--no-ff` + annotated tag `v<x.y.z>` → merge back into `dev` → delete the release branch. Push tags by name, never `--tags` (there are local-only archive tags).
-- **Hotfix**: `hotfix/<descripcion>` from `prod` → merge into `prod` (patch tag) and back into `dev`.
-- No `claude/*` or `agents/*` branches and no git worktree per task.
-- After pushing `prod`, confirm Vercel built a **Production** deployment, not a Preview (see `documentación/05-infraestructura-despliegue.md`, P4, in the parent workspace).
+- Work happens on `dev`. For something larger or risky, use a short-lived `feature/<descripcion-en-espanol>` branch from `dev` and merge it back into `dev`; delete it afterwards (local and remote).
+- To release: merge `dev` into `maestro` (fast-forward when possible) and push. Tag notable releases with an annotated `v<x.y.z>` tag. Push tags by name, never `--tags` (there are local-only archive tags).
+- Urgent fix to production: commit it on `dev` (or a branch from `maestro`), merge into `maestro`, and make sure `dev` ends up containing it too.
+- Never commit or push without the owner's approval. No `claude/*` or `agents/*` branches and no git worktree per task.
+- After pushing `maestro`, confirm Vercel built a **Production** deployment, not a Preview (see `documentación/05-infraestructura-despliegue.md`, P4, in the parent workspace).
 
 ## Running the app
 
