@@ -35,7 +35,7 @@
       <p class="visualmente-oculto" role="status" aria-live="polite">{{ mensajeResultados() }}</p>
 
       @if (cargando()) {
-        <p class="estado">Cargando menú…</p>
+        <app-esqueleto variante="producto" etiqueta="Cargando la carta…" />
       } @else if (error()) {
         <p class="estado error">{{ error() }}</p>
       } @else if (sinResultados()) {

@@ -38,7 +38,9 @@
 }
 
 <h2>Mis turnos</h2>
-@if (misTurnos().length === 0) {
+@if (cargandoTurnos()) {
+  <app-esqueleto variante="tabla" [cantidad]="3" etiqueta="Cargando tus turnos…" />
+} @else if (misTurnos().length === 0) {
   <p class="estado-msj">No tienes turnos asignados.</p>
 } @else {
   <table class="tabla">

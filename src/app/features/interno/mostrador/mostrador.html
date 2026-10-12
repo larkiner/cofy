@@ -13,6 +13,9 @@
   <div>
     <h2>Menú</h2>
     <div class="lista-productos">
+      @if (cargandoMenu()) {
+        <app-esqueleto variante="tabla" [cantidad]="6" etiqueta="Cargando el menú…" />
+      }
       @for (item of menu(); track item.productoId) {
         <button type="button" class="producto-btn" (click)="agregar(item)">
           <span>{{ item.nombre }}</span>

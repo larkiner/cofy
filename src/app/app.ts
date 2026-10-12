@@ -1,4 +1,4 @@
-import { ViewportScroller } from '@angular/common';
+import { NgTemplateOutlet, ViewportScroller } from '@angular/common';
 import {
   Component,
   ElementRef,
@@ -11,6 +11,9 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
+  NavigationCancel,
+  NavigationEnd,
+  NavigationError,
   NavigationStart,
   Router,
   RouterLink,
@@ -26,7 +29,7 @@ import { Icono } from './shared/ui/icono/icono';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, Icono, AvisoFlotante],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, NgTemplateOutlet, Icono, AvisoFlotante],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
@@ -39,8 +42,14 @@ export class App {
   private readonly encabezado = viewChild<ElementRef<HTMLElement>>('encabezado');
   private readonly contenedorCuenta = viewChild<ElementRef<HTMLElement>>('contenedorCuenta');
   private readonly botonCuenta = viewChild<ElementRef<HTMLButtonElement>>('botonCuenta');
+  private readonly contenedorMenu = viewChild<ElementRef<HTMLElement>>('contenedorMenu');
+  private readonly botonMenu = viewChild<ElementRef<HTMLButtonElement>>('botonMenu');
 
   protected readonly cuentaAbierta = signal(false);
+  /** Menú desplegable del móvil (navegación + tema + cuenta); en escritorio no se muestra. */
+  protected readonly menuAbierto = signal(false);
+  /** Hay una navegación en curso (p. ej. cargando el código de la página): barra de progreso. */
+  protected readonly navegando = signal(false);
   protected readonly contadorRebota = signal(false);
   private cantidadPrevia = 0;
 
@@ -79,7 +88,22 @@ export class App {
         filter((evento) => evento instanceof NavigationStart),
         takeUntilDestroyed(),
       )
-      .subscribe(() => this.cerrarCuenta());
+      .subscribe(() => {
+        this.cerrarMenus();
+        this.navegando.set(true);
+      });
+
+    this.router.events
+      .pipe(
+        filter(
+          (evento) =>
+            evento instanceof NavigationEnd ||
+            evento instanceof NavigationCancel ||
+            evento instanceof NavigationError,
+        ),
+        takeUntilDestroyed(),
+      )
+      .subscribe(() => this.navegando.set(false));
   }
 
   protected alternarCuenta(): void {
@@ -90,28 +114,51 @@ export class App {
     this.cuentaAbierta.set(false);
   }
 
+  protected alternarMenu(): void {
+    this.menuAbierto.update((abierto) => !abierto);
+  }
+
+  /** Cierra el panel de cuenta (escritorio) y el menú desplegable (móvil). */
+  protected cerrarMenus(): void {
+    this.cuentaAbierta.set(false);
+    this.menuAbierto.set(false);
+  }
+
   @HostListener('document:pointerdown', ['$event'])
-  protected cerrarCuentaAlTocarFuera(evento: PointerEvent): void {
-    if (!this.cuentaAbierta()) return;
+  protected cerrarAlTocarFuera(evento: PointerEvent): void {
+    if (!(evento.target instanceof Node)) return;
 
-    const contenedor = this.contenedorCuenta()?.nativeElement;
-    if (contenedor && evento.target instanceof Node && contenedor.contains(evento.target)) return;
-
-    this.cerrarCuenta();
+    if (this.cuentaAbierta() && !this.contenedorCuenta()?.nativeElement.contains(evento.target)) {
+      this.cerrarCuenta();
+    }
+    if (this.menuAbierto() && !this.contenedorMenu()?.nativeElement.contains(evento.target)) {
+      this.menuAbierto.set(false);
+    }
   }
 
   @HostListener('document:keydown.escape')
-  protected cerrarCuentaConEscape(): void {
-    if (!this.cuentaAbierta()) return;
+  protected cerrarConEscape(): void {
+    if (this.cuentaAbierta()) {
+      this.cerrarCuenta();
+      this.botonCuenta()?.nativeElement.focus();
+    }
+    if (this.menuAbierto()) {
+      this.menuAbierto.set(false);
+      this.botonMenu()?.nativeElement.focus();
+    }
+  }
 
-    this.cerrarCuenta();
-    this.botonCuenta()?.nativeElement.focus();
+  /** Devuelve el foco al control de cuenta que se ve: el icono (escritorio) o el menú (móvil). */
+  private enfocarControlDeCuenta(): void {
+    const cuenta = this.botonCuenta()?.nativeElement;
+    const control = cuenta && cuenta.offsetParent !== null ? cuenta : this.botonMenu()?.nativeElement;
+    control?.focus();
   }
 
   protected cerrarSesion(): void {
-    this.cerrarCuenta();
+    this.cerrarMenus();
     this.auth.logout();
     this.carrito.vaciar();
-    void this.router.navigateByUrl('/').then(() => this.botonCuenta()?.nativeElement.focus());
+    void this.router.navigateByUrl('/').then(() => this.enfocarControlDeCuenta());
   }
 }

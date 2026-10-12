@@ -4,10 +4,11 @@ import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../application/auth.service';
 import { InternoService } from '../../../application/interno.service';
 import { TrabajadorPerfil, Turno } from '../../../domain/interno/interno.model';
+import { Esqueleto } from '../../../shared/ui/esqueleto/esqueleto';
 
 @Component({
   selector: 'app-turnos',
-  imports: [DatePipe, FormsModule],
+  imports: [DatePipe, Esqueleto, FormsModule],
   templateUrl: './turnos.html',
   styleUrl: '../interno.css',
 })
@@ -19,6 +20,7 @@ export class Turnos {
     ['SUPERVISOR', 'ADMIN'].includes(this.auth.rol() ?? ''));
 
   protected readonly misTurnos = signal<Turno[]>([]);
+  protected readonly cargandoTurnos = signal(true);
   protected readonly trabajadores = signal<TrabajadorPerfil[]>([]);
   protected readonly error = signal<string | null>(null);
   protected readonly mensaje = signal<string | null>(null);
@@ -40,8 +42,14 @@ export class Turnos {
 
   private cargarMisTurnos(): void {
     this.interno.misTurnos().subscribe({
-      next: turnos => this.misTurnos.set(turnos),
-      error: () => this.error.set('No se pudieron cargar tus turnos.'),
+      next: turnos => {
+        this.misTurnos.set(turnos);
+        this.cargandoTurnos.set(false);
+      },
+      error: () => {
+        this.error.set('No se pudieron cargar tus turnos.');
+        this.cargandoTurnos.set(false);
+      },
     });
   }
 

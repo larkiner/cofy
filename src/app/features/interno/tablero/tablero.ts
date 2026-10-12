@@ -3,6 +3,7 @@ import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { InternoService } from '../../../application/interno.service';
 import { PedidoEmpleado } from '../../../domain/interno/interno.model';
+import { Esqueleto } from '../../../shared/ui/esqueleto/esqueleto';
 
 /** Siguiente paso de cada estado en el flujo de barra. */
 const SIGUIENTE: Record<string, { estado: string; etiqueta: string }> = {
@@ -12,7 +13,7 @@ const SIGUIENTE: Record<string, { estado: string; etiqueta: string }> = {
 
 @Component({
   selector: 'app-tablero',
-  imports: [CurrencyPipe, DatePipe, FormsModule],
+  imports: [CurrencyPipe, DatePipe, Esqueleto, FormsModule],
   templateUrl: './tablero.html',
   styleUrl: '../interno.css',
 })

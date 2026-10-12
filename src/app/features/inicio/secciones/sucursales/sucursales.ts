@@ -1,6 +1,7 @@
 import { Component, input } from '@angular/core';
 import { Sucursal } from '../../../../domain/menu/menu.model';
 import { Icono } from '../../../../shared/ui/icono/icono';
+import { Esqueleto } from '../../../../shared/ui/esqueleto/esqueleto';
 
 interface FilaHorario {
   dia: string;
@@ -14,7 +15,7 @@ interface FilaHorario {
  */
 @Component({
   selector: 'app-inicio-sucursales',
-  imports: [Icono],
+  imports: [Esqueleto, Icono],
   templateUrl: './sucursales.html',
   styleUrl: './sucursales.css',
 })

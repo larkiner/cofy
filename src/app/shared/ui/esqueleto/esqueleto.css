@@ -1,0 +1,211 @@
+/* Esqueleto de carga: solo tokens de la paleta (se adapta a claro y oscuro). */
+
+:host {
+  display: block;
+}
+
+.bloque {
+  --esq-base: color-mix(in oklch, var(--color-border) 65%, transparent);
+  --esq-brillo: color-mix(in oklch, var(--color-border) 22%, transparent);
+  background-color: var(--esq-base);
+  border-radius: var(--radius-sm);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .bloque {
+    background-image: linear-gradient(90deg, transparent 0%, var(--esq-brillo) 50%, transparent 100%);
+    background-size: 220% 100%;
+    background-repeat: no-repeat;
+    animation: esqueleto-brillo 1.5s ease-in-out infinite;
+  }
+}
+
+@keyframes esqueleto-brillo {
+  from {
+    background-position: 130% 0;
+  }
+  to {
+    background-position: -130% 0;
+  }
+}
+
+.linea {
+  height: 14px;
+  border-radius: var(--radius-pill);
+}
+
+.linea.titulo {
+  height: 22px;
+}
+
+.linea.valor {
+  height: 26px;
+}
+
+.ancho-100 {
+  width: 100%;
+}
+
+.ancho-70 {
+  width: 70%;
+}
+
+.ancho-40 {
+  width: 40%;
+}
+
+.ancho-30 {
+  width: 30%;
+}
+
+.tarjeta {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+/* ---------- producto (carta) ---------- */
+.piezas.producto {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+  gap: 24px;
+}
+
+.producto .imagen {
+  height: 170px;
+  border-radius: 0;
+}
+
+.producto .cuerpo {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 18px 20px;
+}
+
+/* ---------- destacado (home) ---------- */
+.piezas.destacado {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr 1fr;
+  gap: 20px;
+}
+
+.destacado-bloque {
+  height: 300px;
+  border-radius: var(--radius-lg);
+}
+
+@media (max-width: 900px) {
+  .piezas.destacado {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .piezas.destacado .pieza:first-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 560px) {
+  .piezas.destacado {
+    grid-template-columns: 1fr;
+  }
+
+  .piezas.destacado .pieza:first-child {
+    grid-column: auto;
+  }
+
+  .destacado-bloque {
+    height: 220px;
+  }
+}
+
+/* ---------- fila (pedidos, tablero, historial) ---------- */
+.piezas.fila {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.fila-tarjeta {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 18px;
+}
+
+.par {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pildora {
+  width: 84px;
+  height: 22px;
+  border-radius: var(--radius-pill);
+}
+
+/* ---------- sucursal ---------- */
+.piezas.sucursal {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: 28px;
+}
+
+.columna {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-left: 16px;
+  border-left: 2px solid var(--color-border);
+}
+
+/* ---------- texto ---------- */
+.piezas.texto {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ---------- tabla ---------- */
+.piezas.tabla {
+  display: flex;
+  flex-direction: column;
+}
+
+.fila-tabla {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* ---------- métricas ---------- */
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.kpi {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 16px;
+}
+
+.graficas {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: 16px;
+}
+
+.grafica {
+  height: 220px;
+}
+
+@media (max-width: 800px) {
+  .graficas {
+    grid-template-columns: 1fr;
+  }
+}

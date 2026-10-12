@@ -1,7 +1,7 @@
 <h1>Métricas de ventas</h1>
 
 @if (cargando()) {
-  <p class="estado-msj">Cargando métricas…</p>
+  <app-esqueleto variante="metricas" etiqueta="Cargando métricas…" />
 } @else if (error()) {
   <p class="mensaje-error">{{ error() }}</p>
 } @else if (metricas().length === 0) {

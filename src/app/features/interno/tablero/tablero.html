@@ -14,7 +14,7 @@
 </div>
 
 @if (cargando()) {
-  <p class="estado-msj">Cargando pedidos…</p>
+  <app-esqueleto variante="fila" [cantidad]="4" etiqueta="Cargando pedidos…" />
 } @else if (error()) {
   <p class="mensaje-error">{{ error() }}</p>
 } @else if (pedidos().length === 0) {

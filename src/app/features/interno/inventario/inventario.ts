@@ -4,11 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { InternoService } from '../../../application/interno.service';
 import { MenuService } from '../../../application/menu.service';
 import { Categoria, ProductoAdmin } from '../../../domain/interno/interno.model';
+import { Esqueleto } from '../../../shared/ui/esqueleto/esqueleto';
 
 /** Inventario: gestión de categorías y productos (solo ADMIN). */
 @Component({
   selector: 'app-inventario',
-  imports: [CurrencyPipe, FormsModule],
+  imports: [CurrencyPipe, Esqueleto, FormsModule],
   templateUrl: './inventario.html',
   styleUrl: '../interno.css',
 })
@@ -18,6 +19,8 @@ export class Inventario {
 
   protected readonly categorias = signal<Categoria[]>([]);
   protected readonly productos = signal<ProductoAdmin[]>([]);
+  protected readonly cargandoCategorias = signal(true);
+  protected readonly cargandoProductos = signal(true);
   protected readonly error = signal<string | null>(null);
   protected readonly mensaje = signal<string | null>(null);
 
@@ -39,10 +42,22 @@ export class Inventario {
   }
 
   protected cargar(): void {
-    this.interno.categorias().subscribe({ next: c => this.categorias.set(c) });
+    this.interno.categorias().subscribe({
+      next: c => {
+        this.categorias.set(c);
+        this.cargandoCategorias.set(false);
+      },
+      error: () => this.cargandoCategorias.set(false),
+    });
     this.interno.productos().subscribe({
-      next: p => this.productos.set(p),
-      error: () => this.error.set('No se pudo cargar el inventario.'),
+      next: p => {
+        this.productos.set(p);
+        this.cargandoProductos.set(false);
+      },
+      error: () => {
+        this.error.set('No se pudo cargar el inventario.');
+        this.cargandoProductos.set(false);
+      },
     });
   }
 
