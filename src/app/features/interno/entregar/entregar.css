@@ -1,0 +1,47 @@
+.columna-unica {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 520px;
+}
+
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.formulario .mensaje-error {
+  margin: 0;
+}
+
+.campo.codigo-campo input {
+  height: 56px;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-align: center;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+}
+
+/* El texto de ayuda no debe heredar mayúsculas ni el espaciado grande. */
+.campo.codigo-campo input::placeholder {
+  letter-spacing: 0.06em;
+}
+
+.columna-unica .exito {
+  margin: 0;
+  padding: 16px 20px;
+  gap: 14px;
+}
+
+.exito-titulo {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.exito-total {
+  margin-top: 2px;
+  font-variant-numeric: tabular-nums;
+}

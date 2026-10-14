@@ -350,3 +350,295 @@ router-outlet + * {
     transform: translateY(14px);
   }
 }
+
+/* ============================================================
+   Panel interno
+   Piezas compartidas por las páginas del panel del personal
+   (tablero, entregar, mostrador, inventario, métricas, turnos).
+   Todas llevan el ámbito `.pi` (clase del elemento raíz de
+   panel-interno.html): otras páginas usan clases con los mismos
+   nombres (.boton, .campo, .tabla…) y no deben verse afectadas.
+   Herramienta de trabajo: controles estándar, densidad media,
+   números tabulares. Sin colores propios: solo tokens de :root.
+   ============================================================ */
+
+/* ---------- Encabezado de página ---------- */
+.pi .encabezado {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.pi .encabezado h1 {
+  font-family: var(--font-display);
+  font-size: 30px;
+  font-weight: 600;
+  line-height: 1.1;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.pi .encabezado .bajada {
+  font-size: 14px;
+  color: var(--color-muted);
+  max-width: 60ch;
+  margin-top: 6px;
+  font-variant-numeric: tabular-nums;
+}
+
+.pi .encabezado .acciones {
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Títulos de sección: Plus Jakarta Sans (el display queda solo para el h1). */
+.pi h2 {
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--color-text);
+  margin: 0 0 12px;
+}
+
+/* ---------- Botones ---------- */
+.pi .boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 16px;
+  border: none;
+  border-radius: 8px;
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color 160ms var(--ease-out),
+    color 160ms var(--ease-out),
+    border-color 160ms var(--ease-out),
+    transform 160ms var(--ease-out),
+    box-shadow 160ms var(--ease-out);
+}
+
+.pi .boton:not(:disabled):hover {
+  background: var(--color-accent-hover);
+}
+
+.pi .boton:focus-visible {
+  box-shadow: var(--ring);
+}
+
+.pi .boton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pi .boton.secundario {
+  background: transparent;
+  border: 1px solid var(--color-border-input);
+  color: var(--color-text);
+}
+
+.pi .boton.secundario:not(:disabled):hover {
+  background: var(--color-overlay-hover);
+}
+
+.pi .boton.fantasma {
+  height: 32px;
+  padding: 0 10px;
+  background: transparent;
+  color: var(--color-muted);
+}
+
+.pi .boton.fantasma:not(:disabled):hover {
+  background: var(--color-overlay-hover);
+  color: var(--color-text);
+}
+
+.pi .boton.grande {
+  height: 48px;
+  width: 100%;
+  font-size: 15px;
+}
+
+/* ---------- Campos de formulario ---------- */
+.pi .campo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-muted);
+  min-width: 0;
+}
+
+.pi .campo input,
+.pi .campo select {
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--color-border-input);
+  border-radius: 8px;
+  background: var(--color-input-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 400;
+  min-width: 0;
+  transition:
+    border-color 160ms var(--ease-out),
+    box-shadow 160ms var(--ease-out);
+}
+
+.pi .campo input::placeholder {
+  color: var(--color-muted-2);
+}
+
+.pi .campo input:focus-visible,
+.pi .campo select:focus-visible {
+  border-color: var(--color-accent);
+  box-shadow: var(--ring);
+}
+
+/* ---------- Superficie ---------- */
+.pi .superficie {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 20px;
+}
+
+/* ---------- Tablas ---------- */
+.pi .tabla-contenedor {
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-card);
+  overflow: auto;
+}
+
+.pi .tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.pi .tabla th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: 10px 14px;
+  background: var(--color-card);
+  color: var(--color-muted);
+  font-size: 12px;
+  font-weight: 600;
+  text-align: left;
+  white-space: nowrap;
+  /* Con border-collapse el borde de un encabezado sticky se pierde al hacer scroll. */
+  box-shadow: inset 0 -1px 0 var(--color-border);
+}
+
+.pi .tabla td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.pi .tabla tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.pi .tabla tbody tr:hover {
+  background: var(--color-overlay-hover);
+}
+
+.pi .tabla .num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Pills de estado ---------- */
+.pi .estado-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.pi .estado-pill.PAGADO { background: var(--estado-pagado-bg); color: var(--estado-pagado-color); }
+.pi .estado-pill.EN_PREPARACION { background: var(--estado-preparacion-bg); color: var(--estado-preparacion-color); }
+.pi .estado-pill.LISTO { background: var(--estado-listo-bg); color: var(--estado-listo-color); }
+.pi .estado-pill.ENTREGADO { background: var(--estado-entregado-bg); color: var(--estado-entregado-color); }
+.pi .estado-pill.PENDIENTE_PAGO { background: var(--estado-pendiente-bg); color: var(--estado-pendiente-color); }
+.pi .estado-pill.CANCELADO { background: var(--estado-cancelado-bg); color: var(--estado-cancelado-color); }
+
+/* ---------- Mensajes y estados ---------- */
+.pi .mensaje-ok,
+.pi .mensaje-error {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  margin: 0 0 16px;
+  border-radius: 10px;
+  font-size: 14px;
+}
+
+.pi .mensaje-ok {
+  background: var(--estado-pagado-bg);
+  color: var(--estado-pagado-color);
+}
+
+.pi .mensaje-error {
+  background: color-mix(in oklch, var(--color-danger) 12%, transparent);
+  color: var(--color-danger);
+}
+
+.pi .estado-msj {
+  font-size: 14px;
+  color: var(--color-muted);
+}
+
+.pi .vacio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 32px 16px;
+  color: var(--color-muted);
+  font-size: 14px;
+  text-align: center;
+}
+
+.pi .vacio app-icono {
+  color: var(--color-muted-2);
+}
+
+/* Todo movimiento del panel se apaga con "reducir movimiento". */
+@media (prefers-reduced-motion: reduce) {
+  .pi *,
+  .pi *::before,
+  .pi *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  .pi button:not(:disabled):active {
+    transform: none !important;
+  }
+}

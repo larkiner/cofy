@@ -7,6 +7,7 @@ import { VentaMostradorResponse } from '../../../domain/interno/interno.model';
 import { MenuItem } from '../../../domain/menu/menu.model';
 import { Esqueleto } from '../../../shared/ui/esqueleto/esqueleto';
 import { Icono } from '../../../shared/ui/icono/icono';
+import { etiquetaEstado, etiquetaMetodo } from '../etiquetas';
 
 interface LineaVenta {
   producto: MenuItem;
@@ -23,7 +24,7 @@ const METODOS = ['EFECTIVO', 'TARJETA', 'NEQUI', 'DAVIPLATA', 'PSE'];
   selector: 'app-mostrador',
   imports: [CurrencyPipe, Esqueleto, FormsModule, Icono],
   templateUrl: './mostrador.html',
-  styleUrl: '../interno.css',
+  styleUrl: './mostrador.css',
 })
 export class Mostrador {
   private readonly menuService = inject(MenuService);
@@ -42,6 +43,28 @@ export class Mostrador {
   protected readonly total = computed(() =>
     this.lineas().reduce((acc, l) => acc + l.producto.precio * l.cantidad, 0));
 
+  /** Número de artículos en la cuenta (suma de cantidades). */
+  protected readonly articulos = computed(() =>
+    this.lineas().reduce((acc, l) => acc + l.cantidad, 0));
+
+  /** Cantidad en la cuenta por producto, para la insignia de cada tesela. */
+  private readonly cantidades = computed(() =>
+    new Map(this.lineas().map(l => [l.producto.productoId, l.cantidad])));
+
+  /** Menú agrupado por categoría, conservando el orden de llegada. */
+  protected readonly grupos = computed(() => {
+    const mapa = new Map<string, MenuItem[]>();
+    for (const item of this.menu()) {
+      const grupo = mapa.get(item.categoria);
+      if (grupo) grupo.push(item);
+      else mapa.set(item.categoria, [item]);
+    }
+    return [...mapa.entries()].map(([categoria, items]) => ({ categoria, items }));
+  });
+
+  protected readonly etiquetaEstado = etiquetaEstado;
+  protected readonly etiquetaMetodo = etiquetaMetodo;
+
   constructor() {
     this.menuService.obtenerMenu().subscribe({
       next: items => {
@@ -53,6 +76,10 @@ export class Mostrador {
         this.cargandoMenu.set(false);
       },
     });
+  }
+
+  protected cantidadDe(productoId: number): number {
+    return this.cantidades().get(productoId) ?? 0;
   }
 
   protected agregar(producto: MenuItem): void {

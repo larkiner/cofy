@@ -1,20 +1,29 @@
-<h1>Tablero de pedidos</h1>
-
-<div class="filtros">
-  <label class="campo">
-    Filtrar por estado
-    <select name="filtroEstado" [(ngModel)]="filtroEstado" (ngModelChange)="cargar()">
-      <option value="">Todos</option>
-      @for (e of estados; track e) {
-        <option [value]="e">{{ e }}</option>
+<header class="encabezado">
+  <div>
+    <h1>Tablero de pedidos</h1>
+    <p class="bajada">
+      Se actualiza solo cada 15 s
+      @if (actualizadoEn(); as hora) {
+        · última lectura {{ hora | date:'h:mm:ss a' }}
       }
-    </select>
-  </label>
-  <button type="button" class="boton secundario" (click)="cargar()">Actualizar</button>
-  @if (actualizadoEn(); as hora) {
-    <span class="actualizado">Actualizado {{ hora | date:'h:mm:ss a' }} · se refresca solo cada 15 s</span>
-  }
-</div>
+    </p>
+  </div>
+  <div class="acciones">
+    <label class="campo">
+      Estado
+      <select name="filtroEstado" [(ngModel)]="filtroEstado" (ngModelChange)="cargar()">
+        <option value="">Todos</option>
+        @for (e of estados; track e) {
+          <option [value]="e">{{ etiquetaEstado(e) }}</option>
+        }
+      </select>
+    </label>
+    <button type="button" class="boton secundario" (click)="cargar()">
+      <app-icono nombre="actualizar" [tamano]="16" />
+      Actualizar
+    </button>
+  </div>
+</header>
 
 @if (cargando()) {
   <app-esqueleto variante="fila" [cantidad]="4" etiqueta="Cargando pedidos…" />
@@ -23,65 +32,80 @@
 } @else if (pedidos().length === 0) {
   <p class="estado-msj">No hay pedidos con ese filtro.</p>
 } @else {
-  <div class="lista-pedidos">
-    @for (pedido of pedidos(); track pedido.pedidoId) {
-      <article class="tarjeta-panel pedido-item">
-        <div class="pedido-fila">
-          <strong>#{{ pedido.pedidoId }}</strong>
-          <span class="estado-pill" [class]="'estado-pill ' + pedido.estado">{{ pedido.estado }}</span>
-          <span class="cliente">{{ pedido.clienteNombre ?? 'Venta de mostrador' }}</span>
-          <span class="total">{{ pedido.total | currency:'COP':'symbol-narrow':'1.0-0' }}</span>
-        </div>
-        <div class="pedido-fila secundaria">
-          <span>{{ pedido.fechaPedido | date:'dd/MM h:mm a' }}</span>
-          @if (pedido.codigoRetiro) {
-            <span>Código: <strong>{{ pedido.codigoRetiro }}</strong></span>
-          }
-          @if (accionDe(pedido); as accion) {
-            <button type="button" class="boton" (click)="avanzar(pedido)">{{ accion.etiqueta }}</button>
-          }
-        </div>
-      </article>
+  <div class="tablero">
+    @for (columna of columnas(); track columna.estado) {
+      <section class="columna">
+        <header class="columna-cabecera">
+          <h2>{{ columna.titulo }}</h2>
+          <span class="estado-pill ENTREGADO">{{ columna.pedidos.length }}</span>
+        </header>
+
+        @for (pedido of columna.pedidos; track pedido.pedidoId) {
+          <article class="pedido">
+            <div class="fila">
+              <strong class="numero">#{{ pedido.pedidoId }}</strong>
+              <span class="hora">
+                <app-icono nombre="reloj" [tamano]="14" />
+                {{ pedido.fechaPedido | date:'h:mm a' }}
+              </span>
+            </div>
+            @if (pedido.clienteNombre) {
+              <span class="cliente">{{ pedido.clienteNombre }}</span>
+            } @else {
+              <span class="cliente mostrador">Venta de mostrador</span>
+            }
+            <div class="fila">
+              @if (pedido.codigoRetiro) {
+                <span class="codigo">{{ pedido.codigoRetiro }}</span>
+              }
+              <span class="total">{{ pedido.total | currency:'COP':'symbol-narrow':'1.0-0' }}</span>
+            </div>
+            @if (accionDe(pedido); as accion) {
+              <button type="button" class="boton" (click)="avanzar(pedido)">{{ accion.etiqueta }}</button>
+            }
+          </article>
+        } @empty {
+          <p class="estado-msj sin-pedidos">Sin pedidos</p>
+        }
+
+        @if (columna.estado === 'LISTO') {
+          <p class="pie-columna">
+            Se entregan con el código en <a routerLink="/interno/entregar">Entregar</a>
+          </p>
+        }
+      </section>
     }
   </div>
-}
 
-<style>
-  .filtros {
-    display: flex;
-    align-items: flex-end;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-    margin-bottom: 1rem;
+  @if (otros().length > 0) {
+    <h2 class="titulo-otros">Otros pedidos</h2>
+    <div class="tabla-contenedor">
+      <table class="tabla">
+        <thead>
+          <tr>
+            <th>Pedido</th>
+            <th>Estado</th>
+            <th>Cliente</th>
+            <th>Hora</th>
+            <th>Código</th>
+            <th class="num">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (pedido of otros(); track pedido.pedidoId) {
+            <tr>
+              <td class="numero">#{{ pedido.pedidoId }}</td>
+              <td>
+                <span class="estado-pill" [class]="'estado-pill ' + pedido.estado">{{ etiquetaEstado(pedido.estado) }}</span>
+              </td>
+              <td>{{ pedido.clienteNombre ?? 'Venta de mostrador' }}</td>
+              <td class="tabular">{{ pedido.fechaPedido | date:'dd/MM h:mm a' }}</td>
+              <td class="tabular">{{ pedido.codigoRetiro }}</td>
+              <td class="num">{{ pedido.total | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
   }
-  .actualizado {
-    font-size: 0.85rem;
-    color: var(--color-muted);
-  }
-  .lista-pedidos {
-    display: flex;
-    flex-direction: column;
-    gap: 0.7rem;
-  }
-  .pedido-fila {
-    display: flex;
-    align-items: center;
-    gap: 0.9rem;
-    flex-wrap: wrap;
-  }
-  .pedido-fila .cliente {
-    flex: 1;
-    color: var(--cafe-medio);
-    font-size: 0.9rem;
-  }
-  .pedido-fila .total {
-    font-weight: 700;
-    color: var(--cafe-acento);
-  }
-  .pedido-fila.secundaria {
-    margin-top: 0.5rem;
-    font-size: 0.82rem;
-    color: var(--cafe-medio);
-    justify-content: space-between;
-  }
-</style>
+}

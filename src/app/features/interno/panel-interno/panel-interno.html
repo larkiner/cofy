@@ -1,16 +1,53 @@
-<section class="panel">
-  <nav class="subnav">
-    <a routerLink="/interno" routerLinkActive="activo" [routerLinkActiveOptions]="{ exact: true }">Tablero</a>
-    <a routerLink="/interno/entregar" routerLinkActive="activo">Entregar</a>
-    <a routerLink="/interno/mostrador" routerLinkActive="activo">Mostrador</a>
-    @if (auth.esAdmin()) {
-      <a routerLink="/interno/inventario" routerLinkActive="activo">Inventario</a>
+<section class="pi panel">
+  <nav class="lateral" aria-label="Panel interno">
+    <div class="grupo">
+      <p class="rotulo">Operación</p>
+      <a routerLink="/interno" routerLinkActive="activo" ariaCurrentWhenActive="page"
+         [routerLinkActiveOptions]="{ exact: true }">
+        <app-icono nombre="tablero" [tamano]="18" />
+        <span>Tablero</span>
+      </a>
+      <a routerLink="/interno/entregar" routerLinkActive="activo" ariaCurrentWhenActive="page">
+        <app-icono nombre="entregar" [tamano]="18" />
+        <span>Entregar</span>
+      </a>
+      <a routerLink="/interno/mostrador" routerLinkActive="activo" ariaCurrentWhenActive="page">
+        <app-icono nombre="caja" [tamano]="18" />
+        <span>Mostrador</span>
+      </a>
+      <a routerLink="/interno/turnos" routerLinkActive="activo" ariaCurrentWhenActive="page">
+        <app-icono nombre="calendario" [tamano]="18" />
+        <span>Turnos</span>
+      </a>
+    </div>
+
+    @if (auth.esAdmin() || esSupervisorOAdmin()) {
+      <div class="grupo">
+        <p class="rotulo">Gestión</p>
+        @if (auth.esAdmin()) {
+          <a routerLink="/interno/inventario" routerLinkActive="activo" ariaCurrentWhenActive="page">
+            <app-icono nombre="inventario" [tamano]="18" />
+            <span>Inventario</span>
+          </a>
+        }
+        @if (esSupervisorOAdmin()) {
+          <a routerLink="/interno/metricas" routerLinkActive="activo" ariaCurrentWhenActive="page">
+            <app-icono nombre="grafica" [tamano]="18" />
+            <span>Métricas</span>
+          </a>
+        }
+      </div>
     }
-    @if (esSupervisorOAdmin()) {
-      <a routerLink="/interno/metricas" routerLinkActive="activo">Métricas</a>
+
+    @if (rolLegible(); as rol) {
+      <p class="pie">
+        <app-icono nombre="user" [tamano]="16" />
+        <span>{{ rol }}</span>
+      </p>
     }
-    <a routerLink="/interno/turnos" routerLinkActive="activo">Turnos</a>
   </nav>
 
-  <router-outlet />
+  <div class="contenido">
+    <router-outlet />
+  </div>
 </section>

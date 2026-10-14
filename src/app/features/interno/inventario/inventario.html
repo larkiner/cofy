@@ -1,26 +1,98 @@
-<h1>Inventario</h1>
+<header class="encabezado">
+  <div>
+    <h1>Inventario</h1>
+    <p class="bajada">Productos de la carta y sus categorías.</p>
+  </div>
+  @if (!cargandoProductos()) {
+    <div class="acciones">
+      <p class="resumen">{{ resumen().total }} productos · {{ resumen().noDisponibles }} no disponibles</p>
+    </div>
+  }
+</header>
 
 @if (mensaje()) {
-  <p class="mensaje-ok">{{ mensaje() }}</p>
+  <p class="mensaje-ok" role="status">
+    <app-icono nombre="check-circle" [tamano]="18" />
+    {{ mensaje() }}
+  </p>
 }
 @if (error()) {
-  <p class="mensaje-error">{{ error() }}</p>
+  <p class="mensaje-error" role="alert">{{ error() }}</p>
 }
 
 <div class="inv-grid">
   <!-- ================= PRODUCTOS ================= -->
-  <div>
-    <h2>{{ editandoId() === null ? 'Nuevo producto' : 'Editar producto #' + editandoId() }}</h2>
-    <form class="tarjeta-panel form-producto" (ngSubmit)="guardarProducto()">
+  <section>
+    <h2>Productos</h2>
+    @if (cargandoProductos()) {
+      <app-esqueleto variante="tabla" [cantidad]="5" etiqueta="Cargando productos…" />
+    } @else {
+      <div class="tabla-contenedor">
+        <table class="tabla">
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th class="num">Precio</th>
+              <th>Estado</th>
+              <th class="acciones-col"><span class="visualmente-oculto">Acciones</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (p of productos(); track p.id) {
+              <tr [class.editando]="editandoId() === p.id">
+                <td>
+                  <span class="producto-nombre">{{ p.nombre }}</span>
+                  <span class="producto-categoria">{{ nombreCategoria(p.categoriaId) }}</span>
+                </td>
+                <td class="num">{{ p.precio | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
+                <td>
+                  @if (p.disponible === 'S') {
+                    <span class="estado-pill PAGADO">
+                      <app-icono nombre="check-circle" [tamano]="14" />
+                      Disponible
+                    </span>
+                  } @else {
+                    <span class="estado-pill ENTREGADO">
+                      <app-icono nombre="ban" [tamano]="14" />
+                      No disponible
+                    </span>
+                  }
+                </td>
+                <td class="acciones-col">
+                  <div class="celda-acciones">
+                    <button type="button" class="boton fantasma" [attr.aria-label]="'Editar ' + p.nombre"
+                            (click)="editar(p)">
+                      <app-icono nombre="editar" [tamano]="14" />
+                      Editar
+                    </button>
+                    <button type="button" class="boton fantasma"
+                            [attr.aria-label]="(p.disponible === 'S' ? 'Desactivar ' : 'Activar ') + p.nombre"
+                            (click)="alternarDisponible(p)">
+                      {{ p.disponible === 'S' ? 'Desactivar' : 'Activar' }}
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+
+  <!-- ================= FORMULARIOS ================= -->
+  <aside class="lateral-inv">
+    <form id="form-producto" class="superficie formulario" (ngSubmit)="guardarProducto()">
+      <h2>{{ editandoId() === null ? 'Nuevo producto' : 'Editar ' + nombreEditando }}</h2>
       <label class="campo">
         Nombre
-        <input type="text" name="prodNombre" [(ngModel)]="prodNombre" required maxlength="100" />
+        <input id="prod-nombre" type="text" name="prodNombre" [(ngModel)]="prodNombre" required maxlength="100" />
       </label>
       <label class="campo">
         Descripción
         <input type="text" name="prodDescripcion" [(ngModel)]="prodDescripcion" maxlength="300" />
       </label>
-      <div class="fila-doble">
+      <div class="fila-doble precio">
         <label class="campo">
           Precio (COP)
           <input type="number" name="prodPrecio" [(ngModel)]="prodPrecio" required min="1" />
@@ -35,134 +107,88 @@
           </select>
         </label>
       </div>
-      <div class="fila-doble">
-        <label class="campo">
-          Disponible
-          <select name="prodDisponible" [(ngModel)]="prodDisponible">
-            <option value="S">Sí</option>
-            <option value="N">No</option>
-          </select>
-        </label>
-        <label class="campo">
-          URL de imagen (opcional)
-          <input type="text" name="prodImagenUrl" [(ngModel)]="prodImagenUrl" maxlength="300" />
-        </label>
-      </div>
-      <div class="acciones-form">
-        <button type="submit" class="boton">
-          {{ editandoId() === null ? 'Crear producto' : 'Guardar cambios' }}
-        </button>
-        @if (editandoId() !== null) {
-          <button type="button" class="boton secundario" (click)="cancelarEdicion()">Cancelar</button>
+      <label class="campo">
+        Disponible
+        <select name="prodDisponible" [(ngModel)]="prodDisponible">
+          <option value="S">Sí</option>
+          <option value="N">No</option>
+        </select>
+      </label>
+
+      <div class="campo imagen-campo" role="group" aria-labelledby="etiqueta-imagen">
+        <span id="etiqueta-imagen">Imagen del producto (opcional)</span>
+        <div class="imagen-fila">
+          <div class="imagen-vista" [class.cargando]="subiendoImagen()">
+            @if (prodImagenUrl) {
+              <img [src]="prodImagenUrl" alt="Vista previa de la imagen del producto" />
+            } @else {
+              <app-icono nombre="imagen" [tamano]="28" />
+            }
+          </div>
+          <div class="imagen-acciones">
+            <input
+              id="archivo-imagen"
+              class="archivo-oculto"
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              [disabled]="subiendoImagen()"
+              (change)="seleccionarImagen($event)"
+            />
+            <label class="boton secundario" for="archivo-imagen" [class.deshabilitado]="subiendoImagen()">
+              <app-icono nombre="subir" [tamano]="16" />
+              {{ subiendoImagen() ? 'Subiendo…' : prodImagenUrl ? 'Cambiar imagen' : 'Elegir imagen' }}
+            </label>
+            @if (prodImagenUrl && !subiendoImagen()) {
+              <button type="button" class="boton fantasma" (click)="quitarImagen()">Quitar</button>
+            }
+            <p class="imagen-ayuda">Desde tu galería, cámara o computador · JPG, PNG o WEBP</p>
+          </div>
+        </div>
+        @if (errorImagen()) {
+          <p class="mensaje-error" role="alert">{{ errorImagen() }}</p>
         }
+        <details class="url-alterna">
+          <summary>Usar una URL en lugar de una foto</summary>
+          <input type="text" name="prodImagenUrl" [(ngModel)]="prodImagenUrl" maxlength="300"
+                 aria-label="URL de la imagen" placeholder="https://…" />
+        </details>
       </div>
+      <button type="submit" class="boton">
+        {{ editandoId() === null ? 'Crear producto' : 'Guardar cambios' }}
+      </button>
+      @if (editandoId() !== null) {
+        <button type="button" class="boton secundario" (click)="cancelarEdicion()">Cancelar</button>
+      }
     </form>
 
-    <h2>Productos</h2>
-    @if (cargandoProductos()) {
-      <app-esqueleto variante="tabla" [cantidad]="5" etiqueta="Cargando productos…" />
-    } @else {
-    <table class="tabla">
-      <thead>
-        <tr>
-          <th>Nombre</th>
-          <th>Categoría</th>
-          <th>Precio</th>
-          <th>Disp.</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (p of productos(); track p.id) {
-          <tr>
-            <td>{{ p.nombre }}</td>
-            <td>{{ nombreCategoria(p.categoriaId) }}</td>
-            <td>{{ p.precio | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
-            <td>
-              @if (p.disponible === 'S') {
-                <app-icono nombre="check-circle" [tamano]="18" etiqueta="Disponible" />
-              } @else {
-                <app-icono nombre="ban" [tamano]="18" etiqueta="No disponible" />
+    <section class="superficie">
+      <h2>Categorías</h2>
+      @if (cargandoCategorias()) {
+        <app-esqueleto variante="tabla" [cantidad]="3" etiqueta="Cargando categorías…" />
+      } @else {
+        <ul class="categorias">
+          @for (c of categorias(); track c.id) {
+            <li>
+              <span class="categoria-nombre">{{ c.nombre }}</span>
+              @if (c.descripcion) {
+                <span class="categoria-descripcion">{{ c.descripcion }}</span>
               }
-            </td>
-            <td class="celda-acciones">
-              <button type="button" class="boton secundario" (click)="editar(p)">Editar</button>
-              <button type="button" class="boton secundario" (click)="alternarDisponible(p)">
-                {{ p.disponible === 'S' ? 'Desactivar' : 'Activar' }}
-              </button>
-            </td>
-          </tr>
-        }
-      </tbody>
-    </table>
-    }
-  </div>
+            </li>
+          }
+        </ul>
+      }
 
-  <!-- ================= CATEGORÍAS ================= -->
-  <div>
-    <h2>Nueva categoría</h2>
-    <form class="tarjeta-panel form-producto" (ngSubmit)="crearCategoria()">
-      <label class="campo">
-        Nombre
-        <input type="text" name="catNombre" [(ngModel)]="catNombre" required maxlength="50" />
-      </label>
-      <label class="campo">
-        Descripción
-        <input type="text" name="catDescripcion" [(ngModel)]="catDescripcion" maxlength="200" />
-      </label>
-      <button type="submit" class="boton">Crear categoría</button>
-    </form>
-
-    <h2>Categorías</h2>
-    @if (cargandoCategorias()) {
-      <app-esqueleto variante="tabla" [cantidad]="3" etiqueta="Cargando categorías…" />
-    } @else {
-    <table class="tabla">
-      <thead>
-        <tr><th>Nombre</th><th>Descripción</th></tr>
-      </thead>
-      <tbody>
-        @for (c of categorias(); track c.id) {
-          <tr>
-            <td>{{ c.nombre }}</td>
-            <td>{{ c.descripcion }}</td>
-          </tr>
-        }
-      </tbody>
-    </table>
-    }
-  </div>
+      <form class="formulario form-categoria" (ngSubmit)="crearCategoria()">
+        <label class="campo">
+          Nombre
+          <input type="text" name="catNombre" [(ngModel)]="catNombre" required maxlength="50" />
+        </label>
+        <label class="campo">
+          Descripción
+          <input type="text" name="catDescripcion" [(ngModel)]="catDescripcion" maxlength="200" />
+        </label>
+        <button type="submit" class="boton secundario">Agregar categoría</button>
+      </form>
+    </section>
+  </aside>
 </div>
-
-<style>
-  .inv-grid {
-    display: grid;
-    grid-template-columns: 3fr 2fr;
-    gap: 1.5rem;
-  }
-  @media (max-width: 820px) {
-    .inv-grid { grid-template-columns: 1fr; }
-  }
-  .form-producto {
-    display: flex;
-    flex-direction: column;
-    gap: 0.7rem;
-  }
-  .fila-doble {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.7rem;
-  }
-  .acciones-form {
-    display: flex;
-    gap: 0.6rem;
-  }
-  .celda-acciones {
-    display: flex;
-    gap: 0.35rem;
-  }
-  .celda-acciones .boton {
-    padding: 0.25rem 0.55rem;
-    font-size: 0.75rem;
-  }
-</style>

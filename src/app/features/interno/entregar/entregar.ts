@@ -9,7 +9,7 @@ import { Icono } from '../../../shared/ui/icono/icono';
   selector: 'app-entregar',
   imports: [CurrencyPipe, FormsModule, Icono],
   templateUrl: './entregar.html',
-  styleUrl: '../interno.css',
+  styleUrl: './entregar.css',
 })
 export class Entregar {
   private readonly interno = inject(InternoService);

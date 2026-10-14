@@ -1,18 +1,26 @@
 import { CurrencyPipe } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { InternoService } from '../../../application/interno.service';
 import { MenuService } from '../../../application/menu.service';
 import { Categoria, ProductoAdmin } from '../../../domain/interno/interno.model';
 import { Esqueleto } from '../../../shared/ui/esqueleto/esqueleto';
 import { Icono } from '../../../shared/ui/icono/icono';
+import { prepararImagen } from '../../../shared/util/preparar-imagen';
+
+/** Formatos y tamaño que acepta la API para la foto de un producto. */
+const TIPOS_IMAGEN = ['image/jpeg', 'image/png', 'image/webp'];
+/** Tope de la API, que se comprueba DESPUÉS de reducir la foto. */
+const MAX_IMAGEN_BYTES = 5 * 1024 * 1024;
+/** Tope de lo que se intenta abrir en el navegador (una foto de cámara pesa 3–15 MB). */
+const MAX_ORIGINAL_BYTES = 30 * 1024 * 1024;
 
 /** Inventario: gestión de categorías y productos (solo ADMIN). */
 @Component({
   selector: 'app-inventario',
   imports: [CurrencyPipe, Esqueleto, FormsModule, Icono],
   templateUrl: './inventario.html',
-  styleUrl: '../interno.css',
+  styleUrl: './inventario.css',
 })
 export class Inventario {
   private readonly interno = inject(InternoService);
@@ -25,6 +33,15 @@ export class Inventario {
   protected readonly error = signal<string | null>(null);
   protected readonly mensaje = signal<string | null>(null);
 
+  /** Productos totales y cuántos no están disponibles, para el resumen del encabezado. */
+  protected readonly resumen = computed(() => {
+    const todos = this.productos();
+    return { total: todos.length, noDisponibles: todos.filter(p => p.disponible === 'N').length };
+  });
+
+  private readonly nombresCategoria = computed(() =>
+    new Map(this.categorias().map(c => [c.id, c.nombre])));
+
   // ---- form de categoría ----
   protected catNombre = '';
   protected catDescripcion = '';
@@ -32,11 +49,15 @@ export class Inventario {
   // ---- form de producto (crear o editar) ----
   protected readonly editandoId = signal<number | null>(null);
   protected prodNombre = '';
+  /** Nombre del producto que se está editando, fijo para el título del formulario. */
+  protected nombreEditando = '';
   protected prodDescripcion = '';
   protected prodPrecio: number | null = null;
   protected prodCategoriaId: number | null = null;
   protected prodDisponible: 'S' | 'N' = 'S';
   protected prodImagenUrl = '';
+  protected readonly subiendoImagen = signal(false);
+  protected readonly errorImagen = signal<string | null>(null);
 
   constructor() {
     this.cargar();
@@ -63,7 +84,7 @@ export class Inventario {
   }
 
   protected nombreCategoria(id: number): string {
-    return this.categorias().find(c => c.id === id)?.nombre ?? String(id);
+    return this.nombresCategoria().get(id) ?? String(id);
   }
 
   // ---------------- categorías ----------------
@@ -93,6 +114,15 @@ export class Inventario {
     this.prodCategoriaId = producto.categoriaId;
     this.prodDisponible = producto.disponible;
     this.prodImagenUrl = producto.imagenUrl ?? '';
+    this.nombreEditando = producto.nombre;
+
+    // Lleva al formulario (que está en la columna lateral) y deja el cursor en el nombre.
+    const formulario = document.getElementById('form-producto');
+    formulario?.scrollIntoView({
+      behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+      block: 'start',
+    });
+    document.getElementById('prod-nombre')?.focus({ preventScroll: true });
   }
 
   protected cancelarEdicion(): void {
@@ -148,6 +178,53 @@ export class Inventario {
     });
   }
 
+  /**
+   * Toma la imagen del dispositivo (galería, cámara o carpeta), la reduce en el
+   * navegador, la sube y deja su URL pública en el formulario; el producto la
+   * guarda al pulsar "Crear"/"Guardar". Se valida aquí solo por comodidad
+   * (respuesta inmediata): la API vuelve a comprobar tipo y tamaño.
+   */
+  protected seleccionarImagen(evento: Event): void {
+    const entrada = evento.target as HTMLInputElement;
+    const archivo = entrada.files?.[0];
+    entrada.value = ''; // permite volver a elegir el mismo archivo
+    if (!archivo) return;
+
+    this.errorImagen.set(null);
+    if (!TIPOS_IMAGEN.includes(archivo.type)) {
+      this.errorImagen.set('Elige una imagen JPG, PNG o WEBP.');
+      return;
+    }
+    if (archivo.size > MAX_ORIGINAL_BYTES) {
+      this.errorImagen.set('La imagen es demasiado grande. Elige una de menos de 30 MB.');
+      return;
+    }
+
+    this.subiendoImagen.set(true);
+    prepararImagen(archivo).then(preparada => {
+      if (preparada.size > MAX_IMAGEN_BYTES) {
+        this.errorImagen.set('La imagen pesa más de 5 MB incluso reducida. Prueba con otra.');
+        this.subiendoImagen.set(false);
+        return;
+      }
+      this.interno.subirImagen(preparada).subscribe({
+        next: ({ url }) => {
+          this.prodImagenUrl = url;
+          this.subiendoImagen.set(false);
+        },
+        error: err => {
+          this.errorImagen.set(err.mensaje ?? 'No se pudo subir la imagen.');
+          this.subiendoImagen.set(false);
+        },
+      });
+    });
+  }
+
+  protected quitarImagen(): void {
+    this.prodImagenUrl = '';
+    this.errorImagen.set(null);
+  }
+
   private limpiarFormProducto(): void {
     this.prodNombre = '';
     this.prodDescripcion = '';
@@ -155,6 +232,7 @@ export class Inventario {
     this.prodCategoriaId = null;
     this.prodDisponible = 'S';
     this.prodImagenUrl = '';
+    this.errorImagen.set(null);
   }
 
   private limpiarMensajes(): void {

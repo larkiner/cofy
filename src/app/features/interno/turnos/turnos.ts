@@ -5,12 +5,14 @@ import { AuthService } from '../../../application/auth.service';
 import { InternoService } from '../../../application/interno.service';
 import { TrabajadorPerfil, Turno } from '../../../domain/interno/interno.model';
 import { Esqueleto } from '../../../shared/ui/esqueleto/esqueleto';
+import { Icono } from '../../../shared/ui/icono/icono';
+import { etiquetaRol } from '../etiquetas';
 
 @Component({
   selector: 'app-turnos',
-  imports: [DatePipe, Esqueleto, FormsModule],
+  imports: [DatePipe, Esqueleto, FormsModule, Icono],
   templateUrl: './turnos.html',
-  styleUrl: '../interno.css',
+  styleUrl: './turnos.css',
 })
 export class Turnos {
   private readonly interno = inject(InternoService);
@@ -51,6 +53,45 @@ export class Turnos {
         this.cargandoTurnos.set(false);
       },
     });
+  }
+
+  protected readonly etiquetaRol = etiquetaRol;
+
+  /** Fecha `yyyy-MM-dd` como fecha local (sin desfase de zona horaria). */
+  private fechaLocal(fecha: string): Date {
+    const [anio, mes, dia] = fecha.split('-').map(Number);
+    return new Date(anio, mes - 1, dia);
+  }
+
+  /** Día de la semana abreviado en español ("mar"); el CSS lo pasa a mayúsculas. */
+  protected diaSemana(turno: Turno): string {
+    return new Intl.DateTimeFormat('es-CO', { weekday: 'short' })
+      .format(this.fechaLocal(turno.fecha))
+      .replace('.', '');
+  }
+
+  /** Mes y año en español ("oct 2026"). */
+  protected mesAnio(turno: Turno): string {
+    return new Intl.DateTimeFormat('es-CO', { month: 'short', year: 'numeric' })
+      .format(this.fechaLocal(turno.fecha))
+      .replace('.', '');
+  }
+
+  protected esHoy(turno: Turno): boolean {
+    const hoy = new Date();
+    const fecha = this.fechaLocal(turno.fecha);
+    return fecha.getFullYear() === hoy.getFullYear()
+      && fecha.getMonth() === hoy.getMonth()
+      && fecha.getDate() === hoy.getDate();
+  }
+
+  /** Duración del turno en horas ("8 h", "7,5 h"); vacío si no tiene hora de fin. */
+  protected duracion(turno: Turno): string {
+    if (!turno.horaFin) return '';
+    const horas = (new Date(turno.horaFin).getTime() - new Date(turno.horaInicio).getTime()) / 3_600_000;
+    if (!(horas > 0)) return '';
+    const texto = Number.isInteger(horas) ? String(horas) : horas.toFixed(1).replace('.', ',');
+    return `${texto} h`;
   }
 
   protected asignar(): void {

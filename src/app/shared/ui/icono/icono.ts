@@ -20,7 +20,18 @@ export type NombreIcono =
   | 'eye'
   | 'eye-off'
   | 'menu'
-  | 'sprout';
+  | 'sprout'
+  | 'imagen'
+  | 'subir'
+  | 'tablero'
+  | 'entregar'
+  | 'caja'
+  | 'inventario'
+  | 'grafica'
+  | 'calendario'
+  | 'actualizar'
+  | 'editar'
+  | 'reloj';
 
 /**
  * Ícono del set único del proyecto: Icons8, pack Windows 11 Regular

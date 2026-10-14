@@ -1,0 +1,126 @@
+.tablero {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+
+@media (max-width: 899px) {
+  .tablero {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- Columnas ---------- */
+.columna {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  border-radius: var(--radius-md);
+  background: var(--color-overlay-subtle);
+}
+
+.columna-cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 2px 2px 0;
+}
+
+.columna-cabecera h2 {
+  margin: 0;
+  font-size: 14px;
+}
+
+.columna-cabecera .estado-pill {
+  font-variant-numeric: tabular-nums;
+}
+
+.sin-pedidos {
+  padding: 24px;
+  text-align: center;
+}
+
+.pie-columna {
+  padding: 0 2px;
+  font-size: 12px;
+  color: var(--color-muted);
+}
+
+/* ---------- Tarjeta de pedido ---------- */
+.pedido {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-card);
+}
+
+.pedido .boton {
+  width: 100%;
+}
+
+.fila {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.numero {
+  font-size: 16px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.hora {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--color-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.cliente {
+  font-size: 14px;
+  color: var(--color-text);
+}
+
+.cliente.mostrador {
+  color: var(--color-muted);
+}
+
+.codigo {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--color-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.total {
+  margin-left: auto;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-accent);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Otros pedidos ---------- */
+.titulo-otros {
+  margin-top: 32px;
+}
+
+td.numero {
+  font-size: 14px;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}

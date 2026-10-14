@@ -30,7 +30,7 @@ const MARGEN = { arriba: 16, abajo: 28, izquierda: 8, derecha: 8 };
   selector: 'app-metricas',
   imports: [CurrencyPipe, DatePipe, Esqueleto, FormsModule],
   templateUrl: './metricas.html',
-  styleUrl: '../interno.css',
+  styleUrl: './metricas.css',
 })
 export class Metricas {
   private readonly interno = inject(InternoService);
@@ -58,6 +58,12 @@ export class Metricas {
     const todas = this.metricas();
     return id === null ? todas : todas.filter(m => m.sucursalId === id);
   });
+
+  /** Detalle para la tabla: días más recientes primero (y por sucursal dentro de cada día). */
+  protected readonly detalleReciente = computed(() =>
+    [...this.metricasFiltradas()].sort(
+      (a, b) => b.fecha.localeCompare(a.fecha) || a.sucursalNombre.localeCompare(b.sucursalNombre),
+    ));
 
   protected readonly kpis = computed(() => {
     const datos = this.metricasFiltradas();

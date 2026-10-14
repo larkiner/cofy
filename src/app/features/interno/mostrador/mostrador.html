@@ -1,135 +1,107 @@
-<h1>Venta de mostrador</h1>
+<header class="encabezado">
+  <div>
+    <h1>Venta de mostrador</h1>
+    <p class="bajada">Toca los productos para armar la cuenta y cobra cuando el cliente pague.</p>
+  </div>
+</header>
 
 @if (resultado(); as venta) {
-  <p class="mensaje-ok tarjeta-panel">
-    <app-icono nombre="check-circle" [tamano]="18" /> Venta registrada: pedido <strong>#{{ venta.pedidoId }}</strong> por
-    <strong>{{ venta.total | currency:'COP':'symbol-narrow':'1.0-0' }}</strong>
-    ({{ venta.estado }}). Ya está en la cola de preparación.
+  <p class="mensaje-ok" role="status">
+    <app-icono nombre="check-circle" [tamano]="18" />
+    <span>
+      Venta registrada: pedido <strong>#{{ venta.pedidoId }}</strong> por
+      <strong>{{ venta.total | currency:'COP':'symbol-narrow':'1.0-0' }}</strong>
+      ({{ etiquetaEstado(venta.estado) }}). Ya está en la cola de preparación.
+    </span>
   </p>
 }
 
 <div class="mostrador-grid">
   <!-- Menú para agregar -->
-  <div>
-    <h2>Menú</h2>
-    <div class="lista-productos">
-      @if (cargandoMenu()) {
-        <app-esqueleto variante="tabla" [cantidad]="6" etiqueta="Cargando el menú…" />
-      }
-      @for (item of menu(); track item.productoId) {
-        <button type="button" class="producto-btn" (click)="agregar(item)">
-          <span>{{ item.nombre }}</span>
-          <span class="precio-btn">{{ item.precio | currency:'COP':'symbol-narrow':'1.0-0' }}</span>
-        </button>
-      }
-    </div>
+  <div class="menu">
+    @if (cargandoMenu()) {
+      <app-esqueleto variante="tabla" [cantidad]="6" etiqueta="Cargando el menú…" />
+    } @else if (menu().length === 0 && error()) {
+      <p class="mensaje-error">{{ error() }}</p>
+    }
+    @for (grupo of grupos(); track grupo.categoria) {
+      <section>
+        <h2>{{ grupo.categoria }}</h2>
+        <div class="teselas">
+          @for (item of grupo.items; track item.productoId) {
+            <button type="button" class="tesela" [attr.aria-label]="'Agregar ' + item.nombre"
+                    (click)="agregar(item)">
+              <span class="tesela-nombre">{{ item.nombre }}</span>
+              <span class="tesela-precio">{{ item.precio | currency:'COP':'symbol-narrow':'1.0-0' }}</span>
+              @if (cantidadDe(item.productoId); as cantidad) {
+                <span class="insignia" aria-hidden="true">{{ cantidad }}</span>
+              }
+            </button>
+          }
+        </div>
+      </section>
+    }
   </div>
 
   <!-- Cuenta actual -->
-  <div>
-    <h2>Cuenta</h2>
+  <aside class="superficie cuenta">
+    <div class="cuenta-cabecera">
+      <h2>Cuenta</h2>
+      @if (articulos() > 0) {
+        <span class="articulos">{{ articulos() }} {{ articulos() === 1 ? 'artículo' : 'artículos' }}</span>
+      }
+    </div>
+
     @if (lineas().length === 0) {
-      <p class="estado-msj">Toca un producto del menú para agregarlo.</p>
+      <div class="vacio">
+        <app-icono nombre="shopping-bag" [tamano]="28" />
+        <p>Aún no hay productos. Toca uno del menú para agregarlo.</p>
+      </div>
     } @else {
-      <div class="cuenta tarjeta-panel">
+      <ul class="lineas">
         @for (linea of lineas(); track linea.producto.productoId) {
-          <div class="cuenta-linea">
-            <span class="nombre">{{ linea.producto.nombre }}</span>
-            <span class="controles">
-              <button type="button" (click)="cambiarCantidad(linea.producto.productoId, -1)">−</button>
-              {{ linea.cantidad }}
-              <button type="button" (click)="cambiarCantidad(linea.producto.productoId, 1)">+</button>
+          <li class="linea">
+            <span class="linea-nombre">{{ linea.producto.nombre }}</span>
+            <span class="stepper">
+              <button type="button" [attr.aria-label]="'Quitar uno de ' + linea.producto.nombre"
+                      (click)="cambiarCantidad(linea.producto.productoId, -1)">
+                <app-icono nombre="minus" [tamano]="14" />
+              </button>
+              <span class="cantidad">{{ linea.cantidad }}</span>
+              <button type="button" [attr.aria-label]="'Agregar uno de ' + linea.producto.nombre"
+                      (click)="cambiarCantidad(linea.producto.productoId, 1)">
+                <app-icono nombre="plus" [tamano]="14" />
+              </button>
             </span>
             <span class="subtotal">{{ linea.producto.precio * linea.cantidad | currency:'COP':'symbol-narrow':'1.0-0' }}</span>
-          </div>
+          </li>
         }
-        <p class="cuenta-total">Total: <strong>{{ total() | currency:'COP':'symbol-narrow':'1.0-0' }}</strong></p>
+      </ul>
 
-        <label class="campo">
-          Método de pago
-          <select name="metodo" [(ngModel)]="metodo">
-            @for (m of metodos; track m) {
-              <option [ngValue]="m">{{ m }}</option>
-            }
-          </select>
-        </label>
-
-        @if (error()) {
-          <p class="mensaje-error">{{ error() }}</p>
-        }
-
-        <button type="button" class="boton cobrar" [disabled]="procesando()" (click)="cobrar()">
-          {{ procesando() ? 'Registrando…' : 'Cobrar' }}
-        </button>
+      <div class="total">
+        <span class="total-etiqueta">Total</span>
+        <span class="total-valor">{{ total() | currency:'COP':'symbol-narrow':'1.0-0' }}</span>
       </div>
-    }
-  </div>
-</div>
 
-<style>
-  .mostrador-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
-  }
-  @media (max-width: 720px) {
-    .mostrador-grid { grid-template-columns: 1fr; }
-  }
-  .lista-productos {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-  }
-  .producto-btn {
-    display: flex;
-    justify-content: space-between;
-    gap: 0.75rem;
-    background: var(--color-input-bg);
-    color: var(--color-text);
-    border: 1px solid var(--crema-borde);
-    border-radius: 8px;
-    padding: 0.55rem 0.8rem;
-    font-size: 0.88rem;
-    font-family: inherit;
-    cursor: pointer;
-    text-align: left;
-  }
-  .producto-btn:hover {
-    border-color: var(--cafe-acento);
-  }
-  .precio-btn {
-    color: var(--cafe-acento);
-    font-weight: 700;
-  }
-  .cuenta {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-  .cuenta-linea {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    font-size: 0.88rem;
-  }
-  .cuenta-linea .nombre { flex: 1; }
-  .cuenta-linea .controles button {
-    width: 22px; height: 22px;
-    border: 1px solid var(--crema-borde);
-    background: var(--crema);
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  .cuenta-linea .subtotal {
-    font-weight: 700;
-    color: var(--cafe-acento);
-    min-width: 4.8rem;
-    text-align: right;
-  }
-  .cuenta-total {
-    text-align: right;
-    margin: 0.5rem 0;
-    color: var(--cafe-oscuro);
-  }
-  .cobrar { margin-top: 0.5rem; }
-</style>
+      <fieldset class="metodos">
+        <legend>Método de pago</legend>
+        <div class="chips">
+          @for (m of metodos; track m) {
+            <label class="chip">
+              <input type="radio" name="metodo" [value]="m" [(ngModel)]="metodo" />
+              <span>{{ etiquetaMetodo(m) }}</span>
+            </label>
+          }
+        </div>
+      </fieldset>
+
+      @if (error()) {
+        <p class="mensaje-error" role="alert">{{ error() }}</p>
+      }
+
+      <button type="button" class="boton grande" [disabled]="procesando()" (click)="cobrar()">
+        {{ procesando() ? 'Registrando…' : 'Cobrar ' + (total() | currency:'COP':'symbol-narrow':'1.0-0') }}
+      </button>
+    }
+  </aside>
+</div>

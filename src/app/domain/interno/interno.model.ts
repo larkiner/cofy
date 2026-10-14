@@ -58,6 +58,11 @@ export interface ProductoAdmin {
   imagenUrl: string | null;
 }
 
+/** Respuesta de la subida de una imagen de producto: su URL pública. */
+export interface ImagenSubida {
+  url: string;
+}
+
 export interface ProductoRequest {
   nombre: string;
   descripcion?: string;

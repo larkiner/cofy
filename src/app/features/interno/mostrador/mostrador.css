@@ -1,0 +1,269 @@
+.mostrador-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+
+@media (min-width: 960px) {
+  .mostrador-grid {
+    grid-template-columns: minmax(0, 1fr) 360px;
+  }
+
+  .cuenta {
+    position: sticky;
+    top: calc(var(--alto-header) + 24px);
+  }
+}
+
+/* ---------- Menú en teselas ---------- */
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.teselas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
+}
+
+.tesela {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 80px;
+  padding: 12px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-card);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 160ms var(--ease-out),
+    transform 160ms var(--ease-out),
+    box-shadow 160ms var(--ease-out);
+}
+
+.tesela:hover {
+  border-color: var(--color-accent);
+}
+
+.tesela:focus-visible {
+  box-shadow: var(--ring);
+  border-radius: 12px;
+}
+
+.tesela:not(:disabled):active {
+  transform: scale(0.98);
+}
+
+.tesela-nombre {
+  padding-right: 24px; /* la insignia no debe pisar el nombre */
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.tesela-precio {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.insignia {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  min-width: 20px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Cuenta ---------- */
+.cuenta {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.cuenta-cabecera {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.cuenta-cabecera h2 {
+  margin: 0;
+}
+
+.articulos {
+  font-size: 12px;
+  color: var(--color-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.lineas {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  list-style: none;
+}
+
+.linea {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 12px;
+}
+
+.linea-nombre {
+  font-size: 14px;
+  line-height: 1.3;
+}
+
+.stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.stepper button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--color-border-input);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: background-color 160ms var(--ease-out);
+}
+
+.stepper button:hover {
+  background: var(--color-overlay-hover);
+}
+
+.stepper button:focus-visible {
+  box-shadow: var(--ring);
+  border-radius: 8px;
+}
+
+.cantidad {
+  min-width: 24px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.subtotal {
+  min-width: 72px;
+  text-align: right;
+  font-size: 14px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.total {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border);
+}
+
+.total-etiqueta {
+  font-size: 14px;
+  color: var(--color-muted);
+}
+
+.total-valor {
+  font-size: 26px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Método de pago (radios nativos estilados como chips) ---------- */
+.metodos {
+  min-width: 0;
+  border: none;
+}
+
+.metodos legend {
+  margin-bottom: 8px;
+  padding: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-muted);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  height: 36px;
+  padding: 0 14px;
+  border: 1px solid var(--color-border-input);
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  transition:
+    background-color 160ms var(--ease-out),
+    border-color 160ms var(--ease-out);
+}
+
+.chip:hover {
+  background: var(--color-overlay-hover);
+}
+
+.chip input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.chip:has(input:checked) {
+  background: color-mix(in oklch, var(--color-accent) 16%, transparent);
+  border-color: var(--color-accent);
+  font-weight: 600;
+}
+
+.chip:has(input:focus-visible) {
+  box-shadow: var(--ring);
+}
+
+.cuenta .mensaje-error {
+  margin: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tesela:not(:disabled):active {
+    transform: none;
+  }
+}

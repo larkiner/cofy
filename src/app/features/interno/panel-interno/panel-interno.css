@@ -1,32 +1,128 @@
+/* Layout del panel interno: tira horizontal en móvil, barra lateral desde 960 px. */
+
 .panel {
-  max-width: 960px;
+  max-width: 1320px;
   margin: 0 auto;
-  padding: 36px 24px 80px;
+  padding: 20px 16px 64px;
 }
 
-.subnav {
+.contenido {
+  min-width: 0;
+}
+
+/* ---------- Navegación (móvil: tira horizontal) ---------- */
+.lateral {
   display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  border-bottom: 2px solid var(--color-border);
-  padding-bottom: 12px;
-  margin-bottom: 22px;
+  gap: 4px;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  padding-bottom: 8px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--color-border);
 }
 
-.subnav a {
-  text-decoration: none;
+.grupo {
+  display: contents;
+}
+
+.rotulo,
+.pie {
+  display: none;
+}
+
+.lateral a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 40px;
+  padding: 0 12px;
+  border-radius: 10px;
   color: var(--color-muted);
-  font-size: 13.5px;
-  font-weight: 600;
-  padding: 8px 16px;
-  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  scroll-snap-align: start;
+  transition:
+    background-color 160ms var(--ease-out),
+    color 160ms var(--ease-out);
 }
 
-.subnav a:hover {
+.lateral a:hover {
   background: var(--color-overlay-hover);
+  color: var(--color-text);
 }
 
-.subnav a.activo {
-  background: var(--color-dark);
-  color: var(--color-on-accent);
+.lateral a:focus-visible {
+  box-shadow: var(--ring);
+}
+
+.lateral a.activo,
+.lateral a.activo:hover {
+  background: color-mix(in oklch, var(--color-accent) 14%, transparent);
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.lateral a.activo app-icono {
+  color: var(--color-accent);
+}
+
+/* ---------- Barra lateral (escritorio) ---------- */
+@media (min-width: 960px) {
+  .panel {
+    display: grid;
+    grid-template-columns: 224px minmax(0, 1fr);
+    gap: 40px;
+    padding: 28px 32px 80px;
+  }
+
+  .lateral {
+    position: sticky;
+    top: calc(var(--alto-header) + 24px);
+    align-self: start;
+    flex-direction: column;
+    gap: 0;
+    overflow: visible;
+    padding-bottom: 0;
+    margin-bottom: 0;
+    border-bottom: none;
+  }
+
+  .grupo {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .rotulo {
+    display: block;
+    margin: 20px 12px 6px;
+    color: var(--color-muted-2);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .grupo:first-child .rotulo {
+    margin-top: 0;
+  }
+
+  .pie {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 20px;
+    padding: 12px 12px 0;
+    border-top: 1px solid var(--color-border);
+    color: var(--color-muted);
+    font-size: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lateral a {
+    transition: none;
+  }
 }

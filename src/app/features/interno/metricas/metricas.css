@@ -1,0 +1,185 @@
+/* ---------- KPIs: una franja dividida en celdas por líneas de 1 px ---------- */
+.superficie.kpis {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  padding: 0;
+  margin-bottom: 16px;
+  overflow: hidden;
+  background: var(--color-border); /* el hueco de 1 px entre celdas hace de divisor */
+}
+
+@media (max-width: 719px) {
+  .superficie.kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.kpi {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px 20px;
+  background: var(--color-card);
+}
+
+.kpi-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-muted);
+}
+
+.kpi-valor {
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Gráficas ---------- */
+.graficas {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+@media (max-width: 899px) {
+  .graficas {
+    grid-template-columns: 1fr;
+  }
+}
+
+.linea-wrap {
+  position: relative;
+}
+
+.linea-svg {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.linea-grid {
+  stroke: var(--color-border);
+  stroke-width: 1;
+}
+
+.linea-tick,
+.linea-fecha {
+  font-size: 11px;
+  fill: var(--color-muted);
+}
+
+.linea-area {
+  fill: var(--color-accent);
+  opacity: 0.1;
+  stroke: none;
+}
+
+.linea-trazo {
+  fill: none;
+  stroke: var(--color-accent);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.linea-punto {
+  fill: var(--color-accent);
+  stroke: var(--color-card);
+  stroke-width: 2;
+  transition: r 160ms var(--ease-out);
+}
+
+.linea-punto.activo {
+  r: 6;
+}
+
+.linea-punto-hit {
+  fill: transparent;
+  cursor: pointer;
+}
+
+.linea-punto-hit:focus-visible {
+  outline: none;
+  box-shadow: none; /* el foco se ve en el punto activo y el tooltip */
+}
+
+.linea-tooltip {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: var(--color-text);
+  color: var(--color-bg);
+  font-size: 12px;
+  white-space: nowrap;
+  pointer-events: none;
+  transform: translate(-50%, -130%);
+  font-variant-numeric: tabular-nums;
+}
+
+.linea-tooltip span {
+  font-size: 11px;
+  color: color-mix(in oklch, var(--color-bg) 75%, transparent);
+}
+
+/* ---------- Barras por sucursal ---------- */
+.barras {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.barra-fila {
+  display: grid;
+  grid-template-columns: minmax(0, 96px) 1fr auto;
+  align-items: center;
+  gap: 12px;
+}
+
+.barra-nombre {
+  overflow: hidden;
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.barra-pista {
+  height: 12px;
+  border-radius: 999px;
+  background: var(--color-border);
+  overflow: hidden;
+}
+
+.barra-fill {
+  height: 100%;
+  min-width: 4px;
+  border-radius: 999px;
+  background: var(--color-accent);
+  transition: width 200ms var(--ease-out);
+}
+
+.barra-valor {
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Detalle ---------- */
+.detalle {
+  max-height: 420px;
+}
+
+.tabla td.fecha {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.tabla td.total {
+  font-weight: 600;
+}

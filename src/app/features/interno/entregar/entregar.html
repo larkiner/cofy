@@ -1,44 +1,33 @@
-<h1>Entregar pedido</h1>
+<header class="encabezado">
+  <div>
+    <h1>Entregar pedido</h1>
+    <p class="bajada">Pide al cliente su código de retiro y verifícalo antes de entregar el pedido.</p>
+  </div>
+</header>
 
-<div class="tarjeta-panel">
-  <p class="estado-msj">El cliente presenta su código de retiro (RET-XXXXXXXX); verifícalo aquí para entregarle su pedido.</p>
-
-  <form class="fila-entrega" (ngSubmit)="entregar()">
+<div class="columna-unica">
+  <form class="superficie formulario" (ngSubmit)="entregar()">
     <label class="campo codigo-campo">
       Código de retiro
       <input type="text" name="codigo" [(ngModel)]="codigo" placeholder="RET-XXXXXXXX"
-             autocomplete="off" required />
+             autocomplete="off" autocapitalize="characters" spellcheck="false" required />
     </label>
-    <button type="submit" class="boton" [disabled]="procesando()">
-      {{ procesando() ? 'Verificando…' : 'Entregar' }}
+    <button type="submit" class="boton grande" [disabled]="procesando()">
+      <app-icono nombre="entregar" [tamano]="18" />
+      {{ procesando() ? 'Verificando…' : 'Entregar pedido' }}
     </button>
+    @if (error()) {
+      <p class="mensaje-error" role="alert">{{ error() }}</p>
+    }
   </form>
 
-  @if (error()) {
-    <p class="mensaje-error">{{ error() }}</p>
-  }
-
   @if (entregado(); as pedido) {
-    <p class="mensaje-ok">
-      <app-icono nombre="check-circle" [tamano]="18" /> Pedido <strong>#{{ pedido.id }}</strong> entregado
-      ({{ pedido.total | currency:'COP':'symbol-narrow':'1.0-0' }}).
-    </p>
+    <div class="mensaje-ok exito" role="status">
+      <app-icono nombre="check-circle" [tamano]="28" />
+      <div>
+        <p class="exito-titulo">Pedido #{{ pedido.id }} entregado</p>
+        <p class="exito-total">Total {{ pedido.total | currency:'COP':'symbol-narrow':'1.0-0' }}</p>
+      </div>
+    </div>
   }
 </div>
-
-<style>
-  .fila-entrega {
-    display: flex;
-    align-items: flex-end;
-    gap: 0.75rem;
-    margin-top: 0.5rem;
-  }
-  .codigo-campo {
-    flex: 1;
-    max-width: 300px;
-  }
-  .codigo-campo input {
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-  }
-</style>

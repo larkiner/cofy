@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import {
-  Categoria, MetricaSucursal, PedidoEmpleado, PedidoInterno, ProductoAdmin,
+  Categoria, ImagenSubida, MetricaSucursal, PedidoEmpleado, PedidoInterno, ProductoAdmin,
   ProductoRequest, TrabajadorPerfil, Turno, TurnoRequest,
   VentaMostradorRequest, VentaMostradorResponse,
 } from '../domain/interno/interno.model';
@@ -42,6 +42,10 @@ export class InternoService {
 
   actualizarProducto(id: number, request: ProductoRequest): Observable<ProductoAdmin> {
     return this.repo.actualizarProducto(id, request);
+  }
+
+  subirImagen(archivo: File): Observable<ImagenSubida> {
+    return this.repo.subirImagen(archivo);
   }
 
   categorias(): Observable<Categoria[]> {

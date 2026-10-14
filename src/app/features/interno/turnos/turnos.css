@@ -1,0 +1,107 @@
+.turnos-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+  max-width: 640px;
+}
+
+/* Con el formulario de asignación (supervisor/admin) hay dos columnas desde 960 px. */
+@media (min-width: 960px) {
+  .turnos-grid.con-asignacion {
+    grid-template-columns: minmax(0, 1fr) 340px;
+    max-width: none;
+  }
+}
+
+/* ---------- Mis turnos ---------- */
+.superficie.lista-turnos {
+  padding: 0;
+  list-style: none;
+}
+
+.turno {
+  display: grid;
+  grid-template-columns: 56px 1fr auto;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.turno:last-child {
+  border-bottom: none;
+}
+
+.fecha {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.fecha-dia {
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.fecha-semana {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-muted);
+  text-transform: uppercase;
+}
+
+.horario {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.horario-horas {
+  font-size: 14px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.horario-mes {
+  font-size: 12px;
+  color: var(--color-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.turno-lado {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.duracion {
+  font-size: 14px;
+  color: var(--color-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Formulario de asignación ---------- */
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.formulario h2 {
+  margin: 0;
+}
+
+.fila-doble {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.formulario .boton {
+  width: 100%;
+}

@@ -88,6 +88,50 @@
       "sprout": {
         "id": "ltMG8kO44WrL",
         "commonName": "sprout"
+      },
+      "tablero": {
+        "id": "sUJRwjfnGwbJ",
+        "commonName": "dashboard-layout"
+      },
+      "entregar": {
+        "id": "HXwzB8s7sESa",
+        "commonName": "hand-box"
+      },
+      "caja": {
+        "id": "fV9UCTwbDqR7",
+        "commonName": "cash-register"
+      },
+      "inventario": {
+        "id": "FnCSMZbfR6RU",
+        "commonName": "box"
+      },
+      "grafica": {
+        "id": "Ww4I6zPDi4xI",
+        "commonName": "bar-chart"
+      },
+      "calendario": {
+        "id": "vwGXRtPWrZSn",
+        "commonName": "calendar"
+      },
+      "actualizar": {
+        "id": "dUT1e6ccW1yv",
+        "commonName": "refresh"
+      },
+      "editar": {
+        "id": "sKp0dy2A108d",
+        "commonName": "edit"
+      },
+      "reloj": {
+        "id": "6Z5IUAh18Fuc",
+        "commonName": "clock"
+      },
+      "imagen": {
+        "id": "cD26kdwTbCzt",
+        "commonName": "image"
+      },
+      "subir": {
+        "id": "tWt9XCfjK1WM",
+        "commonName": "upload"
       }
     }
   }

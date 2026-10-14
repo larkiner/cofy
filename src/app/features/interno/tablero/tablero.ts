@@ -1,23 +1,35 @@
 import { CurrencyPipe, DatePipe } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { EMPTY, catchError, exhaustMap, filter, timer } from 'rxjs';
 import { InternoService } from '../../../application/interno.service';
 import { PedidoEmpleado } from '../../../domain/interno/interno.model';
 import { Esqueleto } from '../../../shared/ui/esqueleto/esqueleto';
+import { Icono } from '../../../shared/ui/icono/icono';
+import { etiquetaEstado } from '../etiquetas';
 
 /** Siguiente paso de cada estado en el flujo de barra. */
 const SIGUIENTE: Record<string, { estado: string; etiqueta: string }> = {
   PAGADO: { estado: 'EN_PREPARACION', etiqueta: 'Iniciar preparación' },
-  EN_PREPARACION: { estado: 'LISTO', etiqueta: 'Marcar LISTO' },
+  EN_PREPARACION: { estado: 'LISTO', etiqueta: 'Marcar listo' },
 };
+
+/** Columnas del tablero, en el orden del flujo de barra. */
+const COLUMNAS = [
+  { estado: 'PAGADO', titulo: 'Por preparar' },
+  { estado: 'EN_PREPARACION', titulo: 'En preparación' },
+  { estado: 'LISTO', titulo: 'Listos para entregar' },
+];
+
+const tiempo = (pedido: PedidoEmpleado) => new Date(pedido.fechaPedido).getTime();
 
 @Component({
   selector: 'app-tablero',
-  imports: [CurrencyPipe, DatePipe, Esqueleto, FormsModule],
+  imports: [CurrencyPipe, DatePipe, Esqueleto, FormsModule, Icono, RouterLink],
   templateUrl: './tablero.html',
-  styleUrl: '../interno.css',
+  styleUrl: './tablero.css',
 })
 export class Tablero {
   /** Cada cuánto se refresca el tablero solo (15 s). */
@@ -39,6 +51,25 @@ export class Tablero {
   protected readonly error = signal<string | null>(null);
   protected readonly pedidos = signal<PedidoEmpleado[]>([]);
   protected readonly actualizadoEn = signal<Date | null>(null);
+
+  /** Pedidos en curso por columna, del más antiguo al más reciente. */
+  protected readonly columnas = computed(() =>
+    COLUMNAS.map((columna) => ({
+      ...columna,
+      pedidos: this.pedidos()
+        .filter((p) => p.estado === columna.estado)
+        .sort((a, b) => tiempo(a) - tiempo(b)),
+    })),
+  );
+
+  /** Pedidos fuera del flujo de barra (pendientes de pago, entregados, cancelados), recientes primero. */
+  protected readonly otros = computed(() =>
+    this.pedidos()
+      .filter((p) => !COLUMNAS.some((c) => c.estado === p.estado))
+      .sort((a, b) => tiempo(b) - tiempo(a)),
+  );
+
+  protected readonly etiquetaEstado = etiquetaEstado;
 
   constructor() {
     this.cargar();

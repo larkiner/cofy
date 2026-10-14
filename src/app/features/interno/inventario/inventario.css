@@ -1,0 +1,230 @@
+.resumen {
+  font-size: 13px;
+  color: var(--color-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Una columna por debajo de 1100 px: el aside queda después de la tabla. */
+.inv-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+
+@media (min-width: 1100px) {
+  .inv-grid {
+    grid-template-columns: minmax(0, 1fr) 340px;
+  }
+
+  .lateral-inv {
+    position: sticky;
+    top: calc(var(--alto-header) + 24px);
+    max-width: none;
+  }
+}
+
+.lateral-inv {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 560px;
+}
+
+/* ---------- Tabla ---------- */
+.producto-nombre {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.producto-categoria {
+  display: block;
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--color-muted);
+}
+
+.tabla tr.editando,
+.tabla tr.editando:hover {
+  background: color-mix(in oklch, var(--color-accent) 10%, transparent);
+}
+
+.tabla th.acciones-col,
+.tabla td.acciones-col {
+  text-align: right;
+}
+
+.celda-acciones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 4px;
+}
+
+/* ---------- Formularios ---------- */
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.formulario h2 {
+  margin: 0;
+}
+
+.fila-doble {
+  display: grid;
+  gap: 12px;
+}
+
+.fila-doble.precio {
+  grid-template-columns: 120px minmax(0, 1fr);
+}
+
+/* ---------- Imagen del producto ---------- */
+.imagen-campo {
+  gap: 8px;
+}
+
+.imagen-campo .mensaje-error {
+  margin: 0;
+}
+
+.imagen-fila {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.imagen-vista {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 88px;
+  height: 88px;
+  overflow: hidden;
+  border: 1px dashed var(--color-border-input);
+  border-radius: 12px;
+  background: var(--color-input-bg);
+  color: var(--color-muted-2);
+  transition: opacity 0.18s var(--ease-out);
+}
+
+.imagen-vista img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.imagen-vista.cargando {
+  opacity: 0.5;
+}
+
+.imagen-acciones {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  min-width: 0;
+}
+
+/* El input real queda en el DOM (teclado y lectores de pantalla); el botón es su etiqueta. */
+.archivo-oculto {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.archivo-oculto:focus-visible + label {
+  box-shadow: var(--ring);
+}
+
+.imagen-acciones .boton.secundario {
+  cursor: pointer;
+}
+
+.imagen-acciones .boton.deshabilitado {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.imagen-ayuda {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--color-muted);
+}
+
+.url-alterna summary {
+  width: fit-content;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--color-muted);
+}
+
+.url-alterna summary:hover {
+  color: var(--color-text);
+}
+
+.url-alterna input {
+  width: 100%;
+  margin-top: 8px;
+}
+
+/* Pantallas táctiles: objetivos de al menos 44 px para elegir y quitar la foto. */
+@media (pointer: coarse) {
+  .imagen-acciones .boton {
+    min-height: 44px;
+  }
+
+  .url-alterna summary {
+    padding: 10px 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .imagen-vista {
+    transition: none;
+  }
+}
+
+.formulario .boton {
+  width: 100%;
+}
+
+/* ---------- Categorías ---------- */
+.categorias {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+  border-top: 1px solid var(--color-border);
+  list-style: none;
+}
+
+.categorias li {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.categoria-nombre {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.categoria-descripcion {
+  font-size: 12px;
+  color: var(--color-muted);
+}
+
+.form-categoria {
+  margin-top: 4px;
+}

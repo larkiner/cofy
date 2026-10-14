@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 import {
-  Categoria, MetricaSucursal, PedidoEmpleado, PedidoInterno, ProductoAdmin,
+  Categoria, ImagenSubida, MetricaSucursal, PedidoEmpleado, PedidoInterno, ProductoAdmin,
   ProductoRequest, TrabajadorPerfil, Turno, TurnoRequest,
   VentaMostradorRequest, VentaMostradorResponse,
 } from './interno.model';
@@ -17,6 +17,8 @@ export abstract class InternoRepository {
   abstract productos(): Observable<ProductoAdmin[]>;
   abstract crearProducto(request: ProductoRequest): Observable<ProductoAdmin>;
   abstract actualizarProducto(id: number, request: ProductoRequest): Observable<ProductoAdmin>;
+  /** Sube un archivo de imagen y devuelve la URL pública con que se guarda en el producto. */
+  abstract subirImagen(archivo: File): Observable<ImagenSubida>;
   abstract categorias(): Observable<Categoria[]>;
   abstract crearCategoria(nombre: string, descripcion: string | null): Observable<Categoria>;
 
