@@ -118,9 +118,9 @@
       <div class="campo imagen-campo" role="group" aria-labelledby="etiqueta-imagen">
         <span id="etiqueta-imagen">Imagen del producto (opcional)</span>
         <div class="imagen-fila">
-          <div class="imagen-vista" [class.cargando]="subiendoImagen()">
-            @if (prodImagenUrl) {
-              <img [src]="prodImagenUrl" alt="Vista previa de la imagen del producto" />
+          <div class="imagen-vista" [class.cargando]="preparandoImagen()">
+            @if (vistaImagen(); as vista) {
+              <app-imagen-producto [src]="vista" alt="Vista previa de la imagen del producto" />
             } @else {
               <app-icono nombre="imagen" [tamano]="28" />
             }
@@ -131,17 +131,17 @@
               class="archivo-oculto"
               type="file"
               accept="image/jpeg,image/png,image/webp"
-              [disabled]="subiendoImagen()"
+              [disabled]="preparandoImagen() || guardando()"
               (change)="seleccionarImagen($event)"
             />
-            <label class="boton secundario" for="archivo-imagen" [class.deshabilitado]="subiendoImagen()">
+            <label class="boton secundario" for="archivo-imagen" [class.deshabilitado]="preparandoImagen() || guardando()">
               <app-icono nombre="subir" [tamano]="16" />
-              {{ subiendoImagen() ? 'Subiendo…' : prodImagenUrl ? 'Cambiar imagen' : 'Elegir imagen' }}
+              {{ preparandoImagen() ? 'Preparando…' : vistaImagen() ? 'Cambiar imagen' : 'Elegir imagen' }}
             </label>
-            @if (prodImagenUrl && !subiendoImagen()) {
+            @if (vistaImagen() && !preparandoImagen() && !guardando()) {
               <button type="button" class="boton fantasma" (click)="quitarImagen()">Quitar</button>
             }
-            <p class="imagen-ayuda">Desde tu galería, cámara o computador · JPG, PNG o WEBP</p>
+            <p class="imagen-ayuda">Desde tu galería, cámara o computador · JPG, PNG o WEBP. Se sube al guardar el producto.</p>
           </div>
         </div>
         @if (errorImagen()) {
@@ -153,8 +153,8 @@
                  aria-label="URL de la imagen" placeholder="https://…" />
         </details>
       </div>
-      <button type="submit" class="boton">
-        {{ editandoId() === null ? 'Crear producto' : 'Guardar cambios' }}
+      <button type="submit" class="boton" [disabled]="guardando() || preparandoImagen()">
+        {{ guardando() ? 'Guardando…' : editandoId() === null ? 'Crear producto' : 'Guardar cambios' }}
       </button>
       @if (editandoId() !== null) {
         <button type="button" class="boton secundario" (click)="cancelarEdicion()">Cancelar</button>

@@ -6,6 +6,7 @@ import { MenuService } from '../../../application/menu.service';
 import { Categoria, ProductoAdmin } from '../../../domain/interno/interno.model';
 import { Esqueleto } from '../../../shared/ui/esqueleto/esqueleto';
 import { Icono } from '../../../shared/ui/icono/icono';
+import { ImagenProducto } from '../../../shared/ui/imagen-producto/imagen-producto';
 import { prepararImagen } from '../../../shared/util/preparar-imagen';
 
 /** Formatos y tamaño que acepta la API para la foto de un producto. */
@@ -18,7 +19,7 @@ const MAX_ORIGINAL_BYTES = 30 * 1024 * 1024;
 /** Inventario: gestión de categorías y productos (solo ADMIN). */
 @Component({
   selector: 'app-inventario',
-  imports: [CurrencyPipe, Esqueleto, FormsModule, Icono],
+  imports: [CurrencyPipe, Esqueleto, FormsModule, Icono, ImagenProducto],
   templateUrl: './inventario.html',
   styleUrl: './inventario.css',
 })
@@ -56,8 +57,16 @@ export class Inventario {
   protected prodCategoriaId: number | null = null;
   protected prodDisponible: 'S' | 'N' = 'S';
   protected prodImagenUrl = '';
-  protected readonly subiendoImagen = signal(false);
   protected readonly errorImagen = signal<string | null>(null);
+  protected readonly preparandoImagen = signal(false);
+  protected readonly guardando = signal(false);
+  /** Vista previa local (URL temporal) de la foto elegida, que aún NO se ha subido. */
+  protected readonly vistaLocal = signal<string | null>(null);
+
+  /** Foto elegida en el dispositivo, ya reducida. Se sube solo al guardar el producto. */
+  private imagenElegida: File | null = null;
+  /** Si la foto subió bien pero el guardado del producto falló, se reutiliza al reintentar. */
+  private imagenYaSubida: { archivo: File; url: string } | null = null;
 
   constructor() {
     this.cargar();
@@ -114,6 +123,8 @@ export class Inventario {
     this.prodCategoriaId = producto.categoriaId;
     this.prodDisponible = producto.disponible;
     this.prodImagenUrl = producto.imagenUrl ?? '';
+    this.descartarImagenElegida();
+    this.errorImagen.set(null);
     this.nombreEditando = producto.nombre;
 
     // Lleva al formulario (que está en la columna lateral) y deja el cursor en el nombre.
@@ -131,16 +142,44 @@ export class Inventario {
   }
 
   protected guardarProducto(): void {
+    if (this.guardando()) return;
     if (!this.prodNombre.trim() || this.prodPrecio === null || this.prodCategoriaId === null) return;
     this.limpiarMensajes();
+    this.errorImagen.set(null);
+    this.guardando.set(true);
 
+    // Sin foto nueva: se guarda con la URL que ya tenía (o ninguna).
+    const archivo = this.imagenElegida;
+    if (!archivo) {
+      this.enviarProducto(this.prodImagenUrl || undefined);
+      return;
+    }
+    // La foto se sube AQUÍ, no al elegirla: así no quedan archivos huérfanos si se
+    // cambia de opinión. Si ya había subido y solo falló el guardado, se reutiliza.
+    if (this.imagenYaSubida?.archivo === archivo) {
+      this.enviarProducto(this.imagenYaSubida.url);
+      return;
+    }
+    this.interno.subirImagen(archivo).subscribe({
+      next: ({ url }) => {
+        this.imagenYaSubida = { archivo, url };
+        this.enviarProducto(url);
+      },
+      error: err => {
+        this.errorImagen.set(err.mensaje ?? 'No se pudo subir la imagen.');
+        this.guardando.set(false);
+      },
+    });
+  }
+
+  private enviarProducto(imagenUrl: string | undefined): void {
     const request = {
       nombre: this.prodNombre.trim(),
       descripcion: this.prodDescripcion || undefined,
-      precio: this.prodPrecio,
-      categoriaId: this.prodCategoriaId,
+      precio: this.prodPrecio!,
+      categoriaId: this.prodCategoriaId!,
       disponible: this.prodDisponible,
-      imagenUrl: this.prodImagenUrl || undefined,
+      imagenUrl,
     };
 
     const id = this.editandoId();
@@ -152,10 +191,14 @@ export class Inventario {
       next: () => {
         this.menuService.invalidarMenu(); // el catálogo público cambió
         this.mensaje.set(id === null ? 'Producto creado.' : 'Producto actualizado.');
+        this.guardando.set(false);
         this.cancelarEdicion();
         this.cargar();
       },
-      error: err => this.error.set(err.mensaje ?? 'No se pudo guardar el producto.'),
+      error: err => {
+        this.error.set(err.mensaje ?? 'No se pudo guardar el producto.');
+        this.guardando.set(false);
+      },
     });
   }
 
@@ -180,9 +223,9 @@ export class Inventario {
 
   /**
    * Toma la imagen del dispositivo (galería, cámara o carpeta), la reduce en el
-   * navegador, la sube y deja su URL pública en el formulario; el producto la
-   * guarda al pulsar "Crear"/"Guardar". Se valida aquí solo por comodidad
-   * (respuesta inmediata): la API vuelve a comprobar tipo y tamaño.
+   * navegador y la deja lista con su vista previa. NO se sube todavía: se sube al
+   * pulsar "Crear"/"Guardar" (así elegir y cambiar de foto no deja archivos
+   * duplicados en el almacenamiento). La API vuelve a comprobar tipo y tamaño.
    */
   protected seleccionarImagen(evento: Event): void {
     const entrada = evento.target as HTMLInputElement;
@@ -200,29 +243,36 @@ export class Inventario {
       return;
     }
 
-    this.subiendoImagen.set(true);
+    this.preparandoImagen.set(true);
     prepararImagen(archivo).then(preparada => {
+      this.preparandoImagen.set(false);
       if (preparada.size > MAX_IMAGEN_BYTES) {
         this.errorImagen.set('La imagen pesa más de 5 MB incluso reducida. Prueba con otra.');
-        this.subiendoImagen.set(false);
         return;
       }
-      this.interno.subirImagen(preparada).subscribe({
-        next: ({ url }) => {
-          this.prodImagenUrl = url;
-          this.subiendoImagen.set(false);
-        },
-        error: err => {
-          this.errorImagen.set(err.mensaje ?? 'No se pudo subir la imagen.');
-          this.subiendoImagen.set(false);
-        },
-      });
+      this.descartarImagenElegida();
+      this.imagenElegida = preparada;
+      this.vistaLocal.set(URL.createObjectURL(preparada));
     });
   }
 
+  /** Lo que muestra la vista previa: la foto recién elegida o la que el producto ya tiene. */
+  protected vistaImagen(): string | null {
+    return this.vistaLocal() ?? (this.prodImagenUrl || null);
+  }
+
   protected quitarImagen(): void {
+    this.descartarImagenElegida();
     this.prodImagenUrl = '';
     this.errorImagen.set(null);
+  }
+
+  private descartarImagenElegida(): void {
+    const vista = this.vistaLocal();
+    if (vista) URL.revokeObjectURL(vista);
+    this.vistaLocal.set(null);
+    this.imagenElegida = null;
+    this.imagenYaSubida = null;
   }
 
   private limpiarFormProducto(): void {
@@ -232,6 +282,7 @@ export class Inventario {
     this.prodCategoriaId = null;
     this.prodDisponible = 'S';
     this.prodImagenUrl = '';
+    this.descartarImagenElegida();
     this.errorImagen.set(null);
   }
 

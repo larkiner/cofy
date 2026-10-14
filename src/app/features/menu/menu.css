@@ -209,11 +209,6 @@
   flex-shrink: 0;
 }
 
-.tarjeta-media img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
 
 /* Fila: nombre a la izquierda, precio a la derecha */
 .tarjeta-encabezado {

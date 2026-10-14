@@ -14,7 +14,7 @@
           <li class="linea">
             <div class="linea-media">
               @if (linea.producto.imagenUrl) {
-                <img [src]="linea.producto.imagenUrl" alt="" />
+                <app-imagen-producto [src]="linea.producto.imagenUrl" />
               } @else {
                 <app-icono nombre="coffee" [tamano]="22" />
               }

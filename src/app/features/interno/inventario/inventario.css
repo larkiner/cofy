@@ -110,12 +110,6 @@
   transition: opacity 0.18s var(--ease-out);
 }
 
-.imagen-vista img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
 .imagen-vista.cargando {
   opacity: 0.5;
 }

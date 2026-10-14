@@ -125,11 +125,6 @@ h1 {
   background: color-mix(in oklch, var(--color-accent) 12%, var(--color-bg));
 }
 
-.linea-media img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
 
 .linea-info {
   grid-area: info;
