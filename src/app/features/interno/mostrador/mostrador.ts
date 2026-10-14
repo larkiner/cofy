@@ -6,6 +6,7 @@ import { MenuService } from '../../../application/menu.service';
 import { VentaMostradorResponse } from '../../../domain/interno/interno.model';
 import { MenuItem } from '../../../domain/menu/menu.model';
 import { Esqueleto } from '../../../shared/ui/esqueleto/esqueleto';
+import { Icono } from '../../../shared/ui/icono/icono';
 
 interface LineaVenta {
   producto: MenuItem;
@@ -20,7 +21,7 @@ const METODOS = ['EFECTIVO', 'TARJETA', 'NEQUI', 'DAVIPLATA', 'PSE'];
  */
 @Component({
   selector: 'app-mostrador',
-  imports: [CurrencyPipe, Esqueleto, FormsModule],
+  imports: [CurrencyPipe, Esqueleto, FormsModule, Icono],
   templateUrl: './mostrador.html',
   styleUrl: '../interno.css',
 })

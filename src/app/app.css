@@ -290,6 +290,11 @@
   margin-top: 4px;
 }
 
+.pie-copy a {
+  color: inherit;
+  text-decoration: underline;
+}
+
 /* ============================================================
    Responsive del header
    ============================================================ */

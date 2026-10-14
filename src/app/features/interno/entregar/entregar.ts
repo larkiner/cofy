@@ -3,10 +3,11 @@ import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { InternoService } from '../../../application/interno.service';
 import { PedidoInterno } from '../../../domain/interno/interno.model';
+import { Icono } from '../../../shared/ui/icono/icono';
 
 @Component({
   selector: 'app-entregar',
-  imports: [CurrencyPipe, FormsModule],
+  imports: [CurrencyPipe, FormsModule, Icono],
   templateUrl: './entregar.html',
   styleUrl: '../interno.css',
 })

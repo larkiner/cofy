@@ -5,11 +5,12 @@ import { InternoService } from '../../../application/interno.service';
 import { MenuService } from '../../../application/menu.service';
 import { Categoria, ProductoAdmin } from '../../../domain/interno/interno.model';
 import { Esqueleto } from '../../../shared/ui/esqueleto/esqueleto';
+import { Icono } from '../../../shared/ui/icono/icono';
 
 /** Inventario: gestión de categorías y productos (solo ADMIN). */
 @Component({
   selector: 'app-inventario',
-  imports: [CurrencyPipe, Esqueleto, FormsModule],
+  imports: [CurrencyPipe, Esqueleto, FormsModule, Icono],
   templateUrl: './inventario.html',
   styleUrl: '../interno.css',
 })

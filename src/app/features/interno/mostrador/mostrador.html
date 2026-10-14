@@ -2,7 +2,7 @@
 
 @if (resultado(); as venta) {
   <p class="mensaje-ok tarjeta-panel">
-    ✅ Venta registrada: pedido <strong>#{{ venta.pedidoId }}</strong> por
+    <app-icono nombre="check-circle" [tamano]="18" /> Venta registrada: pedido <strong>#{{ venta.pedidoId }}</strong> por
     <strong>{{ venta.total | currency:'COP':'symbol-narrow':'1.0-0' }}</strong>
     ({{ venta.estado }}). Ya está en la cola de preparación.
   </p>

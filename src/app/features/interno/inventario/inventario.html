@@ -78,7 +78,13 @@
             <td>{{ p.nombre }}</td>
             <td>{{ nombreCategoria(p.categoriaId) }}</td>
             <td>{{ p.precio | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
-            <td>{{ p.disponible === 'S' ? '✅' : '⛔' }}</td>
+            <td>
+              @if (p.disponible === 'S') {
+                <app-icono nombre="check-circle" [tamano]="18" etiqueta="Disponible" />
+              } @else {
+                <app-icono nombre="ban" [tamano]="18" etiqueta="No disponible" />
+              }
+            </td>
             <td class="celda-acciones">
               <button type="button" class="boton secundario" (click)="editar(p)">Editar</button>
               <button type="button" class="boton secundario" (click)="alternarDisponible(p)">

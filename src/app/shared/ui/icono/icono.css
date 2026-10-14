@@ -4,6 +4,22 @@
   line-height: 0;
 }
 
-svg {
+.glifo {
   display: block;
+  background-color: currentColor;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
+/* En alto contraste de Windows el navegador fuerza background-color: sin
+   esto la máscara quedaría pintada con el color del fondo y el ícono
+   desaparecería. Con `none` conserva currentColor, que ya es el forzado. */
+@media (forced-colors: active) {
+  .glifo {
+    forced-color-adjust: none;
+  }
 }

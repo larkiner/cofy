@@ -1,0 +1,94 @@
+{
+  "version": 2,
+  "icons": {
+    "pack": "fluent-systems-regular",
+    "sizes": [
+      14,
+      16,
+      18,
+      20,
+      22,
+      28
+    ],
+    "color": "currentColor",
+    "format": "png-96-mask",
+    "items": {
+      "sun": {
+        "id": "JHsm5oZeWqae",
+        "commonName": "sun"
+      },
+      "moon": {
+        "id": "xlD3xOrQjTJO",
+        "commonName": "crescent-moon"
+      },
+      "plus": {
+        "id": "354k6pS0PoMI",
+        "commonName": "plus-math"
+      },
+      "minus": {
+        "id": "2tT9vkUSoRrL",
+        "commonName": "minus-math"
+      },
+      "x": {
+        "id": "1NVn5K29mOSz",
+        "commonName": "delete-sign"
+      },
+      "check": {
+        "id": "VfY8rwjNJSAQ",
+        "commonName": "checkmark"
+      },
+      "check-circle": {
+        "id": "QPQ8uqS9OEpa",
+        "commonName": "checked"
+      },
+      "ban": {
+        "id": "Jb9SGhuLV2Js",
+        "commonName": "cancel-2"
+      },
+      "coffee": {
+        "id": "81wT4rVgNwP6",
+        "commonName": "coffee"
+      },
+      "shopping-bag": {
+        "id": "VksxHreSn4ck",
+        "commonName": "shopping-bag"
+      },
+      "user": {
+        "id": "zxB19VPoVLjK",
+        "commonName": "user"
+      },
+      "search": {
+        "id": "XU3XKgdpT0qG",
+        "commonName": "search"
+      },
+      "map-pin": {
+        "id": "c0kUjxdWTRsk",
+        "commonName": "marker"
+      },
+      "log-out": {
+        "id": "Q1xkcFuVON39",
+        "commonName": "exit"
+      },
+      "chevron-right": {
+        "id": "AgsBKswRnV1i",
+        "commonName": "forward"
+      },
+      "eye": {
+        "id": "4y6r43dyjbzw",
+        "commonName": "visible"
+      },
+      "eye-off": {
+        "id": "nx1IDGruJph4",
+        "commonName": "invisible"
+      },
+      "menu": {
+        "id": "quuyJoZCkYni",
+        "commonName": "menu"
+      },
+      "sprout": {
+        "id": "ltMG8kO44WrL",
+        "commonName": "sprout"
+      }
+    }
+  }
+}

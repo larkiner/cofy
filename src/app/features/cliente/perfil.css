@@ -42,8 +42,8 @@ h1 {
 }
 
 .rp-icono {
-  font-size: 22px;
-  line-height: 1;
+  display: inline-flex;
+  color: var(--color-accent-light);
 }
 
 .rp-texto {

@@ -20,7 +20,7 @@
 
   @if (entregado(); as pedido) {
     <p class="mensaje-ok">
-      ✅ Pedido <strong>#{{ pedido.id }}</strong> entregado
+      <app-icono nombre="check-circle" [tamano]="18" /> Pedido <strong>#{{ pedido.id }}</strong> entregado
       ({{ pedido.total | currency:'COP':'symbol-narrow':'1.0-0' }}).
     </p>
   }
