@@ -6,7 +6,7 @@ import { environment } from '../../../environments/environment';
 @Component({
   selector: 'app-stripe-pago',
   templateUrl: './stripe-pago.html',
-  styleUrl: './checkout.css',
+  styleUrl: './stripe-pago.css',
 })
 export class StripePago {
   readonly clientSecret = input.required<string>();

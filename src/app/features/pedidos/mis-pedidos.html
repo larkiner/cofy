@@ -1,31 +1,73 @@
 <section class="pedidos">
-  <h1>Mis pedidos</h1>
+  <header class="cabecera-pagina">
+    <div>
+      <h1>Mis pedidos</h1>
+      <p class="bajada" role="status">
+        @if (actualizadoA(); as hora) {
+          Actualizado a las {{ hora | date: 'h:mm a' }}
+        }
+      </p>
+    </div>
+    <div class="acciones">
+      <button
+        type="button"
+        class="boton secundario"
+        [disabled]="cargando() || actualizando()"
+        (click)="cargar()"
+      >
+        <app-icono nombre="actualizar" [tamano]="18" />
+        {{ actualizando() ? 'Actualizando…' : 'Actualizar' }}
+      </button>
+    </div>
+  </header>
 
   @if (cargando()) {
     <app-esqueleto variante="fila" etiqueta="Cargando pedidos…" />
-  } @else if (error()) {
-    <p class="estado error">{{ error() }}</p>
-  } @else if (pedidos().length === 0) {
-    <p class="estado">Aún no tienes pedidos. <a routerLink="/">Ir al menú</a></p>
   } @else {
-    <div class="lista">
-      @for (pedido of pedidos(); track pedido.pedidoId) {
-        <article class="pedido">
-          <div class="pedido-encabezado">
-            <span class="numero">Pedido #{{ pedido.pedidoId }}</span>
-            <span class="estado-pill" [class]="'estado-pill ' + pedido.estado">{{ pedido.estado }}</span>
-          </div>
+    @if (error()) {
+      <div class="error-caja">
+        <p class="mensaje-error" role="alert">{{ error() }}</p>
+        <button type="button" class="boton secundario" (click)="cargar()">Reintentar</button>
+      </div>
+    }
 
-          @if (pedido.codigoRetiro) {
-            <p class="codigo-retiro">Código de retiro: <strong>{{ pedido.codigoRetiro }}</strong></p>
-          }
-
-          <p class="info">
-            {{ pedido.sucursalNombre }} · {{ pedido.fechaPedido | date:'dd/MM/yyyy h:mm a' }}
-          </p>
-          <p class="total">{{ pedido.total | currency:'COP':'symbol-narrow':'1.0-0' }}</p>
-        </article>
+    @if (pedidos().length > 0) {
+      @if (enCurso().length > 0) {
+        <section class="grupo" aria-labelledby="grupo-en-curso">
+          <h2 id="grupo-en-curso">En curso</h2>
+          <ul class="tarjetas">
+            @for (pedido of enCurso(); track pedido.pedidoId) {
+              <li><app-tarjeta-pedido [pedido]="pedido" modo="en-curso" /></li>
+            }
+          </ul>
+        </section>
       }
-    </div>
+
+      @if (pendientes().length > 0) {
+        <section class="grupo" aria-labelledby="grupo-pendientes">
+          <h2 id="grupo-pendientes">Pendientes de pago</h2>
+          <ul class="filas">
+            @for (pedido of pendientes(); track pedido.pedidoId) {
+              <li><app-tarjeta-pedido [pedido]="pedido" modo="historial" /></li>
+            }
+          </ul>
+        </section>
+      }
+
+      @if (anteriores().length > 0) {
+        <section class="grupo" aria-labelledby="grupo-anteriores">
+          <h2 id="grupo-anteriores">Anteriores</h2>
+          <ul class="filas">
+            @for (pedido of anteriores(); track pedido.pedidoId) {
+              <li><app-tarjeta-pedido [pedido]="pedido" modo="historial" /></li>
+            }
+          </ul>
+        </section>
+      }
+    } @else if (!error()) {
+      <app-estado-vacio icono="shopping-bag" titulo="Aún no tienes pedidos.">
+        <a accion class="boton" routerLink="/menu">Ver la carta</a>
+      </app-estado-vacio>
+    }
   }
 </section>

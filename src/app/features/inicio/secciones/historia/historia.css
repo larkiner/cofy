@@ -1,0 +1,42 @@
+/* Historia: alineada a la izquierda; desde escritorio, título a la izquierda y texto a la derecha. */
+
+:host {
+  display: block;
+}
+
+.historia {
+  max-width: var(--ancho-marca);
+  margin: 0 auto;
+  padding: var(--esp-seccion) var(--margen-pagina) 0;
+}
+
+h2 {
+  margin: 0 0 var(--esp-4);
+  font-family: var(--font-display);
+  font-size: var(--titulo-seccion);
+  font-weight: 600;
+  line-height: 1.15;
+  color: var(--color-text);
+  text-wrap: balance;
+}
+
+p {
+  max-width: var(--ancho-lectura);
+  margin: 0;
+  font-size: var(--texto-md);
+  line-height: 1.7;
+  color: var(--color-muted);
+}
+
+@media (min-width: 900px) {
+  .historia {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, var(--ancho-lectura));
+    align-items: start;
+    gap: var(--esp-12);
+  }
+
+  h2 {
+    margin: 0;
+  }
+}

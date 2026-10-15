@@ -1,62 +1,66 @@
-import { CurrencyPipe } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import { AuthService } from '../../application/auth.service';
 import { AvisoService } from '../../application/aviso.service';
 import { CarritoService } from '../../application/carrito.service';
 import { MenuService } from '../../application/menu.service';
 import { MenuItem, Sucursal } from '../../domain/menu/menu.model';
-import { Icono } from '../../shared/ui/icono/icono';
-import { Esqueleto } from '../../shared/ui/esqueleto/esqueleto';
+import { InicioComunidad } from './secciones/comunidad/comunidad';
+import { EstadoDestacados, InicioDestacados } from './secciones/destacados/destacados';
+import { InicioHero } from './secciones/hero/hero';
+import { InicioHistoria } from './secciones/historia/historia';
 import { InicioSucursales } from './secciones/sucursales/sucursales';
 
 /**
- * Vista de Inicio (landing de marca): hero, recomendaciones destacadas,
- * historia, programa de fidelidad y sucursales/horario. La carta completa
+ * Vista de Inicio (landing de marca). Orquesta las secciones: hero, recomendaciones,
+ * historia, comunidad (solo sin sesión) y sucursales. Carga el menú y las sucursales y
+ * maneja "Agregar"; las secciones solo reciben entradas y emiten salidas. La carta completa
  * vive en su propia vista ({@link Menu}, ruta /menu).
  */
 @Component({
   selector: 'app-inicio',
-  imports: [CurrencyPipe, Esqueleto, Icono, RouterLink, InicioSucursales],
+  imports: [InicioHero, InicioDestacados, InicioHistoria, InicioComunidad, InicioSucursales],
   templateUrl: './inicio.html',
-  styleUrl: './inicio.css',
 })
 export class Inicio {
   private readonly menuService = inject(MenuService);
-  protected readonly carrito = inject(CarritoService);
+  private readonly carrito = inject(CarritoService);
   protected readonly auth = inject(AuthService);
   private readonly avisos = inject(AvisoService);
 
-  protected readonly cargando = signal(true);
-  protected readonly error = signal<string | null>(null);
-  protected readonly items = signal<MenuItem[]>([]);
+  private readonly cargando = signal(true);
+  private readonly fallo = signal(false);
+  private readonly items = signal<MenuItem[]>([]);
 
   /** `null` mientras cargan; `[]` si la API falla o no devuelve sucursales. */
   protected readonly sucursales = signal<Sucursal[] | null>(null);
+
+  protected readonly estadoMenu = computed<EstadoDestacados>(() =>
+    this.cargando() ? 'cargando' : this.fallo() ? 'error' : 'listo',
+  );
 
   /**
    * "Lo más pedido": ítems marcados como destacados. Si el backend aún no
    * envía la marca, se muestran los tres primeros como selección por defecto.
    */
   protected readonly destacados = computed<MenuItem[]>(() => {
-    const marcados = this.items().filter(item => item.destacado);
+    const marcados = this.items().filter((item) => item.destacado);
     return marcados.length > 0 ? marcados.slice(0, 3) : this.items().slice(0, 3);
   });
 
   constructor() {
     this.menuService.obtenerMenu().subscribe({
-      next: items => {
+      next: (items) => {
         this.items.set(items);
         this.cargando.set(false);
       },
       error: () => {
-        this.error.set('No se pudo cargar el menú. ¿Está corriendo el backend?');
+        this.fallo.set(true);
         this.cargando.set(false);
       },
     });
 
     this.menuService.obtenerSucursales().subscribe({
-      next: lista => this.sucursales.set(lista),
+      next: (lista) => this.sucursales.set(lista),
       error: () => this.sucursales.set([]),
     });
   }

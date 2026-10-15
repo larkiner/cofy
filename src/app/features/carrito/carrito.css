@@ -1,87 +1,27 @@
-/* ============================================================
-   Carrito — dos columnas en escritorio (líneas + resumen fijo) y
-   una columna en móvil. Solo tokens de la paleta de prod.
-   ============================================================ */
+/* Carrito: líneas y resumen (columna fija en escritorio; barra inferior en móvil).
+   Botones, superficie y estado vacío son primitivas globales. */
 
 .carrito {
-  max-width: 1080px;
+  max-width: var(--ancho-tarea);
   margin: 0 auto;
-  padding: 40px clamp(16px, 5vw, 48px) 80px;
+  padding: var(--esp-10) var(--margen-pagina) 80px;
 }
 
 h1 {
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: clamp(32px, 5vw, 44px);
+  font-size: var(--titulo-pagina);
   line-height: 1.1;
   color: var(--color-text);
-  margin-bottom: 28px;
-}
-
-.estado {
-  color: var(--color-muted);
-  padding: 1rem 0;
-}
-
-.estado a {
-  color: var(--color-accent);
-  font-weight: 600;
+  margin-bottom: var(--esp-6);
 }
 
 .carrito-layout {
   display: grid;
   /* `minmax(0, …)`: sin esto la columna única no se encoge y el contenido desborda la pantalla. */
   grid-template-columns: minmax(0, 1fr);
-  gap: 24px;
+  gap: var(--esp-6);
   align-items: start;
-}
-
-/* ---------- Estado vacío ---------- */
-.vacio {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 4px;
-  padding: clamp(32px, 8vw, 64px) 24px;
-  border: 1px dashed var(--color-border-input);
-  border-radius: var(--radius-lg);
-  background: var(--color-card);
-}
-
-.vacio .estado {
-  padding: 0 0 12px;
-}
-
-.vacio-icono {
-  display: grid;
-  place-items: center;
-  width: 64px;
-  height: 64px;
-  border-radius: var(--radius-pill);
-  background: color-mix(in oklch, var(--color-accent) 14%, transparent);
-  color: var(--color-accent);
-  margin-bottom: 12px;
-}
-
-.vacio-cta {
-  display: inline-flex;
-  align-items: center;
-  min-height: 44px;
-  padding: 0 28px;
-  border-radius: var(--radius-pill);
-  background: var(--gradient-accent);
-  color: var(--color-on-accent);
-  font-weight: 700;
-  font-size: 14px;
-  text-decoration: none;
-  transition: transform 0.18s var(--ease-out), box-shadow 0.2s ease;
-}
-
-.vacio-cta:hover {
-  color: var(--color-on-accent);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-card-hover);
 }
 
 /* ---------- Líneas ---------- */
@@ -89,7 +29,7 @@ h1 {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--esp-3);
 }
 
 .linea {
@@ -97,19 +37,14 @@ h1 {
   grid-template-columns: 64px minmax(0, 1fr) auto;
   grid-template-areas:
     'media info quitar'
-    'media cantidad subtotal';
+    'media pie pie';
   align-items: center;
   column-gap: 14px;
-  row-gap: 10px;
+  row-gap: var(--esp-2);
   background: var(--color-card);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   padding: 14px;
-  transition: box-shadow 0.2s ease;
-}
-
-.linea:hover {
-  box-shadow: var(--shadow-card);
 }
 
 .linea-media {
@@ -125,7 +60,6 @@ h1 {
   background: color-mix(in oklch, var(--color-accent) 12%, var(--color-bg));
 }
 
-
 .linea-info {
   grid-area: info;
   min-width: 0;
@@ -137,25 +71,33 @@ h1 {
 .linea-info strong {
   overflow-wrap: anywhere;
   font-weight: 600;
-  font-size: 15px;
+  font-size: var(--texto-base);
   color: var(--color-text);
 }
 
 .linea-info span {
-  font-size: 13px;
+  font-size: var(--texto-sm);
   color: var(--color-muted);
+}
+
+/* Cantidad a la izquierda y subtotal a la derecha. */
+.linea-pie {
+  grid-area: pie;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--esp-2);
 }
 
 /* Selector de cantidad en píldora. */
 .linea-cantidad {
-  grid-area: cantidad;
-  justify-self: start;
   display: inline-flex;
   align-items: center;
-  border: 1px solid var(--color-border-input);
+  border: 1px solid var(--color-muted-2);
   border-radius: var(--radius-pill);
   background: var(--color-input-bg);
-  font-size: 14px;
+  font-size: var(--texto-sm);
   font-weight: 600;
 }
 
@@ -164,14 +106,15 @@ h1 {
   text-align: center;
 }
 
-.linea-cantidad button {
+.linea-cantidad button,
+.quitar {
   display: grid;
   place-items: center;
   width: 36px;
   height: 36px;
   border: none;
-  background: transparent;
   border-radius: var(--radius-pill);
+  background: transparent;
   color: var(--color-text);
   cursor: pointer;
 }
@@ -181,10 +124,9 @@ h1 {
 }
 
 .linea-subtotal {
-  grid-area: subtotal;
-  justify-self: end;
+  margin-left: auto;
   font-weight: 700;
-  font-size: 16px;
+  font-size: var(--texto-md);
   color: var(--color-text);
 }
 
@@ -192,15 +134,11 @@ h1 {
   grid-area: quitar;
   justify-self: end;
   align-self: start;
-  display: grid;
-  place-items: center;
-  width: 36px;
-  height: 36px;
-  border: none;
-  border-radius: var(--radius-pill);
-  background: transparent;
+  width: var(--alto-control);
+  height: var(--alto-control);
+  /* El área de 44 px sobresale de la tarjeta sin agrandarla. */
+  margin: -10px -10px 0 0;
   color: var(--color-muted);
-  cursor: pointer;
 }
 
 .quitar:hover {
@@ -208,30 +146,38 @@ h1 {
   color: var(--color-danger);
 }
 
-/* Áreas táctiles de 44px en pantallas táctiles. */
+.linea-cantidad button:focus-visible,
+.quitar:focus-visible {
+  outline: none;
+  box-shadow: var(--ring);
+}
+
+/* Áreas táctiles de 44 px en pantallas táctiles. */
 @media (pointer: coarse) {
-  .linea-cantidad button,
-  .quitar {
-    width: 44px;
-    height: 44px;
+  .linea-cantidad button {
+    width: var(--alto-control);
+    height: var(--alto-control);
   }
 }
 
-/* ---------- Resumen ---------- */
-.resumen {
-  background: var(--color-card);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: clamp(20px, 4vw, 28px);
-  box-shadow: var(--shadow-card);
+/* ---------- Nota y seguir comprando ---------- */
+.nota {
+  margin: var(--esp-4) 0 var(--esp-1);
+  font-size: var(--texto-sm);
+  color: var(--color-muted);
 }
 
+.carrito-lista .seguir {
+  padding-inline: 0;
+}
+
+/* ---------- Resumen ---------- */
 .resumen-titulo {
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: 24px;
+  font-size: var(--titulo-bloque);
   color: var(--color-text);
-  margin-bottom: 16px;
+  margin-bottom: var(--esp-4);
 }
 
 .total {
@@ -239,59 +185,15 @@ h1 {
   justify-content: space-between;
   align-items: baseline;
   padding: 14px 0;
-  margin: 0 0 18px;
-  border-top: 1px solid var(--color-border);
-  border-bottom: 1px solid var(--color-border);
-  font-size: 15px;
+  margin: 0 0 var(--esp-4);
+  border-block: 1px solid var(--color-border);
+  font-size: var(--texto-base);
   color: var(--color-muted);
 }
 
 .total strong {
-  font-size: 24px;
+  font-size: var(--titulo-bloque);
   font-weight: 700;
-  color: var(--color-text);
-}
-
-.nota {
-  font-size: 13px;
-  color: var(--color-muted);
-  margin-bottom: 18px;
-}
-
-.continuar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  min-height: 48px;
-  background: var(--gradient-accent);
-  color: var(--color-on-accent);
-  border-radius: var(--radius-pill);
-  padding: 0 16px;
-  font-size: 15px;
-  font-weight: 700;
-  text-decoration: none;
-  box-shadow: 0 8px 22px rgb(125 86 45 / 0.3);
-}
-
-.continuar:hover {
-  color: var(--color-on-accent);
-  filter: brightness(0.94);
-}
-
-.seguir {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 44px;
-  margin-top: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--color-muted);
-  text-decoration: none;
-}
-
-.seguir:hover {
   color: var(--color-text);
 }
 
@@ -299,11 +201,86 @@ h1 {
 @media (min-width: 900px) {
   .carrito-layout {
     grid-template-columns: minmax(0, 1fr) 360px;
-    gap: 32px;
+    gap: var(--esp-8);
   }
 
   .resumen {
     position: sticky;
-    top: calc(var(--alto-header) + 24px);
+    top: calc(var(--alto-header) + var(--esp-6));
+  }
+}
+
+/* Línea angosta: la cantidad y el subtotal pasan debajo, a todo el ancho. */
+@media (max-width: 380px) {
+  .linea {
+    grid-template-columns: 56px minmax(0, 1fr) auto;
+    grid-template-areas:
+      'media info quitar'
+      'pie pie pie';
+    column-gap: var(--esp-3);
+  }
+
+  .linea-media {
+    width: 56px;
+    height: 56px;
+  }
+}
+
+/* Móvil: el resumen es una barra inferior fija con el total y el botón, a todo el ancho. */
+@media (max-width: 620px) {
+  .carrito {
+    padding-bottom: 0;
+  }
+
+  /* Flex y no grid: un hijo `sticky` de una rejilla solo se mueve dentro de su propia celda. */
+  .carrito-layout {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .resumen {
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--esp-2) var(--esp-4);
+    margin-inline: calc(-1 * var(--margen-pagina));
+    padding: var(--esp-3) var(--margen-pagina) calc(var(--esp-3) + env(safe-area-inset-bottom));
+    border-width: 1px 0 0;
+    border-radius: 0;
+    background: var(--color-bg);
+    box-shadow: var(--sombra-barra);
+  }
+
+  .resumen-titulo {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+
+  .total {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: var(--texto-sm);
+  }
+
+  .total strong {
+    font-size: var(--texto-md);
+  }
+
+  .resumen .continuar {
+    flex: 1 1 11rem;
+    width: auto;
   }
 }

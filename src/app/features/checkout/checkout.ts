@@ -9,8 +9,11 @@ import { MenuService } from '../../application/menu.service';
 import { PedidoService } from '../../application/pedido.service';
 import { Sucursal } from '../../domain/menu/menu.model';
 import { PedidoCliente } from '../../domain/pedidos/pedido.model';
+import { CodigoRetiro } from '../../shared/ui/codigo-retiro/codigo-retiro';
 import { Esqueleto } from '../../shared/ui/esqueleto/esqueleto';
 import { Icono } from '../../shared/ui/icono/icono';
+import { SeguimientoPedido } from '../../shared/ui/seguimiento-pedido/seguimiento-pedido';
+import { etiquetaEstado, etiquetaMetodo } from '../../shared/util/etiquetas';
 import { StripePago } from './stripe-pago';
 
 const METODOS_PAGO = ['TARJETA', 'PSE', 'NEQUI', 'DAVIPLATA'];
@@ -22,7 +25,16 @@ const METODOS_PAGO = ['TARJETA', 'PSE', 'NEQUI', 'DAVIPLATA'];
  */
 @Component({
   selector: 'app-checkout',
-  imports: [CurrencyPipe, Esqueleto, FormsModule, Icono, RouterLink, StripePago],
+  imports: [
+    CodigoRetiro,
+    CurrencyPipe,
+    Esqueleto,
+    FormsModule,
+    Icono,
+    RouterLink,
+    SeguimientoPedido,
+    StripePago,
+  ],
   templateUrl: './checkout.html',
   styleUrl: './checkout.css',
 })
@@ -34,6 +46,8 @@ export class Checkout {
   private readonly router = inject(Router);
 
   protected readonly metodos = METODOS_PAGO;
+  protected readonly etiquetaEstado = etiquetaEstado;
+  protected readonly etiquetaMetodo = etiquetaMetodo;
   protected readonly sucursales = signal<Sucursal[]>([]);
   protected readonly cargandoSucursales = signal(true);
   protected sucursalId: number | null = null;

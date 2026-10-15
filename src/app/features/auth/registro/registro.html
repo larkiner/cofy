@@ -1,46 +1,59 @@
 <section class="auth">
   <div class="auth-panel">
     <form class="tarjeta-auth" (ngSubmit)="enviar()">
-      <h1>Únete a la comunidad</h1>
+      <h1>Crear cuenta</h1>
       <p class="sub-auth">Crea tu cuenta y gana Granos con cada pedido.</p>
 
-      <label>
+      <label class="campo">
         Nombre
         <input type="text" name="nombre" [(ngModel)]="nombre" required autocomplete="name" />
       </label>
 
-      <label>
-        Email
+      <label class="campo">
+        Correo electrónico
         <input type="email" name="email" [(ngModel)]="email" required autocomplete="email" />
       </label>
 
-      <label>
+      <label class="campo">
         Teléfono
-        <input type="tel" name="telefono" [(ngModel)]="telefono" required inputmode="numeric"
-               maxlength="10" placeholder="10 dígitos" autocomplete="tel" />
+        <input
+          type="tel"
+          name="telefono"
+          [(ngModel)]="telefono"
+          required
+          inputmode="numeric"
+          maxlength="10"
+          placeholder="10 dígitos"
+          autocomplete="tel"
+        />
       </label>
 
-      <label>
+      <label class="campo">
         Contraseña
         <span class="campo-password">
-          <input [type]="verPassword() ? 'text' : 'password'" name="password" [(ngModel)]="password"
-                 required minlength="8" maxlength="72" autocomplete="new-password" />
+          <input
+            [type]="verPassword() ? 'text' : 'password'"
+            name="password"
+            [(ngModel)]="password"
+            required
+            minlength="8"
+            maxlength="72"
+            autocomplete="new-password"
+          />
           <app-alternar-password [(visible)]="verPassword" />
         </span>
         <span class="nota">Mínimo 8 caracteres.</span>
       </label>
 
       @if (error()) {
-        <p class="mensaje-error">{{ error() }}</p>
+        <p class="mensaje-error" role="alert">{{ error() }}</p>
       }
 
-      <button type="submit" [disabled]="cargando()">
+      <button type="submit" class="boton grande" [disabled]="cargando()">
         {{ cargando() ? 'Creando cuenta…' : 'Crear cuenta' }}
       </button>
 
-      <p class="enlace-secundario">
-        ¿Ya tienes cuenta? <a routerLink="/login">Inicia sesión</a>
-      </p>
+      <p class="enlace-secundario">¿Ya tienes cuenta? <a routerLink="/login">Iniciar sesión</a></p>
     </form>
   </div>
 
@@ -48,8 +61,9 @@
     <img src="/img/auth/registro.jpg" alt="" />
     <div class="auth-media-overlay"></div>
     <div class="auth-media-texto">
-      <span class="eyebrow eyebrow-claro">Programa Rewards</span>
-      <p class="auth-media-frase">Gana Granos con cada visita y canjéalos por tus preparaciones favoritas.</p>
+      <p class="auth-media-frase">
+        Gana Granos con cada visita y canjéalos por tus preparaciones favoritas.
+      </p>
     </div>
   </div>
 </section>

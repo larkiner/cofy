@@ -8,7 +8,7 @@ export const routes: Routes = [
   {
     path: '',
     loadComponent: () => import('./features/inicio/inicio').then(m => m.Inicio),
-    title: 'La aravica · Coffee Roasters',
+    title: 'La aravica · Café de origen en Medellín',
   },
   {
     path: 'menu',
@@ -46,7 +46,7 @@ export const routes: Routes = [
     path: 'perfil',
     loadComponent: () => import('./features/cliente/perfil').then(m => m.Perfil),
     canActivate: [clienteGuard],
-    title: 'Mi Perfil | La aravica',
+    title: 'Mi cuenta | La aravica',
   },
   {
     path: 'interno',

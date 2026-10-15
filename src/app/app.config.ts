@@ -1,4 +1,6 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { registerLocaleData } from '@angular/common';
+import localeEsCo from '@angular/common/locales/es-CO';
+import { ApplicationConfig, LOCALE_ID, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideRouter, withInMemoryScrolling } from '@angular/router';
 
@@ -19,9 +21,13 @@ import { InternoHttpRepository } from './infrastructure/http/interno-http.reposi
 import { ClienteHttpRepository } from './infrastructure/http/cliente-http.repository';
 import { LocalStorageSesionAdapter } from './infrastructure/storage/local-storage-sesion.adapter';
 
+/* Formato colombiano (decisión D5): moneda `$ 13.000`, horas `3:45 p. m.`. */
+registerLocaleData(localeEsCo);
+
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
+    { provide: LOCALE_ID, useValue: 'es-CO' },
     provideRouter(
       routes,
       withInMemoryScrolling({ anchorScrolling: 'enabled', scrollPositionRestoration: 'enabled' }),

@@ -1,0 +1,88 @@
+/* Hero del inicio: foto con un velo plano y texto claro. Un solo botón. */
+
+:host {
+  display: block;
+}
+
+.hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: clamp(440px, 66svh, 620px);
+  overflow: hidden;
+  background: var(--color-dark) url('/img/hero/inicio.jpg') center / cover no-repeat;
+  color: #fff;
+}
+
+/* Velo: asegura el contraste del texto blanco sobre la foto (más cerrado donde va el texto). */
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    color-mix(in oklch, var(--color-dark) 86%, transparent) 0%,
+    color-mix(in oklch, var(--color-dark) 60%, transparent) 55%,
+    color-mix(in oklch, var(--color-dark) 25%, transparent) 100%
+  );
+}
+
+.contenido {
+  position: relative;
+  width: 100%;
+  max-width: var(--ancho-marca);
+  margin: 0 auto;
+  padding: var(--esp-12) var(--margen-pagina);
+}
+
+h1 {
+  max-width: 16ch;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--titulo-display);
+  font-weight: 500;
+  line-height: 1.02;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+.oferta {
+  max-width: 44ch;
+  margin: var(--esp-4) 0 var(--esp-8);
+  font-size: var(--texto-md);
+  line-height: 1.55;
+}
+
+.boton {
+  height: 48px;
+  padding: 0 var(--esp-8);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .contenido {
+    animation: hero-entra 480ms var(--ease-out) both;
+  }
+}
+
+@keyframes hero-entra {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+/* Móvil: el hero deja asomar el título de las recomendaciones en la primera pantalla. */
+@media (max-width: 700px) {
+  .hero {
+    min-height: 0;
+    height: clamp(380px, 62svh, 520px);
+  }
+
+  .hero::before {
+    background: color-mix(in oklch, var(--color-dark) 72%, transparent);
+  }
+
+  .contenido {
+    padding-block: var(--esp-8);
+  }
+}

@@ -82,7 +82,7 @@ test.describe('esqueletos de carga', () => {
     await page.getByRole('link', { name: 'Continuar con el pedido' }).click();
 
     await expect(page.locator('.paso app-esqueleto')).toBeVisible();
-    await expect(page.getByLabel('Sucursal de retiro')).toBeVisible();
+    await expect(page.getByRole('group', { name: 'Sucursal de retiro' })).toBeVisible();
     await expect(page.locator('.paso app-esqueleto')).toHaveCount(0);
   });
 });

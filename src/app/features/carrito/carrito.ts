@@ -2,6 +2,7 @@ import { CurrencyPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CarritoService } from '../../application/carrito.service';
+import { EstadoVacio } from '../../shared/ui/estado-vacio/estado-vacio';
 import { Icono } from '../../shared/ui/icono/icono';
 import { ImagenProducto } from '../../shared/ui/imagen-producto/imagen-producto';
 
@@ -11,7 +12,7 @@ import { ImagenProducto } from '../../shared/ui/imagen-producto/imagen-producto'
  */
 @Component({
   selector: 'app-carrito',
-  imports: [CurrencyPipe, Icono, ImagenProducto, RouterLink],
+  imports: [CurrencyPipe, EstadoVacio, Icono, ImagenProducto, RouterLink],
   templateUrl: './carrito.html',
   styleUrl: './carrito.css',
 })

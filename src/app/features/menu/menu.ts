@@ -5,9 +5,10 @@ import { AvisoService } from '../../application/aviso.service';
 import { CarritoService } from '../../application/carrito.service';
 import { MenuService } from '../../application/menu.service';
 import { MenuItem } from '../../domain/menu/menu.model';
+import { EstadoVacio } from '../../shared/ui/estado-vacio/estado-vacio';
+import { Esqueleto } from '../../shared/ui/esqueleto/esqueleto';
 import { Icono } from '../../shared/ui/icono/icono';
 import { ImagenProducto } from '../../shared/ui/imagen-producto/imagen-producto';
-import { Esqueleto } from '../../shared/ui/esqueleto/esqueleto';
 
 interface GrupoCategoria {
   categoria: string;
@@ -16,13 +17,14 @@ interface GrupoCategoria {
 
 /**
  * Vista de la Carta: barra lateral con buscador e índice de categorías, y una
- * categoría a la vez en la rejilla de tarjetas. Al buscar, los resultados se
+ * categoría a la vez en la rejilla de tarjetas (en móvil, el índice queda fijo bajo el
+ * header y los productos pasan a filas compactas con foto). Al buscar, los resultados se
  * muestran agrupados por categoría. La landing de marca (hero, destacados,
  * historia, rewards, horario) vive en su propia vista ({@link Inicio}, ruta /).
  */
 @Component({
   selector: 'app-menu',
-  imports: [CurrencyPipe, NgTemplateOutlet, Esqueleto, Icono, ImagenProducto],
+  imports: [CurrencyPipe, NgTemplateOutlet, EstadoVacio, Esqueleto, Icono, ImagenProducto],
   templateUrl: './menu.html',
   styleUrl: './menu.css',
 })
@@ -56,7 +58,7 @@ export class Menu {
   });
 
   /** Nombres de categoría para el índice. */
-  protected readonly categorias = computed(() => this.grupos().map(g => g.categoria));
+  protected readonly categorias = computed(() => this.grupos().map((g) => g.categoria));
 
   /** Categoría realmente resaltada: la seleccionada, o la primera si aún no hay selección. */
   protected readonly categoriaResaltada = computed(
@@ -67,7 +69,7 @@ export class Menu {
   protected readonly itemsActivos = computed<MenuItem[]>(() => {
     const grupos = this.grupos();
     const activa = this.categoriaActiva();
-    const grupo = grupos.find(g => g.categoria === activa) ?? grupos[0];
+    const grupo = grupos.find((g) => g.categoria === activa) ?? grupos[0];
     return grupo?.items ?? [];
   });
 
@@ -78,15 +80,15 @@ export class Menu {
     const consulta = this.consulta();
     if (!consulta) return [];
     return this.grupos()
-      .map(grupo => ({
+      .map((grupo) => ({
         categoria: grupo.categoria,
         items: grupo.items.filter(
-          item =>
+          (item) =>
             this.normalizar(item.nombre).includes(consulta) ||
             this.normalizar(item.descripcion ?? '').includes(consulta),
         ),
       }))
-      .filter(grupo => grupo.items.length > 0);
+      .filter((grupo) => grupo.items.length > 0);
   });
 
   /** Hay una búsqueda activa que no encontró ningún producto. */
@@ -103,13 +105,20 @@ export class Menu {
   });
 
   constructor() {
+    this.cargar();
+  }
+
+  /** Pide la carta al backend; también la usa el botón «Reintentar» del estado de error. */
+  protected cargar(): void {
+    this.cargando.set(true);
+    this.error.set(null);
     this.menuService.obtenerMenu().subscribe({
-      next: items => {
+      next: (items) => {
         this.items.set(items);
         this.cargando.set(false);
       },
       error: () => {
-        this.error.set('No se pudo cargar el menú. ¿Está corriendo el backend?');
+        this.error.set('No pudimos cargar la carta. Revisa tu conexión e inténtalo de nuevo.');
         this.cargando.set(false);
       },
     });
@@ -148,13 +157,17 @@ export class Menu {
       .trim();
   }
 
-  /** El índice es fijo en escritorio: el contenido puede quedar por encima de la pantalla. */
+  /**
+   * El índice queda fijo (barra lateral en escritorio, franja bajo el header en móvil): el
+   * contenido puede quedar por encima de la pantalla. Se vuelve a su inicio, respetando el
+   * `scroll-margin-top` que deja libres el header y el índice.
+   */
   private mostrarInicioDelContenido(): void {
     const contenido = this.contenido()?.nativeElement;
     if (!contenido || typeof window === 'undefined') return;
 
-    const altoHeader = document.querySelector('header')?.getBoundingClientRect().height ?? 0;
-    if (contenido.getBoundingClientRect().top >= altoHeader) return;
+    const margen = parseFloat(getComputedStyle(contenido).scrollMarginTop) || 0;
+    if (contenido.getBoundingClientRect().top >= margen) return;
 
     const sinMovimiento =
       typeof window.matchMedia === 'function' &&

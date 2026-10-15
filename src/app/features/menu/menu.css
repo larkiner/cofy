@@ -1,49 +1,43 @@
 /* ============================================================
-   Menú / Carta — Heritage Hearth
-   Barra lateral (título, buscador e índice de categorías) junto a la
-   rejilla de tarjetas, una categoría a la vez. El hero, destacados,
-   historia, rewards y horario viven en la vista Inicio (ruta /).
-   Utilidades compartidas (.estado, .visualmente-oculto, placeholder de
-   café) están en styles.css global.
+   Carta
+   Móvil: todo apilado, índice de categorías fijo bajo el header y, en
+   ≤560 px, productos en filas compactas con foto. Escritorio (≥900 px):
+   barra lateral fija (título, buscador, índice) junto a la rejilla de
+   tarjetas, una categoría a la vez. Botones, mensajes y estados vacíos
+   son las primitivas globales de styles.css.
    ============================================================ */
 
 .carta {
+  --margen: clamp(20px, 4vw, 28px);
   max-width: 1200px;
   margin: 0 auto;
-  padding: clamp(28px, 5vw, 48px) clamp(20px, 4vw, 28px) clamp(56px, 8vw, 88px);
+  padding: clamp(20px, 5vw, 48px) var(--margen) clamp(56px, 8vw, 88px);
 }
 
-/* Móvil: todo apilado. minmax(0, 1fr) evita que el índice con scroll horizontal ensanche la columna. */
+/* Flex en columna (no grid): el índice fijo necesita un contenedor tan alto como la página. */
 .carta-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 20px;
-}
-
-.carta-sidebar {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  min-width: 0;
+  gap: var(--esp-3);
+}
+
+/* En móvil la barra lateral no existe como caja: sus hijos son hijos de .carta-layout. */
+.carta-sidebar {
+  display: contents;
 }
 
 .carta-contenido {
+  --alto-indice: 53px;
   min-width: 0;
-  scroll-margin-top: calc(var(--alto-header) + 16px);
-}
-
-.carta-contenido .estado {
-  margin: 0;
-  padding: 8px 0 32px;
+  scroll-margin-top: calc(var(--alto-header) + var(--alto-indice) + var(--esp-4));
 }
 
 .carta-titulo {
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: 36px;
+  font-size: var(--titulo-pagina);
   line-height: 1.1;
   color: var(--color-text);
-  margin: 0;
 }
 
 /* ---------- Buscador ---------- */
@@ -51,8 +45,8 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  height: 44px;
-  padding: 0 16px;
+  height: var(--alto-control);
+  padding: 0 var(--esp-4);
   border: 1px solid var(--color-border-input);
   border-radius: var(--radius-pill);
   background: var(--color-input-bg);
@@ -90,17 +84,21 @@
   opacity: 1;
 }
 
-/* ---------- Índice de categorías ---------- */
-/* Móvil: fila con scroll horizontal. El relleno de 4px deja espacio al anillo de foco,
-   que el scroll recortaría. */
+/* ---------- Índice de categorías ----------
+   Móvil: franja con scroll horizontal, fija bajo el header, a todo el ancho. El relleno vertical
+   deja espacio al anillo de foco, que el scroll recortaría. Su alto (53 px) es --alto-indice. */
 .indice-categorias {
+  position: sticky;
+  top: var(--alto-header);
+  z-index: 5;
   display: flex;
-  gap: 4px;
+  gap: var(--esp-1);
   overflow-x: auto;
   scrollbar-width: none;
+  padding: var(--esp-1) var(--margen);
+  margin-inline: calc(var(--margen) * -1);
+  background: var(--color-bg);
   border-bottom: 1px solid var(--color-border);
-  padding: 4px;
-  margin-inline: -4px;
 }
 
 .indice-categorias::-webkit-scrollbar {
@@ -109,11 +107,12 @@
 
 .indice-enlace {
   flex: 0 0 auto;
-  padding: 8px 14px;
+  min-height: var(--alto-control);
+  padding: 0 14px;
   border: none;
   border-bottom: 2px solid transparent;
   background: transparent;
-  font-size: 14px;
+  font-size: var(--texto-sm);
   font-weight: 600;
   color: var(--color-muted);
   white-space: nowrap;
@@ -124,6 +123,7 @@
   color: var(--color-text);
 }
 
+/* Línea de 2 px: indicador de navegación (decisión 2026-09-29), no un borde de tarjeta. */
 .indice-enlace.activo {
   color: var(--color-text);
   border-bottom-color: var(--color-indicador);
@@ -133,55 +133,41 @@
   box-shadow: var(--ring);
 }
 
-/* ---------- Títulos de categoría ---------- */
+/* ---------- Títulos y estados ---------- */
 .grupo-titulo {
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: 26px;
+  font-size: var(--titulo-bloque);
   line-height: 1.15;
   color: var(--color-text);
-  margin: 0 0 16px;
+  margin: 0 0 var(--esp-3);
 }
 
 .grupo-categoria + .grupo-categoria {
-  margin-top: 40px;
+  margin-top: var(--esp-10);
 }
 
-/* ---------- Búsqueda sin coincidencias ---------- */
-.sin-resultados {
+.carta-error {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 14px;
-  padding: 8px 0 32px;
-  color: var(--color-muted);
+  gap: var(--esp-3);
+  padding-bottom: var(--esp-8);
+}
+
+.carta-error .mensaje-error {
+  margin: 0;
 }
 
 .sin-resultados p {
-  max-width: 100%;
   overflow-wrap: anywhere;
 }
 
-.btn-borrar {
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-pill);
-  background: transparent;
-  color: var(--color-text);
-  padding: 8px 18px;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.btn-borrar:hover {
-  background: var(--color-overlay-hover);
-}
-
-/* Grid que refluye solo: 2+ columnas cuando caben, 1 cuando no. */
+/* ---------- Tarjetas ---------- */
 .tarjetas {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
-  gap: 24px;
+  gap: var(--esp-6);
 }
 
 .tarjeta {
@@ -192,13 +178,13 @@
   border-radius: var(--radius-md);
   overflow: hidden;
   box-shadow: var(--shadow-card);
-  transition: box-shadow 0.25s ease, transform 0.25s var(--ease-out),
-    border-color 0.25s ease;
+  transition:
+    box-shadow var(--dur-media) var(--ease-out),
+    border-color var(--dur-media) var(--ease-out);
 }
 
 .tarjeta:hover {
   box-shadow: var(--shadow-card-hover);
-  transform: translateY(-4px);
   border-color: color-mix(in oklch, var(--color-accent) 35%, var(--color-border));
 }
 
@@ -209,13 +195,12 @@
   flex-shrink: 0;
 }
 
-
 /* Fila: nombre a la izquierda, precio a la derecha */
 .tarjeta-encabezado {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  gap: 12px;
+  gap: var(--esp-3);
   padding: 14px 18px 0;
 }
 
@@ -229,33 +214,33 @@
   white-space: nowrap;
 }
 
-/* Fila: descripción a la izquierda, botón agregar a la derecha.
+/* Fila: descripción a la izquierda, botón a la derecha.
    margin-top: auto lo ancla al fondo, alineando botones entre tarjetas. */
 .tarjeta-detalle {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 16px;
+  gap: var(--esp-4);
   padding: 6px 18px 14px;
   margin-top: auto;
 }
 
-/* Máximo 2 líneas: descripciones largas no rompen la retícula */
-.tarjeta-detalle p {
+/* Máximo 2 líneas: descripciones largas no rompen la retícula. El `p` va dentro de un `div` porque un
+   ítem de grid se bloquifica y pierde el `-webkit-box` que necesita el recorte. */
+.descripcion {
   flex: 1;
   min-width: 0;
-  font-size: 12.5px;
-  color: var(--color-muted-2);
+}
+
+.descripcion p {
+  font-size: 0.8125rem;
   line-height: 1.35;
+  color: var(--color-muted);
   display: -webkit-box;
   -webkit-line-clamp: 2;
   line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-}
-
-.tarjeta-detalle .agregar {
-  margin-left: auto;
 }
 
 .precio {
@@ -266,80 +251,110 @@
 
 .agregar {
   flex-shrink: 0;
-  background: var(--color-accent);
-  color: var(--color-on-accent);
-  border: none;
-  border-radius: var(--radius-pill);
-  padding: 6px 14px;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  white-space: nowrap;
+  margin-left: auto;
+  padding: 0 var(--esp-4);
 }
 
-.agregar:hover {
-  background: var(--color-accent-hover);
-  transform: translateY(-1px);
-}
-
-/* ---------- Responsive ---------- */
-@media (min-width: 640px) {
-  .carta-titulo {
-    font-size: 48px;
-  }
-
-  .grupo-titulo {
-    font-size: 30px;
-  }
-}
-
+/* ---------- Fila compacta con foto (≤560 px) ----------
+   Miniatura de 96 px; nombre, descripción (2 líneas máx.), precio y «Agregar» a su derecha. */
 @media (max-width: 560px) {
-  .agregar {
-    padding: 10px 18px;
+  .tarjetas {
+    gap: var(--esp-2);
   }
-}
 
-/* Móvil pequeño: si descripción + botón no caben, el botón baja de línea. */
-@media (max-width: 380px) {
+  .tarjeta {
+    display: grid;
+    grid-template-columns: 96px minmax(0, 1fr) auto;
+    column-gap: var(--esp-3);
+    padding: var(--esp-2);
+  }
+
+  .tarjeta-encabezado,
   .tarjeta-detalle {
-    flex-wrap: wrap;
+    display: contents;
+  }
+
+  .tarjeta-media {
+    grid-column: 1;
+    grid-row: 1 / span 3;
+    width: 96px;
+    height: 96px;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+  }
+
+  .tarjeta-media::before {
+    width: 36px;
+    height: 36px;
+  }
+
+  .tarjeta-encabezado h3 {
+    grid-column: 2 / -1;
+    grid-row: 1;
+  }
+
+  .descripcion {
+    grid-column: 2 / -1;
+    grid-row: 2;
+    margin-top: 2px;
+  }
+
+  .precio {
+    grid-column: 2;
+    grid-row: 3;
+    align-self: center;
+  }
+
+  .agregar {
+    grid-column: 3;
+    grid-row: 3;
+    align-self: end;
   }
 }
 
-/* Escritorio: barra lateral fija junto al contenido, índice en vertical. */
+/* ---------- Escritorio: barra lateral fija ---------- */
 @media (min-width: 900px) {
   .carta-layout {
+    display: grid;
     grid-template-columns: 220px minmax(0, 1fr);
-    column-gap: 40px;
+    column-gap: var(--esp-10);
     align-items: start;
   }
 
   .carta-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-6);
+    min-width: 0;
     position: sticky;
-    top: calc(var(--alto-header) + 24px);
-    align-self: start;
-    gap: 24px;
+    top: calc(var(--alto-header) + var(--esp-6));
+  }
+
+  .carta-contenido {
+    --alto-indice: 0px;
   }
 
   .indice-categorias {
+    position: static;
     flex-direction: column;
     gap: 2px;
     overflow: visible;
-    border-bottom: none;
     padding: 0;
     margin-inline: 0;
+    background: none;
+    border-bottom: none;
   }
 
   .indice-enlace {
     width: 100%;
+    min-height: 0;
+    padding: var(--esp-2) 0 var(--esp-2) 14px;
     text-align: left;
-    padding: 8px 0 8px 14px;
     border-bottom: none;
     border-left: 2px solid transparent;
   }
 
   .indice-enlace.activo {
     border-left-color: var(--color-indicador);
-    border-bottom-color: transparent;
   }
 }

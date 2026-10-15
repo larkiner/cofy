@@ -1,0 +1,10 @@
+<div class="vacio">
+  <span class="medallon"><app-icono [nombre]="icono()" [tamano]="28" /></span>
+  @if (nivel() === 3) {
+    <h3 class="titulo">{{ titulo() }}</h3>
+  } @else {
+    <h2 class="titulo">{{ titulo() }}</h2>
+  }
+  <div class="texto"><ng-content /></div>
+  <div class="accion"><ng-content select="[accion]" /></div>
+</div>

@@ -8,7 +8,7 @@ import { InternoService } from '../../../application/interno.service';
 import { PedidoEmpleado } from '../../../domain/interno/interno.model';
 import { Esqueleto } from '../../../shared/ui/esqueleto/esqueleto';
 import { Icono } from '../../../shared/ui/icono/icono';
-import { etiquetaEstado } from '../etiquetas';
+import { etiquetaEstado } from '../../../shared/util/etiquetas';
 
 /** Siguiente paso de cada estado en el flujo de barra. */
 const SIGUIENTE: Record<string, { estado: string; etiqueta: string }> = {

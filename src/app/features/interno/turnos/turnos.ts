@@ -6,7 +6,7 @@ import { InternoService } from '../../../application/interno.service';
 import { TrabajadorPerfil, Turno } from '../../../domain/interno/interno.model';
 import { Esqueleto } from '../../../shared/ui/esqueleto/esqueleto';
 import { Icono } from '../../../shared/ui/icono/icono';
-import { etiquetaRol } from '../etiquetas';
+import { etiquetaRol } from '../../../shared/util/etiquetas';
 
 @Component({
   selector: 'app-turnos',

@@ -1,7 +1,7 @@
 /**
- * Etiquetas legibles para los valores crudos que devuelve la API en el panel
- * interno. Solo cambian lo que se muestra: los valores enviados a la API son
- * siempre los originales.
+ * Etiquetas legibles para los valores crudos que devuelve la API, compartidas por
+ * el sitio público y el panel interno. Solo cambian lo que se muestra: los
+ * valores enviados a la API son siempre los originales.
  */
 
 export const ETIQUETA_ESTADO: Record<string, string> = {
@@ -14,6 +14,7 @@ export const ETIQUETA_ESTADO: Record<string, string> = {
 };
 
 export const ETIQUETA_ROL: Record<string, string> = {
+  CLIENTE: 'Cliente',
   BARISTA: 'Barista',
   CAJERO: 'Cajero',
   SUPERVISOR: 'Supervisor',

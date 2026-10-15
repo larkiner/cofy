@@ -4,15 +4,24 @@
     <div class="exito">
       <div class="exito-icono"><app-icono nombre="check" [tamano]="28" /></div>
       <h1>¡Pedido confirmado!</h1>
-      <p>Presenta este código en <strong>{{ pedido.sucursalNombre }}</strong> para reclamar tu pedido:</p>
-      <p class="codigo">{{ pedido.codigoRetiro }}</p>
+      <p>
+        Presenta este código en <strong>{{ pedido.sucursalNombre }}</strong> para reclamar tu
+        pedido:
+      </p>
+      @if (pedido.codigoRetiro; as codigo) {
+        <app-codigo-retiro [codigo]="codigo" variante="grande" />
+      }
+      <app-seguimiento-pedido class="seguimiento" [estado]="pedido.estado" />
       <p class="detalle-exito">
-        Total pagado: <strong>{{ pedido.total | currency:'COP':'symbol-narrow':'1.0-0' }}</strong>
-        · Estado: {{ pedido.estado }}
+        Total pagado:
+        <strong class="cifras">{{
+          pedido.total | currency: 'COP' : 'symbol-narrow' : '1.0-0'
+        }}</strong>
+        · Estado: {{ etiquetaEstado(pedido.estado) }}
       </p>
       <div class="acciones-exito">
-        <a routerLink="/mis-pedidos">Ver mis pedidos</a>
-        <a routerLink="/menu">Volver a la carta</a>
+        <a class="boton" routerLink="/mis-pedidos">Ver mis pedidos</a>
+        <a class="boton fantasma" routerLink="/menu">Volver a la carta</a>
       </div>
     </div>
   } @else if (stripeClientSecret(); as clientSecret) {
@@ -23,14 +32,21 @@
       (cancelado)="cancelarPagoStripe()"
     />
     @if (procesando()) {
-      <p class="estado">Confirmando tu pago con Stripe…</p>
+      <p class="estado-msj" role="status">Confirmando tu pago con Stripe…</p>
     }
   } @else {
-    <a class="volver" routerLink="/carrito">
+    <a class="boton fantasma volver" routerLink="/carrito">
       <app-icono nombre="chevron-right" [tamano]="16" />
       Volver al carrito
     </a>
     <h1>Finalizar pedido</h1>
+
+    @if (!auth.logueado()) {
+      <div class="mensaje">
+        <p>Debes iniciar sesión para completar el pedido.</p>
+        <a class="boton secundario" routerLink="/login">Iniciar sesión</a>
+      </div>
+    }
 
     <div class="checkout-layout">
       <div class="pasos">
@@ -39,54 +55,68 @@
           @if (cargandoSucursales()) {
             <app-esqueleto variante="texto" [cantidad]="2" etiqueta="Cargando sucursales…" />
           } @else {
-            <label class="campo">
-              Sucursal de retiro
-              <select name="sucursal" [(ngModel)]="sucursalId">
+            <fieldset class="opciones">
+              <legend>Sucursal de retiro</legend>
+              <div class="sucursales">
                 @for (s of sucursales(); track s.id) {
-                  <option [ngValue]="s.id">{{ s.nombre }} — {{ s.direccion }}</option>
+                  <label class="sucursal">
+                    <input type="radio" name="sucursal" [value]="s.id" [(ngModel)]="sucursalId" />
+                    <span class="sucursal-nombre">{{ s.nombre }}</span>
+                    <span class="sucursal-direccion">{{ s.direccion }}</span>
+                  </label>
                 }
-              </select>
-            </label>
+              </div>
+            </fieldset>
           }
         </section>
 
         <section class="paso" aria-labelledby="paso-pago">
           <h2 id="paso-pago" class="paso-titulo"><span class="paso-numero">2</span> Pago</h2>
-          <label class="campo">
-            Método de pago
-            <select name="metodo" [(ngModel)]="metodo">
+          <fieldset class="opciones">
+            <legend>Método de pago</legend>
+            <div class="chips">
               @for (m of metodos; track m) {
-                <option [ngValue]="m">{{ m }}</option>
+                <label class="chip">
+                  <input type="radio" name="metodo" [value]="m" [(ngModel)]="metodo" />
+                  <span>{{ etiquetaMetodo(m) }}</span>
+                </label>
               }
-            </select>
-          </label>
+            </div>
+          </fieldset>
         </section>
       </div>
 
-      <div class="resumen">
+      <div class="resumen superficie">
         <h2 class="resumen-titulo">Tu pedido</h2>
 
         <ul class="resumen-lineas" aria-label="Productos del pedido">
           @for (linea of carrito.lineas(); track linea.producto.productoId) {
             <li>
               <span class="resumen-nombre">{{ linea.cantidad }} × {{ linea.producto.nombre }}</span>
-              <span>{{ linea.producto.precio * linea.cantidad | currency:'COP':'symbol-narrow':'1.0-0' }}</span>
+              <span class="cifras">{{
+                linea.producto.precio * linea.cantidad | currency: 'COP' : 'symbol-narrow' : '1.0-0'
+              }}</span>
             </li>
           }
         </ul>
 
-        <p class="total"><span>Total</span> <strong>{{ carrito.total() | currency:'COP':'symbol-narrow':'1.0-0' }}</strong></p>
+        <p class="total">
+          <span>Total</span>
+          <strong class="cifras">{{
+            carrito.total() | currency: 'COP' : 'symbol-narrow' : '1.0-0'
+          }}</strong>
+        </p>
 
         @if (error()) {
           <p class="mensaje-error" role="alert">{{ error() }}</p>
         }
 
-        @if (!auth.logueado()) {
-          <p class="estado">Debes <a routerLink="/login">iniciar sesión</a> para completar el pedido.</p>
-        }
-
-        <button type="button" class="pagar" [disabled]="procesando() || sucursalId === null"
-                (click)="pedirYPagar()">
+        <button
+          type="button"
+          class="boton grande pagar"
+          [disabled]="procesando() || sucursalId === null"
+          (click)="pedirYPagar()"
+        >
           {{ procesando() ? 'Procesando pago…' : 'Pedir y pagar' }}
         </button>
       </div>

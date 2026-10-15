@@ -37,16 +37,19 @@
       @if (cargando()) {
         <app-esqueleto variante="producto" etiqueta="Cargando la carta…" />
       } @else if (error()) {
-        <p class="estado error">{{ error() }}</p>
+        <div class="carta-error">
+          <p class="mensaje-error" role="alert">{{ error() }}</p>
+          <button type="button" class="boton secundario" (click)="cargar()">Reintentar</button>
+        </div>
       } @else if (sinResultados()) {
-        <div class="sin-resultados">
+        <app-estado-vacio icono="search" titulo="Sin resultados" class="sin-resultados">
           <p>
             No hay productos que coincidan con «{{ busqueda().trim() }}». Prueba con otra palabra.
           </p>
-          <button type="button" class="btn-borrar" (click)="borrarBusqueda()">
+          <button accion type="button" class="boton secundario" (click)="borrarBusqueda()">
             Borrar búsqueda
           </button>
-        </div>
+        </app-estado-vacio>
       } @else if (resultadosBusqueda().length) {
         @for (grupo of resultadosBusqueda(); track grupo.categoria) {
           <section class="grupo-categoria">
@@ -79,16 +82,18 @@
         </div>
         <div class="tarjeta-encabezado">
           <h3>{{ item.nombre }}</h3>
-          <span class="precio">
+          <span class="precio cifras">
             {{ item.precio | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}
           </span>
         </div>
         <div class="tarjeta-detalle">
           @if (item.descripcion) {
-            <p>{{ item.descripcion }}</p>
+            <div class="descripcion">
+              <p>{{ item.descripcion }}</p>
+            </div>
           }
           @if (!auth.esPersonal()) {
-            <button type="button" class="agregar" (click)="agregar(item)">Agregar</button>
+            <button type="button" class="boton agregar" (click)="agregar(item)">Agregar</button>
           }
         </div>
       </article>

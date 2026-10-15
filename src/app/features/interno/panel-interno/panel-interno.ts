@@ -2,7 +2,7 @@ import { Component, computed, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../../application/auth.service';
 import { Icono } from '../../../shared/ui/icono/icono';
-import { etiquetaRol } from '../etiquetas';
+import { etiquetaRol } from '../../../shared/util/etiquetas';
 
 /** Layout del panel interno: barra lateral según el rol + contenido. */
 @Component({

@@ -1,0 +1,41 @@
+@let p = pedido();
+@if (modo() === 'en-curso') {
+  <article class="en-curso superficie">
+    <header class="cabeza">
+      <h3 class="numero">Pedido #{{ p.pedidoId }}</h3>
+      <span class="estado-pill" [class]="p.estado">{{ etiqueta() }}</span>
+    </header>
+
+    @if (p.codigoRetiro; as codigo) {
+      <div class="codigo">
+        <p class="rotulo">Código de retiro</p>
+        <app-codigo-retiro [codigo]="codigo" variante="compacto" />
+      </div>
+    }
+
+    <app-seguimiento-pedido [estado]="p.estado" />
+
+    <div class="pie">
+      <p class="meta">
+        {{ p.sucursalNombre }} ·
+        <time [attr.datetime]="p.fechaPedido">{{ p.fechaPedido | date: 'd MMM, h:mm a' }}</time>
+      </p>
+      <p class="total cifras">{{ p.total | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</p>
+    </div>
+  </article>
+} @else {
+  <article class="historial">
+    <h3 class="numero">Pedido #{{ p.pedidoId }}</h3>
+    <span class="estado-pill" [class]="p.estado">{{ etiqueta() }}</span>
+    <p class="meta">
+      {{ p.sucursalNombre }} ·
+      <time [attr.datetime]="p.fechaPedido">{{ p.fechaPedido | date: 'd MMM yyyy, h:mm a' }}</time>
+    </p>
+    <p class="total cifras">{{ p.total | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</p>
+    @if (p.codigoRetiro) {
+      <p class="codigo-texto">
+        Código <span class="cifras">{{ p.codigoRetiro }}</span>
+      </p>
+    }
+  </article>
+}

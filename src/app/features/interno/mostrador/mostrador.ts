@@ -7,7 +7,7 @@ import { VentaMostradorResponse } from '../../../domain/interno/interno.model';
 import { MenuItem } from '../../../domain/menu/menu.model';
 import { Esqueleto } from '../../../shared/ui/esqueleto/esqueleto';
 import { Icono } from '../../../shared/ui/icono/icono';
-import { etiquetaEstado, etiquetaMetodo } from '../etiquetas';
+import { etiquetaEstado, etiquetaMetodo } from '../../../shared/util/etiquetas';
 
 interface LineaVenta {
   producto: MenuItem;

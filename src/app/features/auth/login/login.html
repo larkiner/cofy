@@ -3,7 +3,6 @@
     <img src="/img/auth/login.jpg" alt="" />
     <div class="auth-media-overlay"></div>
     <div class="auth-media-texto">
-      <span class="eyebrow eyebrow-claro">La aravica</span>
       <p class="auth-media-frase">El ritual de la calma, en cada taza.</p>
     </div>
   </div>
@@ -13,31 +12,34 @@
       <h1>Bienvenido de vuelta</h1>
       <p class="sub-auth">Entra a tu cuenta de La aravica.</p>
 
-      <label>
-        Email
+      <label class="campo">
+        Correo electrónico
         <input type="email" name="email" [(ngModel)]="email" required autocomplete="email" />
       </label>
 
-      <label>
+      <label class="campo">
         Contraseña
         <span class="campo-password">
-          <input [type]="verPassword() ? 'text' : 'password'" name="password" [(ngModel)]="password"
-                 required autocomplete="current-password" />
+          <input
+            [type]="verPassword() ? 'text' : 'password'"
+            name="password"
+            [(ngModel)]="password"
+            required
+            autocomplete="current-password"
+          />
           <app-alternar-password [(visible)]="verPassword" />
         </span>
       </label>
 
       @if (error()) {
-        <p class="mensaje-error">{{ error() }}</p>
+        <p class="mensaje-error" role="alert">{{ error() }}</p>
       }
 
-      <button type="submit" [disabled]="cargando()">
-        {{ cargando() ? 'Entrando…' : 'Entrar' }}
+      <button type="submit" class="boton grande" [disabled]="cargando()">
+        {{ cargando() ? 'Entrando…' : 'Iniciar sesión' }}
       </button>
 
-      <p class="enlace-secundario">
-        ¿No tienes cuenta? <a routerLink="/registro">Regístrate</a>
-      </p>
+      <p class="enlace-secundario">¿No tienes cuenta? <a routerLink="/registro">Crear cuenta</a></p>
     </form>
   </div>
 </section>

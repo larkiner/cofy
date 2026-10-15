@@ -2,61 +2,90 @@
   <h1>Tu carrito</h1>
 
   @if (carrito.lineas().length === 0) {
-    <div class="vacio">
-      <div class="vacio-icono"><app-icono nombre="shopping-bag" [tamano]="28" /></div>
-      <p class="estado">El carrito está vacío. <a routerLink="/menu">Ir al menú</a></p>
-      <a routerLink="/menu" class="vacio-cta">Explorar la carta</a>
-    </div>
+    <app-estado-vacio icono="shopping-bag" titulo="El carrito está vacío.">
+      <a accion class="boton" routerLink="/menu">Ver la carta</a>
+    </app-estado-vacio>
   } @else {
     <div class="carrito-layout">
-      <ul class="lineas" aria-label="Productos en tu carrito">
-        @for (linea of carrito.lineas(); track linea.producto.productoId) {
-          <li class="linea">
-            <div class="linea-media">
-              @if (linea.producto.imagenUrl) {
-                <app-imagen-producto [src]="linea.producto.imagenUrl" />
-              } @else {
-                <app-icono nombre="coffee" [tamano]="22" />
-              }
-            </div>
-            <div class="linea-info">
-              <strong>{{ linea.producto.nombre }}</strong>
-              <span>{{ linea.producto.precio | currency:'COP':'symbol-narrow':'1.0-0' }} c/u</span>
-            </div>
-            <div class="linea-cantidad" role="group" [attr.aria-label]="'Cantidad de ' + linea.producto.nombre">
-              <button type="button"
-                      [attr.aria-label]="'Quitar una unidad de ' + linea.producto.nombre"
-                      (click)="carrito.cambiarCantidad(linea.producto.productoId, -1)">
-                <app-icono nombre="minus" [tamano]="14" />
+      <div class="carrito-lista">
+        <ul class="lineas" aria-label="Productos en tu carrito">
+          @for (linea of carrito.lineas(); track linea.producto.productoId) {
+            <li class="linea">
+              <div class="linea-media">
+                @if (linea.producto.imagenUrl) {
+                  <app-imagen-producto [src]="linea.producto.imagenUrl" />
+                } @else {
+                  <app-icono nombre="coffee" [tamano]="22" />
+                }
+              </div>
+              <div class="linea-info">
+                <strong>{{ linea.producto.nombre }}</strong>
+                <span class="cifras"
+                  >{{
+                    linea.producto.precio | currency: 'COP' : 'symbol-narrow' : '1.0-0'
+                  }}
+                  c/u</span
+                >
+              </div>
+              <!-- Va antes de la cantidad en el DOM para que Tab siga el orden visual. -->
+              <button
+                type="button"
+                class="quitar"
+                [attr.aria-label]="'Quitar ' + linea.producto.nombre + ' del carrito'"
+                (click)="carrito.quitar(linea.producto.productoId)"
+              >
+                <app-icono nombre="x" [tamano]="16" />
               </button>
-              <span aria-live="polite">{{ linea.cantidad }}</span>
-              <button type="button"
-                      [attr.aria-label]="'Agregar una unidad de ' + linea.producto.nombre"
-                      (click)="carrito.cambiarCantidad(linea.producto.productoId, 1)">
-                <app-icono nombre="plus" [tamano]="14" />
-              </button>
-            </div>
-            <span class="linea-subtotal">
-              {{ linea.producto.precio * linea.cantidad | currency:'COP':'symbol-narrow':'1.0-0' }}
-            </span>
-            <button type="button" class="quitar"
-                    [attr.aria-label]="'Quitar ' + linea.producto.nombre + ' del carrito'"
-                    (click)="carrito.quitar(linea.producto.productoId)">
-              <app-icono nombre="x" [tamano]="16" />
-            </button>
-          </li>
-        }
-      </ul>
+              <div class="linea-pie">
+                <div
+                  class="linea-cantidad"
+                  role="group"
+                  [attr.aria-label]="'Cantidad de ' + linea.producto.nombre"
+                >
+                  <button
+                    type="button"
+                    [attr.aria-label]="'Quitar una unidad de ' + linea.producto.nombre"
+                    (click)="carrito.cambiarCantidad(linea.producto.productoId, -1)"
+                  >
+                    <app-icono nombre="minus" [tamano]="14" />
+                  </button>
+                  <span class="cifras" aria-live="polite">{{ linea.cantidad }}</span>
+                  <button
+                    type="button"
+                    [attr.aria-label]="'Agregar una unidad de ' + linea.producto.nombre"
+                    (click)="carrito.cambiarCantidad(linea.producto.productoId, 1)"
+                  >
+                    <app-icono nombre="plus" [tamano]="14" />
+                  </button>
+                </div>
+                <span class="linea-subtotal cifras">
+                  {{
+                    linea.producto.precio * linea.cantidad
+                      | currency: 'COP' : 'symbol-narrow' : '1.0-0'
+                  }}
+                </span>
+              </div>
+            </li>
+          }
+        </ul>
 
-      <div class="resumen">
+        <p class="nota">
+          La sucursal de retiro y el método de pago se eligen en el siguiente paso.
+        </p>
+        <a class="boton fantasma seguir" routerLink="/menu">Seguir comprando</a>
+      </div>
+
+      <div class="resumen superficie">
         <h2 class="resumen-titulo">Resumen del pedido</h2>
 
-        <p class="total"><span>Total</span> <strong>{{ carrito.total() | currency:'COP':'symbol-narrow':'1.0-0' }}</strong></p>
+        <p class="total">
+          <span>Total</span>
+          <strong class="cifras">{{
+            carrito.total() | currency: 'COP' : 'symbol-narrow' : '1.0-0'
+          }}</strong>
+        </p>
 
-        <p class="nota">La sucursal de retiro y el método de pago se eligen en el siguiente paso.</p>
-
-        <a class="continuar" routerLink="/checkout">Continuar con el pedido</a>
-        <a class="seguir" routerLink="/menu">Seguir comprando</a>
+        <a class="boton grande continuar" routerLink="/checkout">Continuar con el pedido</a>
       </div>
     </div>
   }

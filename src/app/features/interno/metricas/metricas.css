@@ -36,6 +36,13 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* El formato es-CO ("$ 11.933.500") es más ancho que el anterior: en móvil la cifra se ajusta a la celda. */
+@media (max-width: 719px) {
+  .kpi-valor {
+    font-size: clamp(1rem, 5.2vw, 1.625rem);
+  }
+}
+
 /* ---------- Gráficas ---------- */
 .graficas {
   display: grid;

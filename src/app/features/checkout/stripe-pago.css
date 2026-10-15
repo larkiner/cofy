@@ -1,0 +1,32 @@
+/* Pago con Stripe (Payment Element). Botones y mensajes son primitivas globales. */
+
+:host {
+  display: block;
+  max-width: 560px;
+}
+
+h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--titulo-bloque);
+  color: var(--color-text);
+  margin-bottom: var(--esp-2);
+}
+
+.stripe-pago > p {
+  color: var(--color-muted);
+}
+
+.stripe-element {
+  margin: var(--esp-4) 0;
+}
+
+.stripe-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--esp-2) var(--esp-3);
+}
+
+.stripe-acciones .boton {
+  flex: 1 1 10rem;
+}

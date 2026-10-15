@@ -58,14 +58,6 @@
   /* Tipografía — títulos en serif (EB Garamond), cuerpo en Plus Jakarta Sans. */
   --font-display: 'EB Garamond', serif;
   --font-body: 'Plus Jakarta Sans', sans-serif;
-
-  /* Alias de la paleta anterior para compatibilidad con pantallas
-     que aún no tienen restyle detallado (inventario, mostrador, turnos…) */
-  --cafe-oscuro: var(--color-dark);
-  --cafe-medio: var(--color-muted);
-  --cafe-acento: var(--color-accent);
-  --crema: var(--color-bg);
-  --crema-borde: var(--color-border);
 }
 
 :root.dark {
@@ -117,24 +109,22 @@
 /* ============================================================
    Capa "moderna" — tokens transversales de forma, elevación y
    movimiento. No tocan la paleta (ya cálida y accesible); añaden
-   el lenguaje visual actual: radios generosos, degradados suaves,
-   grano sutil, foco visible y revelado al hacer scroll.
+   el lenguaje visual actual: radios generosos, foco visible y
+   movimiento contenido.
    ============================================================ */
 :root {
   --radius-sm: 10px;
   --radius-md: 16px;
   --radius-lg: 22px;
-  --radius-xl: 28px;
   --radius-pill: 999px;
 
-  /* Degradado de marca (espresso → latte) para héroes y acentos. */
+  /* Fondo de marca (espresso) bajo la foto del panel de login y registro. */
   --gradient-hero: radial-gradient(
       120% 120% at 12% 8%,
-      #3c2a21 0%,
+      var(--color-dark) 0%,
       #2a1c13 42%,
       #170f0a 100%
     );
-  --gradient-accent: linear-gradient(135deg, var(--color-accent), var(--color-accent-light));
 
   /* Superficie translúcida para el header "glass". */
   --glass-bg: color-mix(in oklch, var(--color-bg) 72%, transparent);
@@ -150,9 +140,52 @@
   /* Alto del header sticky: padding 12px + botones de 44px + 12px + borde de 1px. */
   --alto-header: 69px;
 
-  /* Silueta de taza de café (Lucide "coffee") para placeholders de imagen,
+  /* Silueta de taza de café (Icons8, el pack único del proyecto) para placeholders de imagen,
      aplicada como máscara para que tome el color del acento en cada tema. */
-  --icono-cafe: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M17 8h1a4 4 0 1 1 0 8h-1'/%3E%3Cpath d='M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z'/%3E%3Cline x1='6' y1='1' x2='6' y2='4'/%3E%3Cline x1='10' y1='1' x2='10' y2='4'/%3E%3Cline x1='14' y1='1' x2='14' y2='4'/%3E%3C/svg%3E");
+  --icono-cafe: url('/iconos/coffee.png');
+
+  /* ---------- Tokens de espaciado, ritmo, tipografía y controles (sin color) ---------- */
+
+  /* Espaciado: base de 4 px. */
+  --esp-1: 4px;
+  --esp-2: 8px;
+  --esp-3: 12px;
+  --esp-4: 16px;
+  --esp-5: 20px;
+  --esp-6: 24px;
+  --esp-8: 32px;
+  --esp-10: 40px;
+  --esp-12: 48px;
+  --esp-16: 64px;
+
+  /* Ritmo de página y anchos de contenido. */
+  --margen-pagina: clamp(16px, 5vw, 48px);
+  --esp-seccion: clamp(48px, 8vw, 88px);
+  --ancho-marca: 1180px;
+  --ancho-tarea: 1080px;
+  --ancho-lista: 720px;
+  --ancho-lectura: 65ch;
+
+  /* Escala tipográfica. */
+  --texto-xs: 0.75rem;
+  --texto-sm: 0.875rem;
+  --texto-base: 1rem;
+  --texto-md: 1.125rem;
+  --titulo-bloque: 1.5rem;
+  --titulo-seccion: clamp(1.75rem, 1.35rem + 1.6vw, 2.5rem);
+  --titulo-pagina: clamp(2rem, 1.6rem + 1.6vw, 2.75rem);
+  --titulo-display: clamp(2.5rem, 1.5rem + 4.4vw, 4.5rem);
+
+  /* Controles: el panel interno los redefine (.pi) para su densidad. */
+  --alto-control: 44px;
+  --forma-boton: var(--radius-pill);
+
+  /* Movimiento (con --ease-out). */
+  --dur-rapida: 160ms;
+  --dur-media: 240ms;
+
+  /* Sombra de la barra fija inferior (resumen del carrito en móvil). */
+  --sombra-barra: 0 -6px 20px color-mix(in oklch, var(--color-dark) 14%, transparent);
 }
 
 * {
@@ -189,66 +222,53 @@ body {
   border-radius: var(--radius-sm);
 }
 
+/* Enlace "Saltar al contenido" (primer elemento enfocable): fuera de pantalla hasta recibir el
+   foco. El destino es el <main id="contenido">, que se enfoca por código y no lleva anillo. */
+.saltar-contenido {
+  position: fixed;
+  top: var(--esp-2);
+  left: -9999px;
+  z-index: 100;
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--alto-control);
+  padding: 0 var(--esp-5);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  border-radius: var(--radius-pill);
+  font-size: var(--texto-sm);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.saltar-contenido:focus {
+  left: var(--esp-4);
+}
+
+.saltar-contenido:hover {
+  color: var(--color-on-accent);
+}
+
+/* Destino del enlace de salto: recibe el foco por código, sin anillo alrededor de toda la página. */
+#contenido {
+  scroll-margin-top: var(--alto-header);
+}
+
+#contenido:focus,
+#contenido:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
 ::selection {
   background: color-mix(in oklch, var(--color-accent) 30%, transparent);
   color: var(--color-text);
-}
-
-/* ---------- Revelado al hacer scroll (JS-free) ----------
-   Progressive enhancement: solo se activa donde el navegador soporta
-   scroll-driven animations y el usuario no pidió reducir movimiento.
-   Si no hay soporte, el contenido se muestra normal (nunca oculto). */
-@media (prefers-reduced-motion: no-preference) {
-  @supports (animation-timeline: view()) {
-    .reveal {
-      animation: reveal-up both linear;
-      animation-timeline: view();
-      animation-range: entry 0% cover 26%;
-    }
-  }
-}
-
-@keyframes reveal-up {
-  from {
-    opacity: 0;
-    transform: translateY(28px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 /* ============================================================
    Utilidades compartidas entre Inicio y Menú (globales para que
    ambas vistas standalone las reutilicen sin duplicar CSS).
    ============================================================ */
-
-/* Etiqueta pequeña en mayúsculas ("Recomendaciones", "Horario"). */
-.eyebrow {
-  font-size: 12px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--color-accent);
-  font-weight: 600;
-  margin: 0;
-}
-
-.eyebrow-claro {
-  color: var(--color-accent-light);
-}
-
-/* Estados de carga / error de las vistas que traen el menú. */
-.estado {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 2rem 24px;
-  color: var(--color-muted);
-}
-
-.estado.error {
-  color: var(--color-danger);
-}
 
 /* ---------- Placeholder de imagen (motivo café) ----------
    Mientras no haya foto, el hueco muestra un degradado cálido con la
@@ -352,48 +372,286 @@ router-outlet + * {
 }
 
 /* ============================================================
-   Panel interno
-   Piezas compartidas por las páginas del panel del personal
-   (tablero, entregar, mostrador, inventario, métricas, turnos).
-   Todas llevan el ámbito `.pi` (clase del elemento raíz de
-   panel-interno.html): otras páginas usan clases con los mismos
-   nombres (.boton, .campo, .tabla…) y no deben verse afectadas.
-   Herramienta de trabajo: controles estándar, densidad media,
-   números tabulares. Sin colores propios: solo tokens de :root.
+   Primitivas globales
+   Mismo botón, campo, píldora de estado y mensajes en el sitio público y
+   en el panel interno. Cambia solo la densidad: el sitio público usa 44 px
+   y forma de píldora; el panel (ámbito `.pi`, más abajo) usa 36 px y radio
+   de 8 px. Sin colores propios: solo tokens de :root.
+   No se globalizan `.tarjeta` ni `.encabezado` (el del shell lo fijan las
+   pruebas): la cabecera de página pública es `.cabecera-pagina`.
    ============================================================ */
 
-/* ---------- Encabezado de página ---------- */
-.pi .encabezado {
+/* Precios, totales, horas y códigos: cifras de ancho fijo. */
+.cifras {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Cabecera de página ---------- */
+.pi .encabezado,
+.cabecera-pagina {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
   flex-wrap: wrap;
-  gap: 16px;
-  margin-bottom: 24px;
+  gap: var(--esp-4);
+  margin-bottom: var(--esp-6);
 }
 
-.pi .encabezado h1 {
+.pi .encabezado h1,
+.cabecera-pagina h1 {
   font-family: var(--font-display);
-  font-size: 30px;
+  font-size: var(--titulo-pagina);
   font-weight: 600;
   line-height: 1.1;
   color: var(--color-text);
   margin: 0;
 }
 
-.pi .encabezado .bajada {
-  font-size: 14px;
+.pi .encabezado .bajada,
+.cabecera-pagina .bajada {
+  font-size: var(--texto-sm);
   color: var(--color-muted);
   max-width: 60ch;
   margin-top: 6px;
   font-variant-numeric: tabular-nums;
 }
 
-.pi .encabezado .acciones {
+.pi .encabezado .acciones,
+.cabecera-pagina .acciones {
   display: flex;
   align-items: flex-end;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: var(--esp-2);
+}
+
+/* ---------- Botones ---------- */
+.boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--esp-2);
+  height: var(--alto-control);
+  padding: 0 var(--esp-6);
+  border: none;
+  border-radius: var(--forma-boton);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color var(--dur-rapida) var(--ease-out),
+    color var(--dur-rapida) var(--ease-out),
+    border-color var(--dur-rapida) var(--ease-out),
+    transform var(--dur-rapida) var(--ease-out),
+    box-shadow var(--dur-rapida) var(--ease-out);
+}
+
+/* El color se repite en cada :hover para ganarle a `a:hover` cuando el botón es un enlace. */
+.boton:not(:disabled):hover {
+  background: var(--color-accent-hover);
+  color: var(--color-on-accent);
+}
+
+.boton:focus-visible {
+  box-shadow: var(--ring);
+}
+
+.boton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.boton.secundario {
+  background: transparent;
+  border: 1px solid var(--color-border-input);
+  color: var(--color-text);
+}
+
+.boton.secundario:not(:disabled):hover {
+  background: var(--color-overlay-hover);
+  color: var(--color-text);
+}
+
+.boton.fantasma {
+  padding: 0 var(--esp-3);
+  background: transparent;
+  color: var(--color-muted);
+}
+
+.boton.fantasma:not(:disabled):hover {
+  background: var(--color-overlay-hover);
+  color: var(--color-text);
+}
+
+.boton.grande {
+  height: 48px;
+  width: 100%;
+}
+
+/* Sobre fotos y fondos oscuros (hero, banda de comunidad): latte con texto espresso. */
+.boton.claro {
+  background: var(--color-accent-light);
+  color: var(--color-dark);
+}
+
+.boton.claro:not(:disabled):hover {
+  background: color-mix(in oklch, var(--color-accent-light) 82%, var(--color-text));
+  color: var(--color-dark);
+}
+
+/* ---------- Campos de formulario ---------- */
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: var(--texto-sm);
+  font-weight: 600;
+  color: var(--color-muted);
+  min-width: 0;
+}
+
+.campo input,
+.campo select {
+  height: var(--alto-control);
+  padding: 0 var(--esp-3);
+  /* Borde de 3:1 contra el fondo (WCAG 1.4.11). */
+  border: 1px solid var(--color-muted-2);
+  border-radius: var(--radius-sm);
+  background: var(--color-input-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: var(--texto-sm);
+  font-weight: 400;
+  min-width: 0;
+  transition:
+    border-color var(--dur-rapida) var(--ease-out),
+    box-shadow var(--dur-rapida) var(--ease-out);
+}
+
+.campo input::placeholder {
+  color: var(--color-muted-2);
+}
+
+.campo input:disabled,
+.campo select:disabled {
+  background: var(--color-overlay-subtle);
+  color: var(--color-muted-2);
+  cursor: not-allowed;
+}
+
+.campo input:focus-visible,
+.campo select:focus-visible {
+  border-color: var(--color-accent);
+  box-shadow: var(--ring);
+}
+
+/* 16 px en pantalla táctil: evita el zoom automático de iOS al enfocar. */
+@media (pointer: coarse) {
+  .campo input,
+  .campo select {
+    font-size: var(--texto-base);
+  }
+}
+
+/* ---------- Superficie ---------- */
+.superficie {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--esp-5);
+}
+
+/* ---------- Píldoras de estado ---------- */
+.estado-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  font-size: var(--texto-xs);
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.estado-pill.PAGADO { background: var(--estado-pagado-bg); color: var(--estado-pagado-color); }
+.estado-pill.EN_PREPARACION { background: var(--estado-preparacion-bg); color: var(--estado-preparacion-color); }
+.estado-pill.LISTO { background: var(--estado-listo-bg); color: var(--estado-listo-color); }
+.estado-pill.ENTREGADO { background: var(--estado-entregado-bg); color: var(--estado-entregado-color); }
+.estado-pill.PENDIENTE_PAGO { background: var(--estado-pendiente-bg); color: var(--estado-pendiente-color); }
+.estado-pill.CANCELADO { background: var(--estado-cancelado-bg); color: var(--estado-cancelado-color); }
+
+/* ---------- Mensajes y estados ----------
+   Siempre con role="alert" (error) o role="status" (éxito). */
+.mensaje-ok,
+.mensaje-error {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: var(--esp-3) 14px;
+  margin: 0 0 var(--esp-4);
+  border-radius: var(--radius-sm);
+  font-size: var(--texto-sm);
+}
+
+.mensaje-ok {
+  background: var(--estado-pagado-bg);
+  color: var(--estado-pagado-color);
+}
+
+.mensaje-error {
+  background: color-mix(in oklch, var(--color-danger) 12%, transparent);
+  color: var(--color-danger);
+}
+
+.estado-msj {
+  font-size: var(--texto-sm);
+  color: var(--color-muted);
+}
+
+.vacio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--esp-2);
+  padding: var(--esp-8) var(--esp-4);
+  color: var(--color-muted);
+  text-align: center;
+}
+
+/* Todo movimiento se apaga con "reducir movimiento". */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  button:not(:disabled):active {
+    transform: none !important;
+  }
+}
+
+/* ============================================================
+   Panel interno
+   Piezas compartidas por las páginas del panel del personal
+   (tablero, entregar, mostrador, inventario, métricas, turnos).
+   Las primitivas (botón, campo, píldora, mensajes…) son globales:
+   aquí solo se ajusta la densidad del panel y se definen las piezas
+   que son únicamente suyas (tablas, `h2` sans). Todo lleva el ámbito
+   `.pi` (clase del elemento raíz de panel-interno.html).
+   Herramienta de trabajo: controles de 36 px, radio de 8 px, números
+   tabulares; con puntero táctil los controles suben a 44 px.
+   ============================================================ */
+.pi {
+  --alto-control: 36px;
+  --forma-boton: 8px;
 }
 
 /* Títulos de sección: Plus Jakarta Sans (el display queda solo para el h1). */
@@ -406,118 +664,60 @@ router-outlet + * {
   margin: 0 0 12px;
 }
 
-/* ---------- Botones ---------- */
+.pi .encabezado h1 {
+  font-size: 30px;
+}
+
 .pi .boton {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  height: 36px;
   padding: 0 16px;
-  border: none;
-  border-radius: 8px;
-  background: var(--color-accent);
-  color: var(--color-on-accent);
-  font-family: var(--font-body);
   font-size: 13px;
-  font-weight: 600;
-  line-height: 1;
-  white-space: nowrap;
-  text-decoration: none;
-  cursor: pointer;
-  transition:
-    background-color 160ms var(--ease-out),
-    color 160ms var(--ease-out),
-    border-color 160ms var(--ease-out),
-    transform 160ms var(--ease-out),
-    box-shadow 160ms var(--ease-out);
-}
-
-.pi .boton:not(:disabled):hover {
-  background: var(--color-accent-hover);
-}
-
-.pi .boton:focus-visible {
-  box-shadow: var(--ring);
-}
-
-.pi .boton:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.pi .boton.secundario {
-  background: transparent;
-  border: 1px solid var(--color-border-input);
-  color: var(--color-text);
-}
-
-.pi .boton.secundario:not(:disabled):hover {
-  background: var(--color-overlay-hover);
 }
 
 .pi .boton.fantasma {
   height: 32px;
   padding: 0 10px;
-  background: transparent;
-  color: var(--color-muted);
-}
-
-.pi .boton.fantasma:not(:disabled):hover {
-  background: var(--color-overlay-hover);
-  color: var(--color-text);
 }
 
 .pi .boton.grande {
-  height: 48px;
-  width: 100%;
   font-size: 15px;
 }
 
-/* ---------- Campos de formulario ---------- */
 .pi .campo {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
   font-size: 12px;
-  font-weight: 600;
-  color: var(--color-muted);
-  min-width: 0;
 }
 
 .pi .campo input,
 .pi .campo select {
   height: 40px;
-  padding: 0 12px;
-  border: 1px solid var(--color-border-input);
   border-radius: 8px;
-  background: var(--color-input-bg);
-  color: var(--color-text);
-  font-family: var(--font-body);
-  font-size: 14px;
-  font-weight: 400;
-  min-width: 0;
-  transition:
-    border-color 160ms var(--ease-out),
-    box-shadow 160ms var(--ease-out);
 }
 
-.pi .campo input::placeholder {
-  color: var(--color-muted-2);
+@media (pointer: coarse) {
+  .pi {
+    --alto-control: 44px;
+  }
+
+  .pi .boton.fantasma {
+    height: 44px;
+  }
+
+  .pi .campo input,
+  .pi .campo select {
+    height: 44px;
+    font-size: 16px;
+  }
 }
 
-.pi .campo input:focus-visible,
-.pi .campo select:focus-visible {
-  border-color: var(--color-accent);
-  box-shadow: var(--ring);
-}
-
-/* ---------- Superficie ---------- */
 .pi .superficie {
-  background: var(--color-card);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
   padding: 20px;
+}
+
+.pi .vacio {
+  font-size: 14px;
+}
+
+.pi .vacio app-icono {
+  color: var(--color-muted-2);
 }
 
 /* ---------- Tablas ---------- */
@@ -565,80 +765,4 @@ router-outlet + * {
 .pi .tabla .num {
   text-align: right;
   font-variant-numeric: tabular-nums;
-}
-
-/* ---------- Pills de estado ---------- */
-.pi .estado-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 10px;
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 600;
-  line-height: 1.2;
-  white-space: nowrap;
-}
-
-.pi .estado-pill.PAGADO { background: var(--estado-pagado-bg); color: var(--estado-pagado-color); }
-.pi .estado-pill.EN_PREPARACION { background: var(--estado-preparacion-bg); color: var(--estado-preparacion-color); }
-.pi .estado-pill.LISTO { background: var(--estado-listo-bg); color: var(--estado-listo-color); }
-.pi .estado-pill.ENTREGADO { background: var(--estado-entregado-bg); color: var(--estado-entregado-color); }
-.pi .estado-pill.PENDIENTE_PAGO { background: var(--estado-pendiente-bg); color: var(--estado-pendiente-color); }
-.pi .estado-pill.CANCELADO { background: var(--estado-cancelado-bg); color: var(--estado-cancelado-color); }
-
-/* ---------- Mensajes y estados ---------- */
-.pi .mensaje-ok,
-.pi .mensaje-error {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 14px;
-  margin: 0 0 16px;
-  border-radius: 10px;
-  font-size: 14px;
-}
-
-.pi .mensaje-ok {
-  background: var(--estado-pagado-bg);
-  color: var(--estado-pagado-color);
-}
-
-.pi .mensaje-error {
-  background: color-mix(in oklch, var(--color-danger) 12%, transparent);
-  color: var(--color-danger);
-}
-
-.pi .estado-msj {
-  font-size: 14px;
-  color: var(--color-muted);
-}
-
-.pi .vacio {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  padding: 32px 16px;
-  color: var(--color-muted);
-  font-size: 14px;
-  text-align: center;
-}
-
-.pi .vacio app-icono {
-  color: var(--color-muted-2);
-}
-
-/* Todo movimiento del panel se apaga con "reducir movimiento". */
-@media (prefers-reduced-motion: reduce) {
-  .pi *,
-  .pi *::before,
-  .pi *::after {
-    transition: none !important;
-    animation: none !important;
-  }
-
-  .pi button:not(:disabled):active {
-    transform: none !important;
-  }
 }

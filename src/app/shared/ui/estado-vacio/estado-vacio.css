@@ -1,0 +1,39 @@
+:host {
+  display: block;
+}
+
+.vacio {
+  padding-block: clamp(var(--esp-8), 8vw, var(--esp-16));
+}
+
+.medallon {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-pill);
+  background: color-mix(in oklch, var(--color-accent) 14%, transparent);
+  color: var(--color-accent);
+}
+
+.titulo {
+  font-family: var(--font-display);
+  font-size: var(--titulo-bloque);
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--color-text);
+}
+
+.texto {
+  max-width: 44ch;
+  color: var(--color-muted);
+}
+
+.accion:empty,
+.texto:empty {
+  display: none;
+}
+
+.accion {
+  margin-top: var(--esp-2);
+}

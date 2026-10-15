@@ -1,3 +1,5 @@
+<a class="saltar-contenido" href="/" (click)="saltarAlContenido($event)">Saltar al contenido</a>
+
 <header class="encabezado" #encabezado>
   <a class="marca" routerLink="/">La aravica</a>
 
@@ -143,7 +145,7 @@
 <ng-template #opcionesCuenta>
   @if (auth.logueado()) {
     <p class="panel-cuenta-usuario">{{ auth.email() }}</p>
-    <p class="panel-cuenta-rol">{{ auth.rol() }}</p>
+    <p class="panel-cuenta-rol">{{ rolLegible() }}</p>
     @if (auth.esCliente()) {
       <a class="panel-cuenta-enlace" routerLink="/perfil" (click)="cerrarMenus()">
         <app-icono nombre="user" [tamano]="16" />
@@ -152,17 +154,17 @@
     }
     <button type="button" class="salir" (click)="cerrarSesion()">
       <app-icono nombre="log-out" [tamano]="16" />
-      Salir
+      Cerrar sesión
     </button>
   } @else {
     <a class="panel-cuenta-enlace" routerLink="/login" (click)="cerrarMenus()">Iniciar sesión</a>
-    <a class="panel-cuenta-enlace" routerLink="/registro" (click)="cerrarMenus()"
-      >Unirme a la comunidad</a
-    >
+    <a class="panel-cuenta-enlace" routerLink="/registro" (click)="cerrarMenus()">Crear cuenta</a>
   }
 </ng-template>
 
-<router-outlet />
+<main id="contenido" tabindex="-1" #principal>
+  <router-outlet />
+</main>
 <app-aviso />
 
 @if (!auth.esPersonal()) {
@@ -172,10 +174,10 @@
     <p class="pie-direccion">Tostado en Medellín, Antioquia · Lun–Vie 6:30 am – 8:00 pm</p>
     <nav class="pie-enlaces">
       <a routerLink="/">Inicio</a>
-      <a routerLink="/menu">Menú</a>
-      <a routerLink="/" fragment="horario">Horario y ubicación</a>
+      <a routerLink="/menu">Carta</a>
+      <a routerLink="/" fragment="horario">Sucursales</a>
       @if (!auth.logueado()) {
-        <a routerLink="/registro">Únete a la comunidad</a>
+        <a routerLink="/registro">Crear cuenta</a>
       }
     </nav>
     <p class="pie-copy">

@@ -1,93 +1,54 @@
+/* Mis pedidos: lista de ancho de lectura. Cabecera, botones, mensajes, píldoras y estado vacío
+   son primitivas globales; la tarjeta del pedido es app-tarjeta-pedido. */
+
 .pedidos {
-  max-width: 560px;
+  max-width: var(--ancho-lista);
   margin: 0 auto;
-  padding: 40px 24px 80px;
+  padding: var(--esp-6) var(--margen-pagina) 80px;
 }
 
-h1 {
+.error-caja {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--esp-3);
+  margin-bottom: var(--esp-6);
+}
+
+.error-caja .mensaje-error {
+  flex: 1 1 18rem;
+  margin: 0;
+}
+
+.grupo + .grupo {
+  margin-top: var(--esp-8);
+}
+
+h2 {
+  margin-bottom: var(--esp-3);
   font-family: var(--font-display);
+  font-size: var(--titulo-bloque);
   font-weight: 600;
-  font-size: 35px;
   color: var(--color-text);
-  margin-bottom: 24px;
 }
 
-.estado {
-  color: var(--color-muted);
-  padding: 1rem 0;
+.tarjetas,
+.filas {
+  list-style: none;
+  padding: 0;
 }
 
-.estado.error {
-  color: var(--color-danger);
-}
-
-.estado a {
-  color: var(--color-accent);
-  font-weight: 600;
-}
-
-.lista {
+.tarjetas {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: var(--esp-4);
 }
 
-.pedido {
-  border: 1px solid var(--color-border);
-  border-radius: 12px;
-  padding: 16px 18px;
+/* Anteriores y pendientes: filas con divisores, sin tarjetas. */
+.filas li {
+  border-bottom: 1px solid var(--color-border);
 }
 
-.pedido-encabezado {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 8px;
-}
-
-.numero {
-  font-weight: 700;
-  color: var(--color-text);
-}
-
-.estado-pill {
-  font-size: 11px;
-  font-weight: 700;
-  padding: 4px 12px;
-  border-radius: 999px;
-  white-space: nowrap;
-}
-
-.estado-pill.PAGADO { background: var(--estado-pagado-bg); color: var(--estado-pagado-color); }
-.estado-pill.EN_PREPARACION { background: var(--estado-preparacion-bg); color: var(--estado-preparacion-color); }
-.estado-pill.LISTO { background: var(--estado-listo-bg); color: var(--estado-listo-color); }
-.estado-pill.ENTREGADO { background: var(--estado-entregado-bg); color: var(--estado-entregado-color); }
-.estado-pill.CANCELADO { background: var(--estado-cancelado-bg); color: var(--estado-cancelado-color); }
-
-.codigo-retiro {
-  font-size: 13px;
-  color: var(--color-text);
-  border: 1px dashed var(--color-accent);
-  border-radius: 8px;
-  padding: 6px 10px;
-  margin: 6px 0;
-  display: inline-block;
-}
-
-.codigo-retiro strong {
-  color: var(--color-accent);
-  letter-spacing: 0.08em;
-}
-
-.info {
-  font-size: 13px;
-  color: var(--color-muted-2);
-  margin-bottom: 4px;
-}
-
-.total {
-  margin-top: 4px;
-  font-weight: 700;
-  color: var(--color-accent);
+.filas li:first-child {
+  border-top: 1px solid var(--color-border);
 }

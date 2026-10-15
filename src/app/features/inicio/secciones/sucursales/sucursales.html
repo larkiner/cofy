@@ -1,5 +1,5 @@
-<section id="horario" class="sucursales reveal">
-  <h2>Sucursales y horario</h2>
+<section id="horario" class="sucursales">
+  <h2>Sucursales</h2>
 
   @if (sucursales(); as lista) {
     @if (lista.length) {
@@ -9,7 +9,7 @@
             <h3>{{ s.nombre }}</h3>
             <p class="sucursal-direccion">{{ s.direccion }}</p>
             @if (s.telefono) {
-              <a class="sucursal-telefono" [href]="telefonoHref(s.telefono)">
+              <a class="sucursal-telefono cifras" [href]="telefonoHref(s.telefono)">
                 {{ formatearTelefono(s.telefono) }}
               </a>
             }
@@ -38,7 +38,7 @@
     @for (fila of horario; track fila.dia) {
       <div class="horario-fila">
         <span>{{ fila.dia }}</span>
-        <span>{{ fila.horas }}</span>
+        <span class="cifras">{{ fila.horas }}</span>
       </div>
     }
   </div>

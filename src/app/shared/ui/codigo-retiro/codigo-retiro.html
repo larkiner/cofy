@@ -1,0 +1,9 @@
+<span
+  class="tiquete"
+  [class.grande]="variante() === 'grande'"
+  [class.compacto]="variante() === 'compacto'"
+  role="group"
+  [attr.aria-label]="'Código de retiro ' + codigo()"
+  ><span class="prefijo">{{ tramos().prefijo }}</span
+  ><span class="resto">{{ tramos().resto }}</span></span
+>

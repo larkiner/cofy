@@ -1,0 +1,55 @@
+@if (estado() !== 'listo' || items().length) {
+  <section id="destacados" class="destacados" aria-labelledby="destacados-titulo">
+    <div class="cabecera">
+      <h2 id="destacados-titulo">Recomendaciones de temporada</h2>
+      @if (estado() === 'listo') {
+        <a routerLink="/menu" class="ver-carta">
+          Ver la carta <app-icono nombre="chevron-right" [tamano]="16" />
+        </a>
+      }
+    </div>
+
+    @switch (estado()) {
+      @case ('cargando') {
+        <app-esqueleto variante="destacado" etiqueta="Cargando recomendaciones…" />
+      }
+      @case ('error') {
+        <div class="error">
+          <p class="mensaje-error" role="alert">No pudimos cargar las recomendaciones.</p>
+          <a routerLink="/menu" class="boton secundario">Ver la carta</a>
+        </div>
+      }
+      @default {
+        <div class="lista">
+          @for (item of items(); track item.productoId) {
+            <article class="destacado">
+              <div class="destacado-media">
+                @if (item.imagenUrl) {
+                  <img [src]="item.imagenUrl" alt="" />
+                }
+              </div>
+              <div class="info">
+                <div class="texto">
+                  <h3>{{ item.nombre }}</h3>
+                  <p class="precio cifras">
+                    {{ item.precio | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}
+                  </p>
+                </div>
+                @if (puedeAgregar()) {
+                  <button
+                    type="button"
+                    class="boton claro"
+                    [attr.aria-label]="'Agregar ' + item.nombre + ' al carrito'"
+                    (click)="agregar.emit(item)"
+                  >
+                    <app-icono nombre="plus" [tamano]="16" /> Agregar
+                  </button>
+                }
+              </div>
+            </article>
+          }
+        </div>
+      }
+    }
+  </section>
+}

@@ -1,0 +1,44 @@
+:host {
+  display: inline-block;
+  max-width: 100%;
+}
+
+.tiquete {
+  display: inline-block;
+  max-width: 100%;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  white-space: nowrap;
+  /* Muescas laterales del tiquete. */
+  --muesca: 7px;
+  -webkit-mask:
+    radial-gradient(circle var(--muesca) at 0 50%, #0000 97%, #000) left / 51% 100% no-repeat,
+    radial-gradient(circle var(--muesca) at 100% 50%, #0000 97%, #000) right / 51% 100% no-repeat;
+  mask:
+    radial-gradient(circle var(--muesca) at 0 50%, #0000 97%, #000) left / 51% 100% no-repeat,
+    radial-gradient(circle var(--muesca) at 100% 50%, #0000 97%, #000) right / 51% 100% no-repeat;
+}
+
+.resto {
+  margin-left: 0.15em;
+}
+
+.grande {
+  --muesca: 10px;
+  padding: var(--esp-5) var(--esp-8);
+  border-radius: var(--radius-md);
+  background: var(--color-dark);
+  color: var(--color-accent-light);
+  font-size: clamp(1.25rem, 5.4vw, 1.75rem);
+}
+
+.compacto {
+  padding: var(--esp-2) var(--esp-4);
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  font-size: var(--texto-sm);
+}
