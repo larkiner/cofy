@@ -32,4 +32,16 @@ export class LocalStorageSesionAdapter extends SesionPort {
     localStorage.removeItem(EMAIL_KEY);
     localStorage.removeItem(ROL_KEY);
   }
+
+  alCambiarEnOtraPestana(callback: () => void): () => void {
+    // El evento `storage` solo se dispara en las DEMÁS pestañas, nunca en la que escribió.
+    const escuchar = (evento: StorageEvent) => {
+      // `key === null` = otra pestaña hizo localStorage.clear().
+      if (evento.key === null || evento.key === TOKEN_KEY) {
+        callback();
+      }
+    };
+    window.addEventListener('storage', escuchar);
+    return () => window.removeEventListener('storage', escuchar);
+  }
 }

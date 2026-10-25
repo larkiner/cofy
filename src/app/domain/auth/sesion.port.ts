@@ -7,4 +7,9 @@ export abstract class SesionPort {
   abstract obtenerRol(): string | null;
   abstract guardar(datos: AuthResponse): void;
   abstract limpiar(): void;
+  /**
+   * Avisa cuando OTRA pestaña/ventana cambió la sesión guardada (login o logout allá).
+   * Devuelve la función que cancela la suscripción.
+   */
+  abstract alCambiarEnOtraPestana(callback: () => void): () => void;
 }

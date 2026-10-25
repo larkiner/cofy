@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../application/auth.service';
 import { rutaSegunRol } from '../../../application/rutas-rol';
 import { AlternarPassword } from '../../../shared/ui/alternar-password/alternar-password';
@@ -14,12 +14,15 @@ import { AlternarPassword } from '../../../shared/ui/alternar-password/alternar-
 export class Login {
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly ruta = inject(ActivatedRoute);
 
   protected email = '';
   protected password = '';
   protected readonly verPassword = signal(false);
   protected readonly cargando = signal(false);
   protected readonly error = signal<string | null>(null);
+  /** Llegó por una sesión vencida o rechazada (`?sesion=expirada`, ver `AuthService.expirarSesion`). */
+  protected readonly sesionExpirada = this.ruta.snapshot.queryParamMap.get('sesion') === 'expirada';
 
   protected enviar(): void {
     this.error.set(null);

@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AuthResponse, LoginRequest, RegistroRequest } from '../../domain/auth/auth.model';
@@ -16,5 +16,12 @@ export class AuthHttpRepository extends AuthRepository {
 
   login(datos: LoginRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${environment.apiUrl}/auth/login`, datos);
+  }
+
+  logout(token: string): Observable<void> {
+    // Header explícito: la sesión local ya se limpió y el interceptor no lo pondría.
+    return this.http.post<void>(`${environment.apiUrl}/auth/logout`, null, {
+      headers: new HttpHeaders({ Authorization: `Bearer ${token}` }),
+    });
   }
 }

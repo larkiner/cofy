@@ -31,6 +31,10 @@
         </span>
       </label>
 
+      @if (sesionExpirada && !error()) {
+        <p class="estado-msj" role="status">Tu sesión expiró. Inicia sesión de nuevo.</p>
+      }
+
       @if (error()) {
         <p class="mensaje-error" role="alert">{{ error() }}</p>
       }

@@ -109,7 +109,9 @@ describe('App', () => {
     });
 
     it('muestra el rol de la sesión legible ("Cliente"), no el valor crudo', async () => {
-      localStorage.setItem('cafeteria_token', 'token-de-prueba');
+      // JWT vigente de prueba (sin firma real): un token malformado o vencido se descarta al iniciar.
+      const payload = btoa(JSON.stringify({ exp: Math.floor(Date.now() / 1000) + 3600 }));
+      localStorage.setItem('cafeteria_token', `cabecera.${payload}.firma`);
       localStorage.setItem('cafeteria_email', 'ana@correo.com');
       localStorage.setItem('cafeteria_rol', 'CLIENTE');
       const fixture = TestBed.createComponent(App);
