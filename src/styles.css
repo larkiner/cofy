@@ -8,9 +8,25 @@
 /* ============================================================
    Estilos globales — sistema "Heritage Hearth" (claro) /
    "Nocturnal Brew / Warm Roast" (oscuro)
+
+   Orden de capas (Tailwind): theme < base < components < utilities.
+   - @theme static: tokens de diseño; además generan utilidades (bg-accent, text-muted,
+     rounded-pill, shadow-card, font-display, tablet:…). "static" porque las hojas de
+     componente aún usan var(--color-…) a mano: las variables deben emitirse aunque
+     ninguna utilidad las use.
+   - :root.dark (sin capa): redefine los valores oscuros de los mismos tokens.
+   - @layer base: reset y base global.
+   - @layer components: primitivas (.boton, .campo, .superficie…) y el ámbito .pi.
    ============================================================ */
 
-:root {
+@theme static {
+  /* Solo existe la paleta del proyecto: sin los colores por defecto de Tailwind
+     (bg-red-500 y similares no compilan). Radios, sombras y breakpoints por defecto, también fuera. */
+  --color-*: initial;
+  --radius-*: initial;
+  --shadow-*: initial;
+  --breakpoint-*: initial;
+
   /* Heritage Hearth (claro): espresso brown sobre crema cálida. Aireado,
      artesanal, premium. Títulos en EB Garamond, cuerpo en Plus Jakarta Sans. */
   --color-bg: #fcf9f8;
@@ -30,34 +46,51 @@
   /* Superficie de tarjeta ligeramente diferenciada del fondo (menú, destacados). */
   --color-card: #f7efe8;
 
-  /* Elevación: sombras ambientales suaves con tinte espresso — profundidad
-     "ritual de calma" sin bordes duros. */
-  --shadow-card: 0 4px 20px rgb(61 42 33 / 0.07);
-  --shadow-card-hover: 0 12px 30px rgb(61 42 33 / 0.13);
-
   /* Superficies e interacciones (fondos de input, overlays de hover) */
   --color-on-accent: #fff;
   --color-input-bg: #fff;
   --color-overlay-hover: rgb(61 42 33 / 0.05);
   --color-overlay-subtle: rgb(61 42 33 / 0.03);
 
-  /* Pills de estado de pedido */
-  --estado-pagado-bg: oklch(93% 0.05 145);
-  --estado-pagado-color: oklch(35% 0.08 145);
-  --estado-preparacion-bg: oklch(93% 0.06 85);
-  --estado-preparacion-color: oklch(38% 0.09 85);
-  --estado-listo-bg: oklch(93% 0.05 230);
-  --estado-listo-color: oklch(38% 0.08 230);
-  --estado-entregado-bg: oklch(92% 0.01 50);
-  --estado-entregado-color: oklch(45% 0.02 50);
-  --estado-cancelado-bg: oklch(92% 0.06 25);
-  --estado-cancelado-color: oklch(40% 0.12 25);
-  --estado-pendiente-bg: oklch(93% 0.05 60);
-  --estado-pendiente-color: oklch(40% 0.09 60);
+  /* Color de los indicadores de estado activo (subrayado de la navegación,
+     línea del índice de la carta): el mismo del texto, no el acento. */
+  --color-indicador: var(--color-text);
+
+  /* Elevación: sombras ambientales suaves con tinte espresso — profundidad
+     "ritual de calma" sin bordes duros. */
+  --shadow-card: var(--sombra-card);
+  --shadow-card-hover: var(--sombra-card-hover);
+
+  /* Forma: radios generosos. */
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 22px;
+  --radius-pill: 999px;
 
   /* Tipografía — títulos en serif (EB Garamond), cuerpo en Plus Jakarta Sans. */
   --font-display: 'EB Garamond', serif;
   --font-body: 'Plus Jakarta Sans', sans-serif;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Breakpoints que se repiten en las hojas. Tailwind genera rangos: `tablet:` = ancho >= 900 px
+     y `max-tablet:` = ancho < 900 px (equivale a max-width: 899px). Por eso cada valor es el
+     primer píxel de la franja ancha (621 -> (max-width: 620px), 721 -> (max-width: 720px)…). */
+  --breakpoint-movil: 621px; /* movil: >= 621 · max-movil: <= 620 */
+  --breakpoint-angosto: 720px; /* angosto: >= 720 · max-angosto: <= 719 */
+  --breakpoint-medio: 821px; /* medio: >= 821 · max-medio: <= 820 */
+  --breakpoint-tablet: 900px; /* tablet: >= 900 · max-tablet: <= 899 */
+  --breakpoint-ancho: 960px; /* ancho: >= 960 · max-ancho: <= 959 */
+
+  /* Animaciones globales (las de componente siguen en su hoja hasta que se migre). */
+  --animate-vista-entra: vista-entra 320ms var(--ease-out) backwards;
+
+  @keyframes vista-entra {
+    from {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+  }
 }
 
 :root.dark {
@@ -79,8 +112,8 @@
   --color-card: #2a1c13;
 
   /* En oscuro la profundidad se logra con sombras negras más marcadas. */
-  --shadow-card: 0 4px 20px rgb(0 0 0 / 0.42);
-  --shadow-card-hover: 0 12px 32px rgb(0 0 0 / 0.55);
+  --sombra-card: 0 4px 20px rgb(0 0 0 / 0.42);
+  --sombra-card-hover: 0 12px 32px rgb(0 0 0 / 0.55);
 
   /* El acento es latte (claro): el texto encima debe ser espresso oscuro. */
   --color-on-accent: #241610;
@@ -100,42 +133,47 @@
   --estado-cancelado-color: oklch(85% 0.1 25);
   --estado-pendiente-bg: oklch(30% 0.07 60);
   --estado-pendiente-color: oklch(85% 0.08 60);
-
-  /* Tipografía compartida con el tema claro para evitar cambios al alternar. */
-  --font-display: 'EB Garamond', serif;
-  --font-body: 'Plus Jakarta Sans', sans-serif;
 }
 
 /* ============================================================
-   Capa "moderna" — tokens transversales de forma, elevación y
-   movimiento. No tocan la paleta (ya cálida y accesible); añaden
-   el lenguaje visual actual: radios generosos, foco visible y
-   movimiento contenido.
+   Tokens que no generan utilidades (estado de pedido, espaciado fluido, tipografía,
+   controles, movimiento). Variables normales: se usan con var(--…) o con la sintaxis
+   de variable de Tailwind 4 (px-(--margen-pagina), text-(length:--titulo-seccion)).
    ============================================================ */
 :root {
-  --radius-sm: 10px;
-  --radius-md: 16px;
-  --radius-lg: 22px;
-  --radius-pill: 999px;
+  /* Valores de las sombras del tema (--shadow-card* los referencia). Van aparte porque Tailwind
+     incrusta el valor de un token de sombra con color dentro de la utilidad (.shadow-card) y así
+     no cambiaría en oscuro; con var() la utilidad lee el valor vigente del tema. */
+  --sombra-card: 0 4px 20px rgb(61 42 33 / 0.07);
+  --sombra-card-hover: 0 12px 30px rgb(61 42 33 / 0.13);
+
+  /* Pills de estado de pedido (el valor oscuro está en :root.dark) */
+  --estado-pagado-bg: oklch(93% 0.05 145);
+  --estado-pagado-color: oklch(35% 0.08 145);
+  --estado-preparacion-bg: oklch(93% 0.06 85);
+  --estado-preparacion-color: oklch(38% 0.09 85);
+  --estado-listo-bg: oklch(93% 0.05 230);
+  --estado-listo-color: oklch(38% 0.08 230);
+  --estado-entregado-bg: oklch(92% 0.01 50);
+  --estado-entregado-color: oklch(45% 0.02 50);
+  --estado-cancelado-bg: oklch(92% 0.06 25);
+  --estado-cancelado-color: oklch(40% 0.12 25);
+  --estado-pendiente-bg: oklch(93% 0.05 60);
+  --estado-pendiente-color: oklch(40% 0.09 60);
 
   /* Fondo de marca (espresso) bajo la foto del panel de login y registro. */
   --gradient-hero: radial-gradient(
-      120% 120% at 12% 8%,
-      var(--color-dark) 0%,
-      #2a1c13 42%,
-      #170f0a 100%
-    );
+    120% 120% at 12% 8%,
+    var(--color-dark) 0%,
+    #2a1c13 42%,
+    #170f0a 100%
+  );
 
   /* Superficie translúcida para el header "glass". */
   --glass-bg: color-mix(in oklch, var(--color-bg) 72%, transparent);
   --glass-border: color-mix(in oklch, var(--color-border) 70%, transparent);
 
   --ring: 0 0 0 3px color-mix(in oklch, var(--color-accent) 42%, transparent);
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-
-  /* Color de los indicadores de estado activo (subrayado de la navegación,
-     línea del índice de la carta): el mismo del texto, no el acento. */
-  --color-indicador: var(--color-text);
 
   /* Alto del header sticky: padding 12px + botones de 44px + 12px + borde de 1px. */
   --alto-header: 69px;
@@ -188,594 +226,619 @@
   --sombra-barra: 0 -6px 20px color-mix(in oklch, var(--color-dark) 14%, transparent);
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: var(--font-body);
-  background: var(--color-bg);
-  color: var(--color-text);
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-}
-
-/* Desplazamiento suave al navegar por anclas (#menu, #historia…),
-   respetando a quien prefiere menos movimiento. */
-@media (prefers-reduced-motion: no-preference) {
-  html {
-    scroll-behavior: smooth;
-  }
-}
-
-/* Deja aire bajo el header pegajoso al saltar a una sección con ancla. */
-:where(section[id]) {
-  scroll-margin-top: 88px;
-}
-
-/* Foco visible y consistente para navegación por teclado (accesibilidad). */
-:where(a, button, input, textarea, select, [tabindex]):focus-visible {
-  outline: none;
-  box-shadow: var(--ring);
-  border-radius: var(--radius-sm);
-}
-
-/* Enlace "Saltar al contenido" (primer elemento enfocable): fuera de pantalla hasta recibir el
-   foco. El destino es el <main id="contenido">, que se enfoca por código y no lleva anillo. */
-.saltar-contenido {
-  position: fixed;
-  top: var(--esp-2);
-  left: -9999px;
-  z-index: 100;
-  display: inline-flex;
-  align-items: center;
-  min-height: var(--alto-control);
-  padding: 0 var(--esp-5);
-  background: var(--color-accent);
-  color: var(--color-on-accent);
-  border-radius: var(--radius-pill);
-  font-size: var(--texto-sm);
-  font-weight: 600;
-  text-decoration: none;
-}
-
-.saltar-contenido:focus {
-  left: var(--esp-4);
-}
-
-.saltar-contenido:hover {
-  color: var(--color-on-accent);
-}
-
-/* Destino del enlace de salto: recibe el foco por código, sin anillo alrededor de toda la página. */
-#contenido {
-  scroll-margin-top: var(--alto-header);
-}
-
-#contenido:focus,
-#contenido:focus-visible {
-  outline: none;
-  box-shadow: none;
-}
-
-::selection {
-  background: color-mix(in oklch, var(--color-accent) 30%, transparent);
-  color: var(--color-text);
-}
-
 /* ============================================================
-   Utilidades compartidas entre Inicio y Menú (globales para que
-   ambas vistas standalone las reutilicen sin duplicar CSS).
+   Base global
    ============================================================ */
-
-/* ---------- Placeholder de imagen (motivo café) ----------
-   Mientras no haya foto, el hueco muestra un degradado cálido con la
-   silueta de una taza — intencional, no "roto". Global porque los
-   contenedores viven en dos componentes distintos (Inicio y Menú).
-   Se retira solo cuando hay una <img> real (:has). */
-.destacado-media,
-.tarjeta-media {
-  background: radial-gradient(
-    130% 120% at 50% 0%,
-    color-mix(in oklch, var(--color-accent) 12%, var(--color-card)),
-    var(--color-card)
-  );
-}
-
-.destacado-media::before,
-.tarjeta-media::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  margin: auto;
-  width: 54px;
-  height: 54px;
-  background: color-mix(in oklch, var(--color-accent) 55%, transparent);
-  -webkit-mask: var(--icono-cafe) center / contain no-repeat;
-  mask: var(--icono-cafe) center / contain no-repeat;
-}
-
-.destacado-media:has(img)::before,
-.tarjeta-media:has(img)::before {
-  content: none;
-}
-
-.destacado-media:has(img),
-.tarjeta-media:has(img) {
-  background: var(--color-card);
-}
-
-/* Texto disponible para lectores de pantalla pero oculto visualmente
-   (p. ej. la etiqueta de un buscador que solo muestra un ícono). */
-.visualmente-oculto {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-
-button {
-  font-family: inherit;
-}
-
-/* Micro-interacciones premium: todo control interactivo responde al hover
-   y al clic con una transición y una escala sutil ("active scale"). */
-button {
-  transition: transform 0.12s ease, background-color 0.18s ease,
-    color 0.18s ease, filter 0.18s ease, box-shadow 0.18s ease;
-}
-
-button:not(:disabled):active {
-  transform: scale(0.97);
-}
-
-a {
-  color: var(--color-accent);
-  transition: color 0.18s ease;
-}
-
-a:hover {
-  color: var(--color-accent-hover);
-}
-
-/* ============================================================
-   Animación al cambiar de vista: la vista recién activada (el hermano
-   siguiente de cada <router-outlet>, también en las rutas hijas del panel
-   interno) entra con un fundido y un leve ascenso. Es CSS puro (no usa la
-   View Transitions API: en WebKit podía dejar la página en blanco) y con
-   "reducir movimiento" no hay animación. `backwards` evita que quede un
-   `transform` aplicado después de terminar.
-   ============================================================ */
-/* Los hosts de componente son `inline` por defecto y un `transform` no aplica a un inline. */
-router-outlet + * {
-  display: block;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  router-outlet + * {
-    animation: 320ms var(--ease-out) backwards vista-entra;
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
   }
-}
 
-@keyframes vista-entra {
-  from {
-    opacity: 0;
-    transform: translateY(14px);
+  body {
+    font-family: var(--font-body);
+    background: var(--color-bg);
+    color: var(--color-text);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
   }
-}
 
-/* ============================================================
-   Primitivas globales
-   Mismo botón, campo, píldora de estado y mensajes en el sitio público y
-   en el panel interno. Cambia solo la densidad: el sitio público usa 44 px
-   y forma de píldora; el panel (ámbito `.pi`, más abajo) usa 36 px y radio
-   de 8 px. Sin colores propios: solo tokens de :root.
-   No se globalizan `.tarjeta` ni `.encabezado` (el del shell lo fijan las
-   pruebas): la cabecera de página pública es `.cabecera-pagina`.
-   ============================================================ */
-
-/* Precios, totales, horas y códigos: cifras de ancho fijo. */
-.cifras {
-  font-variant-numeric: tabular-nums;
-}
-
-/* ---------- Cabecera de página ---------- */
-.pi .encabezado,
-.cabecera-pagina {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  flex-wrap: wrap;
-  gap: var(--esp-4);
-  margin-bottom: var(--esp-6);
-}
-
-.pi .encabezado h1,
-.cabecera-pagina h1 {
-  font-family: var(--font-display);
-  font-size: var(--titulo-pagina);
-  font-weight: 600;
-  line-height: 1.1;
-  color: var(--color-text);
-  margin: 0;
-}
-
-.pi .encabezado .bajada,
-.cabecera-pagina .bajada {
-  font-size: var(--texto-sm);
-  color: var(--color-muted);
-  max-width: 60ch;
-  margin-top: 6px;
-  font-variant-numeric: tabular-nums;
-}
-
-.pi .encabezado .acciones,
-.cabecera-pagina .acciones {
-  display: flex;
-  align-items: flex-end;
-  flex-wrap: wrap;
-  gap: var(--esp-2);
-}
-
-/* ---------- Botones ---------- */
-.boton {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--esp-2);
-  height: var(--alto-control);
-  padding: 0 var(--esp-6);
-  border: none;
-  border-radius: var(--forma-boton);
-  background: var(--color-accent);
-  color: var(--color-on-accent);
-  font-family: var(--font-body);
-  font-size: 0.9375rem;
-  font-weight: 600;
-  line-height: 1;
-  white-space: nowrap;
-  text-decoration: none;
-  cursor: pointer;
-  transition:
-    background-color var(--dur-rapida) var(--ease-out),
-    color var(--dur-rapida) var(--ease-out),
-    border-color var(--dur-rapida) var(--ease-out),
-    transform var(--dur-rapida) var(--ease-out),
-    box-shadow var(--dur-rapida) var(--ease-out);
-}
-
-/* El color se repite en cada :hover para ganarle a `a:hover` cuando el botón es un enlace. */
-.boton:not(:disabled):hover {
-  background: var(--color-accent-hover);
-  color: var(--color-on-accent);
-}
-
-.boton:focus-visible {
-  box-shadow: var(--ring);
-}
-
-.boton:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.boton.secundario {
-  background: transparent;
-  border: 1px solid var(--color-border-input);
-  color: var(--color-text);
-}
-
-.boton.secundario:not(:disabled):hover {
-  background: var(--color-overlay-hover);
-  color: var(--color-text);
-}
-
-.boton.fantasma {
-  padding: 0 var(--esp-3);
-  background: transparent;
-  color: var(--color-muted);
-}
-
-.boton.fantasma:not(:disabled):hover {
-  background: var(--color-overlay-hover);
-  color: var(--color-text);
-}
-
-.boton.grande {
-  height: 48px;
-  width: 100%;
-}
-
-/* Sobre fotos y fondos oscuros (hero, banda de comunidad): latte con texto espresso. */
-.boton.claro {
-  background: var(--color-accent-light);
-  color: var(--color-dark);
-}
-
-.boton.claro:not(:disabled):hover {
-  background: color-mix(in oklch, var(--color-accent-light) 82%, var(--color-text));
-  color: var(--color-dark);
-}
-
-/* ---------- Campos de formulario ---------- */
-.campo {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  font-size: var(--texto-sm);
-  font-weight: 600;
-  color: var(--color-muted);
-  min-width: 0;
-}
-
-.campo input,
-.campo select {
-  height: var(--alto-control);
-  padding: 0 var(--esp-3);
-  /* Borde de 3:1 contra el fondo (WCAG 1.4.11). */
-  border: 1px solid var(--color-muted-2);
-  border-radius: var(--radius-sm);
-  background: var(--color-input-bg);
-  color: var(--color-text);
-  font-family: var(--font-body);
-  font-size: var(--texto-sm);
-  font-weight: 400;
-  min-width: 0;
-  transition:
-    border-color var(--dur-rapida) var(--ease-out),
-    box-shadow var(--dur-rapida) var(--ease-out);
-}
-
-.campo input::placeholder {
-  color: var(--color-muted-2);
-}
-
-.campo input:disabled,
-.campo select:disabled {
-  background: var(--color-overlay-subtle);
-  color: var(--color-muted-2);
-  cursor: not-allowed;
-}
-
-.campo input:focus-visible,
-.campo select:focus-visible {
-  border-color: var(--color-accent);
-  box-shadow: var(--ring);
-}
-
-/* 16 px en pantalla táctil: evita el zoom automático de iOS al enfocar. */
-@media (pointer: coarse) {
-  .campo input,
-  .campo select {
-    font-size: var(--texto-base);
+  /* Desplazamiento suave al navegar por anclas (#menu, #historia…),
+     respetando a quien prefiere menos movimiento. */
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
   }
-}
 
-/* ---------- Superficie ---------- */
-.superficie {
-  background: var(--color-card);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  padding: var(--esp-5);
-}
+  /* Deja aire bajo el header pegajoso al saltar a una sección con ancla. */
+  :where(section[id]) {
+    scroll-margin-top: 88px;
+  }
 
-/* ---------- Píldoras de estado ---------- */
-.estado-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 10px;
-  border-radius: var(--radius-pill);
-  font-size: var(--texto-xs);
-  font-weight: 600;
-  line-height: 1.2;
-  white-space: nowrap;
-}
+  /* Foco visible y consistente para navegación por teclado (accesibilidad). */
+  :where(a, button, input, textarea, select, [tabindex]):focus-visible {
+    outline: none;
+    box-shadow: var(--ring);
+    border-radius: var(--radius-sm);
+  }
 
-.estado-pill.PAGADO { background: var(--estado-pagado-bg); color: var(--estado-pagado-color); }
-.estado-pill.EN_PREPARACION { background: var(--estado-preparacion-bg); color: var(--estado-preparacion-color); }
-.estado-pill.LISTO { background: var(--estado-listo-bg); color: var(--estado-listo-color); }
-.estado-pill.ENTREGADO { background: var(--estado-entregado-bg); color: var(--estado-entregado-color); }
-.estado-pill.PENDIENTE_PAGO { background: var(--estado-pendiente-bg); color: var(--estado-pendiente-color); }
-.estado-pill.CANCELADO { background: var(--estado-cancelado-bg); color: var(--estado-cancelado-color); }
+  /* Destino del enlace de salto: recibe el foco por código, sin anillo alrededor de toda la página. */
+  #contenido {
+    scroll-margin-top: var(--alto-header);
+  }
 
-/* ---------- Mensajes y estados ----------
-   Siempre con role="alert" (error) o role="status" (éxito). */
-.mensaje-ok,
-.mensaje-error {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: var(--esp-3) 14px;
-  margin: 0 0 var(--esp-4);
-  border-radius: var(--radius-sm);
-  font-size: var(--texto-sm);
-}
+  #contenido:focus,
+  #contenido:focus-visible {
+    outline: none;
+    box-shadow: none;
+  }
 
-.mensaje-ok {
-  background: var(--estado-pagado-bg);
-  color: var(--estado-pagado-color);
-}
+  ::selection {
+    background: color-mix(in oklch, var(--color-accent) 30%, transparent);
+    color: var(--color-text);
+  }
 
-.mensaje-error {
-  background: color-mix(in oklch, var(--color-danger) 12%, transparent);
-  color: var(--color-danger);
-}
+  button {
+    font-family: inherit;
+  }
 
-.estado-msj {
-  font-size: var(--texto-sm);
-  color: var(--color-muted);
-}
-
-/* Texto solo para lector de pantalla (anuncios, aclaraciones de un dato visual). */
-.solo-lectores {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  padding: 0;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-  border: 0;
-}
-
-.vacio {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--esp-2);
-  padding: var(--esp-8) var(--esp-4);
-  color: var(--color-muted);
-  text-align: center;
-}
-
-/* Todo movimiento se apaga con "reducir movimiento". */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    transition: none !important;
-    animation: none !important;
+  /* Micro-interacciones premium: todo control interactivo responde al hover
+     y al clic con una transición y una escala sutil ("active scale"). */
+  button {
+    transition:
+      transform 0.12s ease,
+      background-color 0.18s ease,
+      color 0.18s ease,
+      filter 0.18s ease,
+      box-shadow 0.18s ease;
   }
 
   button:not(:disabled):active {
-    transform: none !important;
+    transform: scale(0.97);
+  }
+
+  a {
+    color: var(--color-accent);
+    transition: color 0.18s ease;
+  }
+
+  a:hover {
+    color: var(--color-accent-hover);
+  }
+
+  /* ============================================================
+     Animación al cambiar de vista: la vista recién activada (el hermano
+     siguiente de cada <router-outlet>, también en las rutas hijas del panel
+     interno) entra con un fundido y un leve ascenso. Es CSS puro (no usa la
+     View Transitions API: en WebKit podía dejar la página en blanco) y con
+     "reducir movimiento" no hay animación. `backwards` evita que quede un
+     `transform` aplicado después de terminar.
+     ============================================================ */
+  /* Los hosts de componente son `inline` por defecto y un `transform` no aplica a un inline. */
+  router-outlet + * {
+    display: block;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    router-outlet + * {
+      animation: var(--animate-vista-entra);
+    }
+  }
+
+  /* Todo movimiento se apaga con "reducir movimiento". */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      transition: none !important;
+      animation: none !important;
+    }
+
+    button:not(:disabled):active {
+      transform: none !important;
+    }
   }
 }
 
 /* ============================================================
-   Panel interno
-   Piezas compartidas por las páginas del panel del personal
-   (tablero, entregar, mostrador, inventario, métricas, turnos).
-   Las primitivas (botón, campo, píldora, mensajes…) son globales:
-   aquí solo se ajusta la densidad del panel y se definen las piezas
-   que son únicamente suyas (tablas, `h2` sans). Todo lleva el ámbito
-   `.pi` (clase del elemento raíz de panel-interno.html).
-   Herramienta de trabajo: controles de 36 px, radio de 8 px, números
-   tabulares; con puntero táctil los controles suben a 44 px.
+   Componentes globales (primitivas y piezas compartidas)
    ============================================================ */
-.pi {
-  --alto-control: 36px;
-  --forma-boton: 8px;
-}
+@layer components {
+  /* Enlace "Saltar al contenido" (primer elemento enfocable): fuera de pantalla hasta recibir el
+     foco. El destino es el <main id="contenido">, que se enfoca por código y no lleva anillo. */
+  .saltar-contenido {
+    position: fixed;
+    top: var(--esp-2);
+    left: -9999px;
+    z-index: 100;
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--alto-control);
+    padding: 0 var(--esp-5);
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+    border-radius: var(--radius-pill);
+    font-size: var(--texto-sm);
+    font-weight: 600;
+    text-decoration: none;
+  }
 
-/* Títulos de sección: Plus Jakarta Sans (el display queda solo para el h1). */
-.pi h2 {
-  font-family: var(--font-body);
-  font-size: 15px;
-  font-weight: 600;
-  line-height: 1.3;
-  color: var(--color-text);
-  margin: 0 0 12px;
-}
+  .saltar-contenido:focus {
+    left: var(--esp-4);
+  }
 
-.pi .encabezado h1 {
-  font-size: 30px;
-}
+  .saltar-contenido:hover {
+    color: var(--color-on-accent);
+  }
 
-.pi .boton {
-  padding: 0 16px;
-  font-size: 13px;
-}
+  /* ============================================================
+     Utilidades compartidas entre Inicio y Menú (globales para que
+     ambas vistas standalone las reutilicen sin duplicar CSS).
+     ============================================================ */
 
-.pi .boton.fantasma {
-  height: 32px;
-  padding: 0 10px;
-}
+  /* ---------- Placeholder de imagen (motivo café) ----------
+     Mientras no haya foto, el hueco muestra un degradado cálido con la
+     silueta de una taza — intencional, no "roto". Global porque los
+     contenedores viven en dos componentes distintos (Inicio y Menú).
+     Se retira solo cuando hay una <img> real (:has). */
+  .destacado-media,
+  .tarjeta-media {
+    background: radial-gradient(
+      130% 120% at 50% 0%,
+      color-mix(in oklch, var(--color-accent) 12%, var(--color-card)),
+      var(--color-card)
+    );
+  }
 
-.pi .boton.grande {
-  font-size: 15px;
-}
+  .destacado-media::before,
+  .tarjeta-media::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 54px;
+    height: 54px;
+    background: color-mix(in oklch, var(--color-accent) 55%, transparent);
+    -webkit-mask: var(--icono-cafe) center / contain no-repeat;
+    mask: var(--icono-cafe) center / contain no-repeat;
+  }
 
-.pi .campo {
-  font-size: 12px;
-}
+  .destacado-media:has(img)::before,
+  .tarjeta-media:has(img)::before {
+    content: none;
+  }
 
-.pi .campo input,
-.pi .campo select {
-  height: 40px;
-  border-radius: 8px;
-}
+  .destacado-media:has(img),
+  .tarjeta-media:has(img) {
+    background: var(--color-card);
+  }
 
-@media (pointer: coarse) {
+  /* Texto disponible para lectores de pantalla pero oculto visualmente
+     (p. ej. la etiqueta de un buscador que solo muestra un ícono). */
+  .visualmente-oculto {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* ============================================================
+     Primitivas globales
+     Mismo botón, campo, píldora de estado y mensajes en el sitio público y
+     en el panel interno. Cambia solo la densidad: el sitio público usa 44 px
+     y forma de píldora; el panel (ámbito `.pi`, más abajo) usa 36 px y radio
+     de 8 px. Sin colores propios: solo tokens de :root.
+     No se globalizan `.tarjeta` ni `.encabezado` (el del shell lo fijan las
+     pruebas): la cabecera de página pública es `.cabecera-pagina`.
+     ============================================================ */
+
+  /* Precios, totales, horas y códigos: cifras de ancho fijo. */
+  .cifras {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ---------- Cabecera de página ---------- */
+  .pi .encabezado,
+  .cabecera-pagina {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: var(--esp-4);
+    margin-bottom: var(--esp-6);
+  }
+
+  .pi .encabezado h1,
+  .cabecera-pagina h1 {
+    font-family: var(--font-display);
+    font-size: var(--titulo-pagina);
+    font-weight: 600;
+    line-height: 1.1;
+    color: var(--color-text);
+    margin: 0;
+  }
+
+  .pi .encabezado .bajada,
+  .cabecera-pagina .bajada {
+    font-size: var(--texto-sm);
+    color: var(--color-muted);
+    max-width: 60ch;
+    margin-top: 6px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .pi .encabezado .acciones,
+  .cabecera-pagina .acciones {
+    display: flex;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: var(--esp-2);
+  }
+
+  /* ---------- Botones ---------- */
+  .boton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--esp-2);
+    height: var(--alto-control);
+    padding: 0 var(--esp-6);
+    border: none;
+    border-radius: var(--forma-boton);
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+    font-family: var(--font-body);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    line-height: 1;
+    white-space: nowrap;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+      background-color var(--dur-rapida) var(--ease-out),
+      color var(--dur-rapida) var(--ease-out),
+      border-color var(--dur-rapida) var(--ease-out),
+      transform var(--dur-rapida) var(--ease-out),
+      box-shadow var(--dur-rapida) var(--ease-out);
+  }
+
+  /* El color se repite en cada :hover para ganarle a `a:hover` cuando el botón es un enlace. */
+  .boton:not(:disabled):hover {
+    background: var(--color-accent-hover);
+    color: var(--color-on-accent);
+  }
+
+  .boton:focus-visible {
+    box-shadow: var(--ring);
+  }
+
+  .boton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .boton.secundario {
+    background: transparent;
+    border: 1px solid var(--color-border-input);
+    color: var(--color-text);
+  }
+
+  .boton.secundario:not(:disabled):hover {
+    background: var(--color-overlay-hover);
+    color: var(--color-text);
+  }
+
+  .boton.fantasma {
+    padding: 0 var(--esp-3);
+    background: transparent;
+    color: var(--color-muted);
+  }
+
+  .boton.fantasma:not(:disabled):hover {
+    background: var(--color-overlay-hover);
+    color: var(--color-text);
+  }
+
+  .boton.grande {
+    height: 48px;
+    width: 100%;
+  }
+
+  /* Sobre fotos y fondos oscuros (hero, banda de comunidad): latte con texto espresso. */
+  .boton.claro {
+    background: var(--color-accent-light);
+    color: var(--color-dark);
+  }
+
+  .boton.claro:not(:disabled):hover {
+    background: color-mix(in oklch, var(--color-accent-light) 82%, var(--color-text));
+    color: var(--color-dark);
+  }
+
+  /* ---------- Campos de formulario ---------- */
+  .campo {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: var(--texto-sm);
+    font-weight: 600;
+    color: var(--color-muted);
+    min-width: 0;
+  }
+
+  .campo input,
+  .campo select {
+    height: var(--alto-control);
+    padding: 0 var(--esp-3);
+    /* Borde de 3:1 contra el fondo (WCAG 1.4.11). */
+    border: 1px solid var(--color-muted-2);
+    border-radius: var(--radius-sm);
+    background: var(--color-input-bg);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    font-size: var(--texto-sm);
+    font-weight: 400;
+    min-width: 0;
+    transition:
+      border-color var(--dur-rapida) var(--ease-out),
+      box-shadow var(--dur-rapida) var(--ease-out);
+  }
+
+  .campo input::placeholder {
+    color: var(--color-muted-2);
+  }
+
+  .campo input:disabled,
+  .campo select:disabled {
+    background: var(--color-overlay-subtle);
+    color: var(--color-muted-2);
+    cursor: not-allowed;
+  }
+
+  .campo input:focus-visible,
+  .campo select:focus-visible {
+    border-color: var(--color-accent);
+    box-shadow: var(--ring);
+  }
+
+  /* 16 px en pantalla táctil: evita el zoom automático de iOS al enfocar. */
+  @media (pointer: coarse) {
+    .campo input,
+    .campo select {
+      font-size: var(--texto-base);
+    }
+  }
+
+  /* ---------- Superficie ---------- */
+  .superficie {
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--esp-5);
+  }
+
+  /* ---------- Píldoras de estado ---------- */
+  .estado-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: var(--radius-pill);
+    font-size: var(--texto-xs);
+    font-weight: 600;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+
+  .estado-pill.PAGADO {
+    background: var(--estado-pagado-bg);
+    color: var(--estado-pagado-color);
+  }
+  .estado-pill.EN_PREPARACION {
+    background: var(--estado-preparacion-bg);
+    color: var(--estado-preparacion-color);
+  }
+  .estado-pill.LISTO {
+    background: var(--estado-listo-bg);
+    color: var(--estado-listo-color);
+  }
+  .estado-pill.ENTREGADO {
+    background: var(--estado-entregado-bg);
+    color: var(--estado-entregado-color);
+  }
+  .estado-pill.PENDIENTE_PAGO {
+    background: var(--estado-pendiente-bg);
+    color: var(--estado-pendiente-color);
+  }
+  .estado-pill.CANCELADO {
+    background: var(--estado-cancelado-bg);
+    color: var(--estado-cancelado-color);
+  }
+
+  /* ---------- Mensajes y estados ----------
+     Siempre con role="alert" (error) o role="status" (éxito). */
+  .mensaje-ok,
+  .mensaje-error {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: var(--esp-3) 14px;
+    margin: 0 0 var(--esp-4);
+    border-radius: var(--radius-sm);
+    font-size: var(--texto-sm);
+  }
+
+  .mensaje-ok {
+    background: var(--estado-pagado-bg);
+    color: var(--estado-pagado-color);
+  }
+
+  .mensaje-error {
+    background: color-mix(in oklch, var(--color-danger) 12%, transparent);
+    color: var(--color-danger);
+  }
+
+  .estado-msj {
+    font-size: var(--texto-sm);
+    color: var(--color-muted);
+  }
+
+  /* Texto solo para lector de pantalla (anuncios, aclaraciones de un dato visual). */
+  .solo-lectores {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .vacio {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--esp-2);
+    padding: var(--esp-8) var(--esp-4);
+    color: var(--color-muted);
+    text-align: center;
+  }
+
+  /* ============================================================
+     Panel interno
+     Piezas compartidas por las páginas del panel del personal
+     (tablero, entregar, mostrador, inventario, métricas, turnos).
+     Las primitivas (botón, campo, píldora, mensajes…) son globales:
+     aquí solo se ajusta la densidad del panel y se definen las piezas
+     que son únicamente suyas (tablas, `h2` sans). Todo lleva el ámbito
+     `.pi` (clase del elemento raíz de panel-interno.html).
+     Herramienta de trabajo: controles de 36 px, radio de 8 px, números
+     tabulares; con puntero táctil los controles suben a 44 px.
+     ============================================================ */
   .pi {
-    --alto-control: 44px;
+    --alto-control: 36px;
+    --forma-boton: 8px;
+  }
+
+  /* Títulos de sección: Plus Jakarta Sans (el display queda solo para el h1). */
+  .pi h2 {
+    font-family: var(--font-body);
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--color-text);
+    margin: 0 0 12px;
+  }
+
+  .pi .encabezado h1 {
+    font-size: 30px;
+  }
+
+  .pi .boton {
+    padding: 0 16px;
+    font-size: 13px;
   }
 
   .pi .boton.fantasma {
-    height: 44px;
+    height: 32px;
+    padding: 0 10px;
+  }
+
+  .pi .boton.grande {
+    font-size: 15px;
+  }
+
+  .pi .campo {
+    font-size: 12px;
   }
 
   .pi .campo input,
   .pi .campo select {
-    height: 44px;
-    font-size: 16px;
+    height: 40px;
+    border-radius: 8px;
   }
-}
 
-.pi .superficie {
-  padding: 20px;
-}
+  @media (pointer: coarse) {
+    .pi {
+      --alto-control: 44px;
+    }
 
-.pi .vacio {
-  font-size: 14px;
-}
+    .pi .boton.fantasma {
+      height: 44px;
+    }
 
-.pi .vacio app-icono {
-  color: var(--color-muted-2);
-}
+    .pi .campo input,
+    .pi .campo select {
+      height: 44px;
+      font-size: 16px;
+    }
+  }
 
-/* ---------- Tablas ---------- */
-.pi .tabla-contenedor {
-  border: 1px solid var(--color-border);
-  border-radius: 12px;
-  background: var(--color-card);
-  overflow: auto;
-}
+  .pi .superficie {
+    padding: 20px;
+  }
 
-.pi .tabla {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 14px;
-}
+  .pi .vacio {
+    font-size: 14px;
+  }
 
-.pi .tabla th {
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  padding: 10px 14px;
-  background: var(--color-card);
-  color: var(--color-muted);
-  font-size: 12px;
-  font-weight: 600;
-  text-align: left;
-  white-space: nowrap;
-  /* Con border-collapse el borde de un encabezado sticky se pierde al hacer scroll. */
-  box-shadow: inset 0 -1px 0 var(--color-border);
-}
+  .pi .vacio app-icono {
+    color: var(--color-muted-2);
+  }
 
-.pi .tabla td {
-  padding: 12px 14px;
-  border-bottom: 1px solid var(--color-border);
-}
+  /* ---------- Tablas ---------- */
+  .pi .tabla-contenedor {
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    background: var(--color-card);
+    overflow: auto;
+  }
 
-.pi .tabla tbody tr:last-child td {
-  border-bottom: none;
-}
+  .pi .tabla {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
 
-.pi .tabla tbody tr:hover {
-  background: var(--color-overlay-hover);
-}
+  .pi .tabla th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    padding: 10px 14px;
+    background: var(--color-card);
+    color: var(--color-muted);
+    font-size: 12px;
+    font-weight: 600;
+    text-align: left;
+    white-space: nowrap;
+    /* Con border-collapse el borde de un encabezado sticky se pierde al hacer scroll. */
+    box-shadow: inset 0 -1px 0 var(--color-border);
+  }
 
-.pi .tabla .num {
-  text-align: right;
-  font-variant-numeric: tabular-nums;
+  .pi .tabla td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .pi .tabla tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .pi .tabla tbody tr:hover {
+    background: var(--color-overlay-hover);
+  }
+
+  .pi .tabla .num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
 }

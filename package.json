@@ -19,7 +19,6 @@
     "@angular/platform-browser": "^22.0.0",
     "@angular/router": "^22.0.0",
     "@stripe/stripe-js": "^9.12.1",
-    "@tailwindcss/vite": "^4.3.3",
     "rxjs": "~7.8.0",
     "sweetalert2": "^11.26.25",
     "tslib": "^2.3.0"
@@ -34,6 +33,7 @@
     "jsdom": "^28.0.0",
     "postcss": "^8.5.17",
     "prettier": "^3.8.1",
+    "prettier-plugin-tailwindcss": "^0.8.1",
     "tailwindcss": "^4.3.3",
     "typescript": "~6.0.2",
     "vitest": "^4.0.8"
