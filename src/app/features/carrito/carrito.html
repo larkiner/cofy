@@ -1,64 +1,90 @@
-<section class="carrito">
-  <h1>Tu carrito</h1>
+<section
+  class="carrito mx-auto max-w-(--ancho-tarea) px-(--margen-pagina) pt-10 pb-[80px] max-movil:pb-0"
+>
+  <h1 class="mb-6 font-display text-(length:--titulo-pagina) leading-[1.1] font-semibold text-text">
+    Tu carrito
+  </h1>
 
   @if (carrito.lineas().length === 0) {
     <app-estado-vacio icono="shopping-bag" titulo="El carrito está vacío.">
       <a accion class="boton" routerLink="/menu">Ver la carta</a>
     </app-estado-vacio>
   } @else {
-    <div class="carrito-layout">
+    <!-- `minmax(0, …)`: sin esto la columna única no se encoge y el contenido desborda. En móvil es
+         flex y no grid: un hijo `sticky` de una rejilla solo se mueve dentro de su propia celda. -->
+    <div
+      class="carrito-layout grid grid-cols-[minmax(0,1fr)] items-start gap-6 max-movil:flex max-movil:flex-col max-movil:items-stretch tablet:grid-cols-[minmax(0,1fr)_360px] tablet:gap-8"
+    >
       <div class="carrito-lista">
-        <ul class="lineas" aria-label="Productos en tu carrito">
+        <ul class="flex flex-col gap-3" aria-label="Productos en tu carrito">
           @for (linea of carrito.lineas(); track linea.producto.productoId) {
-            <li class="linea">
-              <div class="linea-media">
+            <!-- Rejilla de 3 columnas con ubicación explícita: foto | nombre | quitar y, debajo,
+                 cantidad y subtotal. En ≤380 px la foto es más chica y el pie ocupa todo el ancho. -->
+            <li
+              class="linea grid grid-cols-[64px_minmax(0,1fr)_auto] items-center gap-x-[14px] gap-y-2 rounded-md border border-border bg-card p-[14px] max-[381px]:grid-cols-[56px_minmax(0,1fr)_auto] max-[381px]:gap-x-3"
+            >
+              <div
+                class="linea-media col-1 row-[1/span_2] grid size-[64px] place-items-center self-start overflow-hidden rounded-sm bg-[color-mix(in_oklch,var(--color-accent)_12%,var(--color-bg))] text-accent max-[381px]:row-1 max-[381px]:size-[56px]"
+              >
                 @if (linea.producto.imagenUrl) {
                   <app-imagen-producto [src]="linea.producto.imagenUrl" />
                 } @else {
                   <app-icono nombre="coffee" [tamano]="22" />
                 }
               </div>
-              <div class="linea-info">
-                <strong>{{ linea.producto.nombre }}</strong>
-                <span class="cifras"
+              <div class="linea-info col-2 row-1 flex min-w-0 flex-col gap-[2px]">
+                <strong class="text-(length:--texto-base) font-semibold wrap-anywhere text-text">{{
+                  linea.producto.nombre
+                }}</strong>
+                <span class="cifras text-(length:--texto-sm) text-muted"
                   >{{
                     linea.producto.precio | currency: 'COP' : 'symbol-narrow' : '1.0-0'
                   }}
                   c/u</span
                 >
               </div>
-              <!-- Va antes de la cantidad en el DOM para que Tab siga el orden visual. -->
+              <!-- Va antes de la cantidad en el DOM para que Tab siga el orden visual. El área de
+                   44 px sobresale de la tarjeta sin agrandarla. -->
               <button
                 type="button"
-                class="quitar"
+                class="col-3 row-1 -mt-[10px] -mr-[10px] grid size-(--alto-control) cursor-pointer place-items-center self-start justify-self-end rounded-pill bg-transparent text-muted hover:bg-overlay-hover hover:text-danger"
                 [attr.aria-label]="'Quitar ' + linea.producto.nombre + ' del carrito'"
                 (click)="carrito.quitar(linea.producto.productoId)"
               >
                 <app-icono nombre="x" [tamano]="16" />
               </button>
-              <div class="linea-pie">
+              <!-- Cantidad a la izquierda y subtotal a la derecha. -->
+              <div
+                class="linea-pie col-[2/-1] row-2 flex flex-wrap items-center justify-between gap-2 max-[381px]:col-[1/-1]"
+              >
                 <div
-                  class="linea-cantidad"
+                  class="linea-cantidad inline-flex items-center rounded-pill border border-muted-2 bg-input-bg text-(length:--texto-sm) font-semibold"
                   role="group"
                   [attr.aria-label]="'Cantidad de ' + linea.producto.nombre"
                 >
                   <button
                     type="button"
+                    class="grid size-[36px] cursor-pointer place-items-center rounded-pill bg-transparent text-text hover:bg-overlay-hover pointer-coarse:size-(--alto-control)"
                     [attr.aria-label]="'Quitar una unidad de ' + linea.producto.nombre"
                     (click)="carrito.cambiarCantidad(linea.producto.productoId, -1)"
                   >
                     <app-icono nombre="minus" [tamano]="14" />
                   </button>
-                  <span class="cifras" aria-live="polite">{{ linea.cantidad }}</span>
+                  <span class="cifras min-w-[28px] text-center" aria-live="polite">{{
+                    linea.cantidad
+                  }}</span>
                   <button
                     type="button"
+                    class="grid size-[36px] cursor-pointer place-items-center rounded-pill bg-transparent text-text hover:bg-overlay-hover pointer-coarse:size-(--alto-control)"
                     [attr.aria-label]="'Agregar una unidad de ' + linea.producto.nombre"
                     (click)="carrito.cambiarCantidad(linea.producto.productoId, 1)"
                   >
                     <app-icono nombre="plus" [tamano]="14" />
                   </button>
                 </div>
-                <span class="linea-subtotal cifras">
+                <span
+                  class="linea-subtotal cifras ml-auto text-(length:--texto-md) font-bold text-text"
+                >
                   {{
                     linea.producto.precio * linea.cantidad
                       | currency: 'COP' : 'symbol-narrow' : '1.0-0'
@@ -69,23 +95,36 @@
           }
         </ul>
 
-        <p class="nota">
+        <p class="mt-4 mb-1 text-(length:--texto-sm) text-muted">
           La sucursal de retiro y el método de pago se eligen en el siguiente paso.
         </p>
-        <a class="boton fantasma seguir" routerLink="/menu">Seguir comprando</a>
+        <a class="boton fantasma px-0" routerLink="/menu">Seguir comprando</a>
       </div>
 
-      <div class="resumen superficie">
-        <h2 class="resumen-titulo">Resumen del pedido</h2>
+      <!-- Escritorio: resumen fijo al costado bajo el header sticky. Móvil: barra inferior fija con
+           el total y el botón, a todo el ancho (el título solo para lectores de pantalla). -->
+      <div
+        class="resumen superficie max-movil:sticky max-movil:bottom-0 max-movil:z-5 max-movil:-mx-(--margen-pagina) max-movil:flex max-movil:flex-wrap max-movil:items-center max-movil:gap-x-4 max-movil:gap-y-2 max-movil:rounded-none max-movil:border-x-0 max-movil:border-b-0 max-movil:bg-bg max-movil:px-(--margen-pagina) max-movil:pt-3 max-movil:pb-[calc(var(--esp-3)+env(safe-area-inset-bottom))] max-movil:shadow-(--sombra-barra) tablet:sticky tablet:top-[calc(var(--alto-header)+var(--esp-6))]"
+      >
+        <h2
+          class="mb-4 font-display text-(length:--titulo-bloque) font-semibold text-text max-movil:sr-only"
+        >
+          Resumen del pedido
+        </h2>
 
-        <p class="total">
+        <p
+          class="total mb-4 flex items-baseline justify-between border-y border-border py-[14px] text-(length:--texto-base) text-muted max-movil:m-0 max-movil:flex-col max-movil:items-start max-movil:gap-0 max-movil:border-0 max-movil:p-0 max-movil:text-(length:--texto-sm)"
+        >
           <span>Total</span>
-          <strong class="cifras">{{
-            carrito.total() | currency: 'COP' : 'symbol-narrow' : '1.0-0'
-          }}</strong>
+          <strong
+            class="cifras text-(length:--titulo-bloque) font-bold text-text max-movil:text-(length:--texto-md)"
+            >{{ carrito.total() | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</strong
+          >
         </p>
 
-        <a class="boton grande continuar" routerLink="/checkout">Continuar con el pedido</a>
+        <a class="boton grande max-movil:w-auto max-movil:flex-[1_1_11rem]" routerLink="/checkout"
+          >Continuar con el pedido</a
+        >
       </div>
     </div>
   }

@@ -1,12 +1,29 @@
-<section class="carta">
-  <div class="carta-layout">
-    <div class="carta-sidebar">
-      <h1 class="carta-titulo">Carta</h1>
+<section
+  class="carta mx-auto max-w-[1200px] px-(--margen) pt-[clamp(20px,5vw,48px)] pb-[clamp(56px,8vw,88px)] [--margen:clamp(20px,4vw,28px)]"
+>
+  <!-- Flex en columna (no grid): el índice fijo necesita un contenedor tan alto como la página. -->
+  <div
+    class="carta-layout flex flex-col gap-3 tablet:grid tablet:grid-cols-[220px_minmax(0,1fr)] tablet:items-start tablet:gap-x-10"
+  >
+    <!-- En móvil la barra lateral no existe como caja: sus hijos son hijos de .carta-layout. -->
+    <div
+      class="carta-sidebar contents tablet:sticky tablet:top-[calc(var(--alto-header)+var(--esp-6))] tablet:flex tablet:min-w-0 tablet:flex-col tablet:gap-6"
+    >
+      <h1
+        class="carta-titulo font-display text-(length:--titulo-pagina) leading-[1.1] font-semibold text-text"
+      >
+        Carta
+      </h1>
 
-      <label class="buscador" for="buscar-carta">
+      <!-- El foco lo muestra la píldora completa, no el input. -->
+      <label
+        class="buscador flex h-(--alto-control) cursor-text items-center gap-[10px] rounded-pill border border-border-input bg-input-bg px-4 text-muted focus-within:border-text focus-within:shadow-(--ring)"
+        for="buscar-carta"
+      >
         <app-icono nombre="search" [tamano]="18" />
         <span class="visualmente-oculto">Buscar en la carta</span>
         <input
+          class="min-w-0 flex-1 appearance-none border-none bg-transparent [font-family:inherit] text-[16px] text-text shadow-none outline-none placeholder:text-muted placeholder:opacity-100 [&::-webkit-search-cancel-button]:appearance-none"
           id="buscar-carta"
           type="search"
           placeholder="Buscar en la carta"
@@ -16,12 +33,18 @@
         />
       </label>
 
-      <nav class="indice-categorias" aria-label="Categorías">
+      <!-- Móvil: franja con scroll horizontal, fija bajo el header, a todo el ancho. El relleno
+           vertical deja espacio al anillo de foco, que el scroll recortaría; su alto (53 px) es
+           --alto-indice. Escritorio: lista vertical en la barra lateral. -->
+      <nav
+        class="indice-categorias sticky top-(--alto-header) z-5 -mx-(--margen) flex [scrollbar-width:none] gap-1 overflow-x-auto border-b border-border bg-bg px-(--margen) py-1 tablet:static tablet:mx-0 tablet:flex-col tablet:gap-[2px] tablet:overflow-visible tablet:border-b-0 tablet:bg-transparent tablet:p-0 [&::-webkit-scrollbar]:hidden"
+        aria-label="Categorías"
+      >
         @for (categoria of categorias(); track categoria) {
+          <!-- Línea de 2 px: indicador de navegación (decisión 2026-09-29), no un borde de tarjeta. -->
           <button
             type="button"
-            class="indice-enlace"
-            [class.activo]="esActiva(categoria)"
+            class="indice-enlace min-h-(--alto-control) flex-none cursor-pointer border-b-2 border-transparent bg-transparent px-[14px] text-(length:--texto-sm) font-semibold whitespace-nowrap text-muted hover:text-text aria-[current=true]:border-indicador aria-[current=true]:text-text tablet:min-h-0 tablet:w-full tablet:border-b-0 tablet:border-l-2 tablet:py-2 tablet:pr-0 tablet:pl-[14px] tablet:text-left"
             [attr.aria-current]="esActiva(categoria) ? 'true' : null"
             (click)="seleccionarCategoria(categoria)"
           >
@@ -31,19 +54,22 @@
       </nav>
     </div>
 
-    <div class="carta-contenido" #contenido>
+    <div
+      class="carta-contenido min-w-0 scroll-mt-[calc(var(--alto-header)+var(--alto-indice)+var(--esp-4))] [--alto-indice:53px] tablet:[--alto-indice:0px]"
+      #contenido
+    >
       <p class="visualmente-oculto" role="status" aria-live="polite">{{ mensajeResultados() }}</p>
 
       @if (cargando()) {
         <app-esqueleto variante="producto" etiqueta="Cargando la carta…" />
       } @else if (error()) {
-        <div class="carta-error">
-          <p class="mensaje-error" role="alert">{{ error() }}</p>
+        <div class="carta-error flex flex-col items-start gap-3 pb-8">
+          <p class="mensaje-error m-0" role="alert">{{ error() }}</p>
           <button type="button" class="boton secundario" (click)="cargar()">Reintentar</button>
         </div>
       } @else if (sinResultados()) {
-        <app-estado-vacio icono="search" titulo="Sin resultados" class="sin-resultados">
-          <p>
+        <app-estado-vacio icono="search" titulo="Sin resultados">
+          <p class="wrap-anywhere">
             No hay productos que coincidan con «{{ busqueda().trim() }}». Prueba con otra palabra.
           </p>
           <button accion type="button" class="boton secundario" (click)="borrarBusqueda()">
@@ -52,8 +78,12 @@
         </app-estado-vacio>
       } @else if (resultadosBusqueda().length) {
         @for (grupo of resultadosBusqueda(); track grupo.categoria) {
-          <section class="grupo-categoria">
-            <h2 class="grupo-titulo">{{ grupo.categoria }}</h2>
+          <section class="grupo-categoria [.grupo-categoria+&]:mt-10">
+            <h2
+              class="grupo-titulo mb-3 font-display text-(length:--titulo-bloque) leading-[1.15] font-semibold text-text"
+            >
+              {{ grupo.categoria }}
+            </h2>
             <ng-container
               [ngTemplateOutlet]="tarjetas"
               [ngTemplateOutletContext]="{ $implicit: grupo.items }"
@@ -61,7 +91,11 @@
           </section>
         }
       } @else if (categoriaResaltada(); as categoria) {
-        <h2 class="grupo-titulo">{{ categoria }}</h2>
+        <h2
+          class="grupo-titulo mb-3 font-display text-(length:--titulo-bloque) leading-[1.15] font-semibold text-text"
+        >
+          {{ categoria }}
+        </h2>
         <ng-container
           [ngTemplateOutlet]="tarjetas"
           [ngTemplateOutletContext]="{ $implicit: itemsActivos() }"
@@ -72,28 +106,61 @@
 </section>
 
 <ng-template #tarjetas let-items>
-  <div class="tarjetas">
+  <div
+    class="tarjetas grid grid-cols-[repeat(auto-fill,minmax(min(100%,260px),1fr))] gap-6 max-[561px]:gap-2"
+  >
     @for (item of items; track item.productoId) {
-      <article class="tarjeta">
-        <div class="tarjeta-media">
+      <!-- ≤560 px: fila compacta con foto. Miniatura de 96 px; nombre, descripción (2 líneas máx.),
+           precio y «Agregar» a su derecha (el encabezado y el detalle pasan a `contents`). -->
+      <article
+        class="tarjeta flex flex-col overflow-hidden rounded-md border border-border bg-card shadow-card transition-[box-shadow,border-color] duration-(--dur-media) ease-out hover:border-[color-mix(in_oklch,var(--color-accent)_35%,var(--color-border))] hover:shadow-card-hover max-[561px]:grid max-[561px]:grid-cols-[96px_minmax(0,1fr)_auto] max-[561px]:gap-x-3 max-[561px]:p-2"
+      >
+        <div
+          class="tarjeta-media relative h-[170px] w-full shrink-0 max-[561px]:col-1 max-[561px]:row-[1/span_3] max-[561px]:size-[96px] max-[561px]:overflow-hidden max-[561px]:rounded-sm max-[561px]:[&::before]:size-[36px]"
+        >
           @if (item.imagenUrl) {
             <app-imagen-producto [src]="item.imagenUrl" [alt]="item.nombre" />
           }
         </div>
-        <div class="tarjeta-encabezado">
-          <h3>{{ item.nombre }}</h3>
-          <span class="precio cifras">
+        <!-- Fila: nombre a la izquierda, precio a la derecha. -->
+        <div
+          class="tarjeta-encabezado flex items-baseline justify-between gap-3 px-[18px] pt-[14px] max-[561px]:contents"
+        >
+          <h3
+            class="min-w-0 truncate text-[15.5px] font-semibold text-text max-[561px]:col-[2/-1] max-[561px]:row-1"
+          >
+            {{ item.nombre }}
+          </h3>
+          <span
+            class="precio cifras font-bold whitespace-nowrap text-accent max-[561px]:col-2 max-[561px]:row-3 max-[561px]:self-center"
+          >
             {{ item.precio | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}
           </span>
         </div>
-        <div class="tarjeta-detalle">
+        <!-- Fila: descripción a la izquierda, botón a la derecha. margin-top: auto lo ancla al
+             fondo, alineando botones entre tarjetas. -->
+        <div
+          class="tarjeta-detalle mt-auto flex items-center justify-between gap-4 px-[18px] pt-[6px] pb-[14px] max-[561px]:contents"
+        >
           @if (item.descripcion) {
-            <div class="descripcion">
-              <p>{{ item.descripcion }}</p>
+            <!-- Máximo 2 líneas. El `p` va dentro de un `div` porque un ítem de grid se bloquifica
+                 y pierde el `-webkit-box` que necesita el recorte. -->
+            <div
+              class="descripcion min-w-0 flex-1 max-[561px]:col-[2/-1] max-[561px]:row-2 max-[561px]:mt-[2px]"
+            >
+              <p class="line-clamp-2 text-[0.8125rem] leading-[1.35] text-muted">
+                {{ item.descripcion }}
+              </p>
             </div>
           }
           @if (!auth.esPersonal()) {
-            <button type="button" class="boton agregar" (click)="agregar(item)">Agregar</button>
+            <button
+              type="button"
+              class="boton agregar ml-auto shrink-0 px-4 max-[561px]:col-3 max-[561px]:row-3 max-[561px]:self-end"
+              (click)="agregar(item)"
+            >
+              Agregar
+            </button>
           }
         </div>
       </article>

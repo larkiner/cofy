@@ -14,7 +14,6 @@ import { ImagenProducto } from '../../shared/ui/imagen-producto/imagen-producto'
   selector: 'app-carrito',
   imports: [CurrencyPipe, EstadoVacio, Icono, ImagenProducto, RouterLink],
   templateUrl: './carrito.html',
-  styleUrl: './carrito.css',
 })
 export class Carrito {
   protected readonly carrito = inject(CarritoService);

@@ -36,7 +36,6 @@ const METODOS_PAGO = ['TARJETA', 'PSE', 'NEQUI', 'DAVIPLATA'];
     StripePago,
   ],
   templateUrl: './checkout.html',
-  styleUrl: './checkout.css',
 })
 export class Checkout {
   protected readonly carrito = inject(CarritoService);

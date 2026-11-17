@@ -1,22 +1,24 @@
 <section class="stripe-pago" aria-label="Pago seguro con Stripe">
-  <h2>Pago seguro</h2>
-  <p>Los datos de tu tarjeta se procesan directamente con Stripe.</p>
+  <h2 class="mb-2 font-display text-(length:--titulo-bloque) font-semibold text-text">
+    Pago seguro
+  </h2>
+  <p class="text-muted">Los datos de tu tarjeta se procesan directamente con Stripe.</p>
 
   <form (submit)="confirmar($event)">
-    <div #paymentElement class="stripe-element"></div>
+    <div #paymentElement class="stripe-element my-4"></div>
     @if (error()) {
       <p class="mensaje-error" role="alert">{{ error() }}</p>
     }
-    <div class="stripe-acciones">
+    <div class="flex flex-wrap gap-x-3 gap-y-2">
       <button
         type="button"
-        class="boton secundario"
+        class="boton secundario flex-[1_1_10rem]"
         (click)="cancelar()"
         [disabled]="confirmando()"
       >
         Volver
       </button>
-      <button type="submit" class="boton pagar" [disabled]="cargando() || confirmando()">
+      <button type="submit" class="boton flex-[1_1_10rem]" [disabled]="cargando() || confirmando()">
         {{ confirmando() ? 'Confirmando…' : 'Pagar de forma segura' }}
       </button>
     </div>

@@ -1,4 +1,12 @@
-import { Component, ElementRef, afterNextRender, input, output, signal, viewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  afterNextRender,
+  input,
+  output,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { loadStripe, StripeElements, StripePaymentElement } from '@stripe/stripe-js';
 import { environment } from '../../../environments/environment';
 
@@ -6,7 +14,7 @@ import { environment } from '../../../environments/environment';
 @Component({
   selector: 'app-stripe-pago',
   templateUrl: './stripe-pago.html',
-  styleUrl: './stripe-pago.css',
+  host: { class: 'block max-w-[560px]' },
 })
 export class StripePago {
   readonly clientSecret = input.required<string>();
@@ -47,7 +55,10 @@ export class StripePago {
       this.error.set(resultado.error.message ?? 'El pago no pudo ser confirmado.');
       return;
     }
-    if (resultado.paymentIntent?.status === 'succeeded' || resultado.paymentIntent?.status === 'processing') {
+    if (
+      resultado.paymentIntent?.status === 'succeeded' ||
+      resultado.paymentIntent?.status === 'processing'
+    ) {
       this.completado.emit();
     }
   }

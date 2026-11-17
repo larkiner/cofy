@@ -26,7 +26,6 @@ interface GrupoCategoria {
   selector: 'app-menu',
   imports: [CurrencyPipe, NgTemplateOutlet, EstadoVacio, Esqueleto, Icono, ImagenProducto],
   templateUrl: './menu.html',
-  styleUrl: './menu.css',
 })
 export class Menu {
   private readonly menuService = inject(MenuService);

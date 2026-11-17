@@ -1,31 +1,44 @@
-<section class="checkout">
+@let titulo = 'font-display text-(length:--titulo-pagina) leading-[1.1] font-semibold text-text';
+@let opcion =
+  'relative cursor-pointer border border-border-input transition-[background-color,border-color] duration-(--dur-rapida) ease-out hover:bg-overlay-hover has-checked:border-accent has-checked:bg-[color-mix(in_oklch,var(--color-accent)_14%,transparent)] has-focus-visible:shadow-(--ring)';
+@let radio = 'absolute inset-0 m-0 size-full cursor-pointer opacity-0';
+@let numeroPaso =
+  'grid size-[28px] place-items-center rounded-pill bg-[color-mix(in_oklch,var(--color-accent)_16%,transparent)] font-body text-(length:--texto-sm) font-bold text-accent';
+@let tituloPaso =
+  'mb-4 flex items-center gap-3 font-display text-(length:--titulo-bloque) font-semibold text-text';
+
+<section class="checkout mx-auto max-w-(--ancho-tarea) px-(--margen-pagina) pt-6 pb-[80px]">
   @if (resultado(); as pedido) {
     <!-- Pantalla de éxito: pedido pagado con código de retiro -->
-    <div class="exito">
-      <div class="exito-icono"><app-icono nombre="check" [tamano]="28" /></div>
-      <h1>¡Pedido confirmado!</h1>
-      <p>
+    <div class="exito mx-auto flex max-w-[560px] flex-col items-center gap-4 pt-6 text-center">
+      <div
+        class="grid size-[64px] place-items-center rounded-pill bg-[color-mix(in_oklch,var(--color-accent)_14%,transparent)] text-accent"
+      >
+        <app-icono nombre="check" [tamano]="28" />
+      </div>
+      <h1 [class]="titulo">¡Pedido confirmado!</h1>
+      <p class="text-muted">
         Presenta este código en <strong>{{ pedido.sucursalNombre }}</strong> para reclamar tu
         pedido:
       </p>
       @if (pedido.codigoRetiro; as codigo) {
         <app-codigo-retiro [codigo]="codigo" variante="grande" />
       }
-      <app-seguimiento-pedido class="seguimiento" [estado]="pedido.estado" />
-      <p class="detalle-exito">
+      <app-seguimiento-pedido class="my-2 w-full max-w-[420px]" [estado]="pedido.estado" />
+      <p class="text-text">
         Total pagado:
         <strong class="cifras">{{
           pedido.total | currency: 'COP' : 'symbol-narrow' : '1.0-0'
         }}</strong>
         · Estado: {{ etiquetaEstado(pedido.estado) }}
       </p>
-      <div class="acciones-exito">
+      <div class="mt-2 flex flex-wrap justify-center gap-x-4 gap-y-2">
         <a class="boton" routerLink="/mis-pedidos">Ver mis pedidos</a>
         <a class="boton fantasma" routerLink="/menu">Volver a la carta</a>
       </div>
     </div>
   } @else if (stripeClientSecret(); as clientSecret) {
-    <h1>Finalizar pedido</h1>
+    <h1 [class]="titulo + ' mb-6'">Finalizar pedido</h1>
     <app-stripe-pago
       [clientSecret]="clientSecret"
       (completado)="pagoStripeConfirmado()"
@@ -35,34 +48,58 @@
       <p class="estado-msj" role="status">Confirmando tu pago con Stripe…</p>
     }
   } @else {
-    <a class="boton fantasma volver" routerLink="/carrito">
-      <app-icono nombre="chevron-right" [tamano]="16" />
+    <a class="boton fantasma mb-2 -ml-3" routerLink="/carrito">
+      <app-icono class="rotate-180" nombre="chevron-right" [tamano]="16" />
       Volver al carrito
     </a>
-    <h1>Finalizar pedido</h1>
+    <h1 [class]="titulo + ' mb-6'">Finalizar pedido</h1>
 
     @if (!auth.logueado()) {
-      <div class="mensaje">
+      <!-- Aviso de sesión: arriba de los pasos, con su acción. -->
+      <div
+        class="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-sm bg-[color-mix(in_oklch,var(--color-accent)_12%,transparent)] px-4 py-3 text-(length:--texto-sm) text-text"
+      >
         <p>Debes iniciar sesión para completar el pedido.</p>
         <a class="boton secundario" routerLink="/login">Iniciar sesión</a>
       </div>
     }
 
-    <div class="checkout-layout">
-      <div class="pasos">
+    <!-- `minmax(0, …)`: sin esto la columna única no se encoge y el contenido desborda. -->
+    <div
+      class="grid grid-cols-[minmax(0,1fr)] items-start gap-8 tablet:grid-cols-[minmax(0,1fr)_360px]"
+    >
+      <div class="flex flex-col gap-8">
         <section class="paso" aria-labelledby="paso-retiro">
-          <h2 id="paso-retiro" class="paso-titulo"><span class="paso-numero">1</span> Retiro</h2>
+          <h2 id="paso-retiro" [class]="tituloPaso"><span [class]="numeroPaso">1</span> Retiro</h2>
           @if (cargandoSucursales()) {
             <app-esqueleto variante="texto" [cantidad]="2" etiqueta="Cargando sucursales…" />
           } @else {
-            <fieldset class="opciones">
-              <legend>Sucursal de retiro</legend>
-              <div class="sucursales">
+            <!-- Grupos de radios: fieldset + legend; el radio nativo cubre toda la opción, sin verse.
+                 El indicador visible del radio es el ::before de la etiqueta. -->
+            <fieldset class="min-w-0">
+              <legend class="mb-2 text-(length:--texto-sm) font-semibold text-muted">
+                Sucursal de retiro
+              </legend>
+              <div class="grid gap-2">
                 @for (s of sucursales(); track s.id) {
-                  <label class="sucursal">
-                    <input type="radio" name="sucursal" [value]="s.id" [(ngModel)]="sucursalId" />
-                    <span class="sucursal-nombre">{{ s.nombre }}</span>
-                    <span class="sucursal-direccion">{{ s.direccion }}</span>
+                  <label
+                    class="before:content-['']"
+                    [class]="
+                      opcion +
+                      ' sucursal grid min-h-(--alto-control) grid-cols-[auto_minmax(0,1fr)] items-center gap-x-3 rounded-md px-4 py-3 before:row-span-2 before:size-[20px] before:rounded-pill before:border-2 before:border-muted-2 before:bg-input-bg has-checked:before:border-accent has-checked:before:bg-accent has-checked:before:shadow-[inset_0_0_0_4px_var(--color-input-bg)]'
+                    "
+                  >
+                    <input
+                      [class]="radio"
+                      type="radio"
+                      name="sucursal"
+                      [value]="s.id"
+                      [(ngModel)]="sucursalId"
+                    />
+                    <span class="font-semibold text-text">{{ s.nombre }}</span>
+                    <span class="text-(length:--texto-sm) wrap-anywhere text-muted">{{
+                      s.direccion
+                    }}</span>
                   </label>
                 }
               </div>
@@ -71,13 +108,26 @@
         </section>
 
         <section class="paso" aria-labelledby="paso-pago">
-          <h2 id="paso-pago" class="paso-titulo"><span class="paso-numero">2</span> Pago</h2>
-          <fieldset class="opciones">
-            <legend>Método de pago</legend>
-            <div class="chips">
+          <h2 id="paso-pago" [class]="tituloPaso"><span [class]="numeroPaso">2</span> Pago</h2>
+          <fieldset class="min-w-0">
+            <legend class="mb-2 text-(length:--texto-sm) font-semibold text-muted">
+              Método de pago
+            </legend>
+            <div class="flex flex-wrap gap-2">
               @for (m of metodos; track m) {
-                <label class="chip">
-                  <input type="radio" name="metodo" [value]="m" [(ngModel)]="metodo" />
+                <label
+                  [class]="
+                    opcion +
+                    ' inline-flex min-h-(--alto-control) items-center rounded-(--forma-boton) px-5 text-(length:--texto-sm) text-text has-checked:font-semibold'
+                  "
+                >
+                  <input
+                    [class]="radio"
+                    type="radio"
+                    name="metodo"
+                    [value]="m"
+                    [(ngModel)]="metodo"
+                  />
                   <span>{{ etiquetaMetodo(m) }}</span>
                 </label>
               }
@@ -86,13 +136,23 @@
         </section>
       </div>
 
-      <div class="resumen superficie">
-        <h2 class="resumen-titulo">Tu pedido</h2>
+      <!-- Escritorio: resumen fijo al costado bajo el header sticky. -->
+      <div
+        class="resumen superficie tablet:sticky tablet:top-[calc(var(--alto-header)+var(--esp-6))]"
+      >
+        <h2 class="mb-4 font-display text-(length:--titulo-bloque) font-semibold text-text">
+          Tu pedido
+        </h2>
 
-        <ul class="resumen-lineas" aria-label="Productos del pedido">
+        <ul
+          class="resumen-lineas mb-3 flex flex-col gap-2 text-(length:--texto-sm) text-text"
+          aria-label="Productos del pedido"
+        >
           @for (linea of carrito.lineas(); track linea.producto.productoId) {
-            <li>
-              <span class="resumen-nombre">{{ linea.cantidad }} × {{ linea.producto.nombre }}</span>
+            <li class="flex justify-between gap-3">
+              <span class="min-w-0 wrap-anywhere text-muted"
+                >{{ linea.cantidad }} × {{ linea.producto.nombre }}</span
+              >
               <span class="cifras">{{
                 linea.producto.precio * linea.cantidad | currency: 'COP' : 'symbol-narrow' : '1.0-0'
               }}</span>
@@ -100,9 +160,11 @@
           }
         </ul>
 
-        <p class="total">
+        <p
+          class="total mb-4 flex items-baseline justify-between border-y border-border py-[14px] text-(length:--texto-base) text-muted"
+        >
           <span>Total</span>
-          <strong class="cifras">{{
+          <strong class="cifras text-(length:--titulo-bloque) font-bold text-text">{{
             carrito.total() | currency: 'COP' : 'symbol-narrow' : '1.0-0'
           }}</strong>
         </p>
@@ -113,7 +175,7 @@
 
         <button
           type="button"
-          class="boton grande pagar"
+          class="boton grande"
           [disabled]="procesando() || sucursalId === null"
           (click)="pedirYPagar()"
         >
