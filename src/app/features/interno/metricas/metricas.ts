@@ -39,6 +39,8 @@ export class Metricas {
   protected readonly error = signal<string | null>(null);
   protected readonly metricas = signal<MetricaSucursal[]>([]);
   protected readonly hoverPunto = signal<number | null>(null);
+  /** Punto del gráfico que recibe el foco con Tab (tabindex itinerante: una sola parada). */
+  protected readonly puntoActivo = signal(0);
 
   protected readonly lineaAncho = ANCHO;
   protected readonly lineaAlto = ALTO;
@@ -158,6 +160,37 @@ export class Metricas {
         this.cargando.set(false);
       },
     });
+  }
+
+  /**
+   * Teclado en el gráfico de líneas: flechas izquierda/derecha, Inicio y Fin mueven el punto
+   * activo y lo enfocan; así el gráfico entero es una sola parada de Tab.
+   */
+  protected teclaPunto(evento: KeyboardEvent, indice: number): void {
+    const ultimo = this.serieDiaria().length - 1;
+    let destino: number;
+    switch (evento.key) {
+      case 'ArrowRight':
+        destino = Math.min(indice + 1, ultimo);
+        break;
+      case 'ArrowLeft':
+        destino = Math.max(indice - 1, 0);
+        break;
+      case 'Home':
+        destino = 0;
+        break;
+      case 'End':
+        destino = ultimo;
+        break;
+      default:
+        return;
+    }
+    evento.preventDefault();
+    this.puntoActivo.set(destino);
+    const puntos = (evento.currentTarget as Element).parentElement?.querySelectorAll<SVGElement>(
+      '.linea-punto-hit',
+    );
+    puntos?.[destino]?.focus();
   }
 
   protected formatCompacto(valor: number): string {

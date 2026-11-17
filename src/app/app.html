@@ -1,13 +1,15 @@
 <a class="saltar-contenido" href="/" (click)="saltarAlContenido($event)">Saltar al contenido</a>
 
 <header class="encabezado" #encabezado>
-  <a class="marca" routerLink="/">La aravica</a>
+  <a class="marca" [routerLink]="auth.esPersonal() ? '/interno' : '/'">La aravica</a>
 
   <nav class="navegacion" aria-label="Navegación principal">
-    <a class="nav-link" routerLink="/menu" routerLinkActive="activo" ariaCurrentWhenActive="page">
-      Carta
-    </a>
-    <a class="nav-link" routerLink="/" fragment="horario">Sucursales</a>
+    @if (!auth.esPersonal()) {
+      <a class="nav-link" routerLink="/menu" routerLinkActive="activo" ariaCurrentWhenActive="page">
+        Carta
+      </a>
+      <a class="nav-link" routerLink="/" fragment="horario">Sucursales</a>
+    }
     @if (auth.esCliente()) {
       <a
         class="nav-link"
@@ -92,15 +94,17 @@
       @if (menuAbierto()) {
         <div class="menu-movil" id="menu-movil">
           <nav class="menu-movil-nav" aria-label="Navegación móvil">
-            <a
-              class="menu-movil-enlace"
-              routerLink="/menu"
-              routerLinkActive="activo"
-              ariaCurrentWhenActive="page"
-            >
-              Carta
-            </a>
-            <a class="menu-movil-enlace" routerLink="/" fragment="horario">Sucursales</a>
+            @if (!auth.esPersonal()) {
+              <a
+                class="menu-movil-enlace"
+                routerLink="/menu"
+                routerLinkActive="activo"
+                ariaCurrentWhenActive="page"
+              >
+                Carta
+              </a>
+              <a class="menu-movil-enlace" routerLink="/" fragment="horario">Sucursales</a>
+            }
             @if (auth.esCliente()) {
               <a
                 class="menu-movil-enlace"

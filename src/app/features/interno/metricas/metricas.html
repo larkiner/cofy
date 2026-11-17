@@ -66,9 +66,11 @@
                 </text>
               }
               <circle class="linea-punto-hit" [attr.cx]="p.x" [attr.cy]="p.y" r="12"
-                      tabindex="0" [attr.aria-label]="(p.fecha | date:'dd/MM/yyyy') + ': ' + (p.total | currency:'COP':'symbol-narrow':'1.0-0')"
+                      role="img" [attr.tabindex]="i === puntoActivo() ? 0 : -1"
+                      [attr.aria-label]="(p.fecha | date:'dd/MM/yyyy') + ': ' + (p.total | currency:'COP':'symbol-narrow':'1.0-0')"
                       (pointerenter)="hoverPunto.set(i)" (pointerleave)="hoverPunto.set(null)"
-                      (focus)="hoverPunto.set(i)" (blur)="hoverPunto.set(null)" />
+                      (focus)="hoverPunto.set(i); puntoActivo.set(i)" (blur)="hoverPunto.set(null)"
+                      (keydown)="teclaPunto($event, i)" />
               <circle class="linea-punto" [class.activo]="hoverPunto() === i" [attr.cx]="p.x" [attr.cy]="p.y" r="4" />
             }
           </svg>
@@ -90,7 +92,7 @@
       <div class="barras">
         @for (s of porSucursal(); track s.sucursalId) {
           <div class="barra-fila" [title]="s.nombre + ': ' + s.pedidos + ' pedidos'">
-            <span class="barra-nombre">{{ s.nombre }}</span>
+            <span class="barra-nombre">{{ s.nombre }}<span class="solo-lectores">, {{ s.pedidos }} pedidos</span></span>
             <div class="barra-pista">
               <div class="barra-fill" [style.width.%]="(s.total / maxBarra()) * 100"></div>
             </div>

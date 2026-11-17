@@ -34,7 +34,16 @@
   font-size: 14px;
 }
 
-.columna-cabecera .estado-pill {
+.columna-cabecera .contador {
+  min-width: 28px;
+  padding: 2px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background: var(--color-card);
+  font-size: var(--texto-sm);
+  font-weight: 700;
+  text-align: center;
+  color: var(--color-muted);
   font-variant-numeric: tabular-nums;
 }
 
@@ -49,15 +58,20 @@
   color: var(--color-muted);
 }
 
-/* ---------- Tarjeta de pedido ---------- */
+/* ---------- Tarjeta de pedido ----------
+   Lo primero que se lee es qué preparar (los ítems); cliente, código y total quedan debajo. */
 .pedido {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
   padding: 14px;
   border: 1px solid var(--color-border);
   border-radius: 12px;
   background: var(--color-card);
+}
+
+.pedido.demorado {
+  border-color: var(--color-danger);
 }
 
 .pedido .boton {
@@ -72,22 +86,40 @@
 }
 
 .numero {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
 
-.hora {
+.espera {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: 12px;
+  font-size: var(--texto-sm);
   color: var(--color-muted);
   font-variant-numeric: tabular-nums;
 }
 
+.espera.alerta {
+  font-weight: 700;
+  color: var(--color-danger);
+}
+
+.datos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 2px 8px;
+}
+
+.datos.secundario {
+  font-size: var(--texto-xs);
+  color: var(--color-muted);
+}
+
 .cliente {
-  font-size: 14px;
+  font-size: var(--texto-sm);
   color: var(--color-text);
 }
 
@@ -96,19 +128,24 @@
 }
 
 .codigo {
-  font-size: 13px;
+  font-size: var(--texto-xs);
   font-weight: 600;
   letter-spacing: 0.04em;
   color: var(--color-muted);
   font-variant-numeric: tabular-nums;
 }
 
+.sede {
+  font-weight: 600;
+}
+
 .total {
   margin-left: auto;
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--color-accent);
   font-variant-numeric: tabular-nums;
+}
+
+.error-accion {
+  margin: 0;
 }
 
 /* ---------- Otros pedidos ---------- */

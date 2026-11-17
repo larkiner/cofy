@@ -1,0 +1,19 @@
+@if (items()?.length) {
+  @if (enLinea()) {
+    <!-- Contenido de frase: se puede usar dentro de un <button>. -->
+    <span class="items-linea">
+      @for (item of items(); track $index; let ultimo = $last) {
+        <span class="cantidad">{{ item.cantidad }}×</span>&ngsp;{{ item.producto }}{{ ultimo ? '' : ' · ' }}
+      }
+    </span>
+  } @else {
+    <ul class="items" [class.grande]="grande()" aria-label="Productos del pedido">
+      @for (item of items(); track $index) {
+        <li>
+          <span class="cantidad">{{ item.cantidad }}×</span>&ngsp;
+          <span class="producto">{{ item.producto }}</span>
+        </li>
+      }
+    </ul>
+  }
+}

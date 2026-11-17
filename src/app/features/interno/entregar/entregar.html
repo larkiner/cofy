@@ -1,33 +1,118 @@
 <header class="encabezado">
   <div>
     <h1>Entregar pedido</h1>
-    <p class="bajada">Pide al cliente su código de retiro y verifícalo antes de entregar el pedido.</p>
+    <p class="bajada">Elige un pedido listo o busca el código de retiro del cliente, y confirma la entrega.</p>
   </div>
 </header>
 
 <div class="columna-unica">
-  <form class="superficie formulario" (ngSubmit)="entregar()">
-    <label class="campo codigo-campo">
-      Código de retiro
-      <input type="text" name="codigo" [(ngModel)]="codigo" placeholder="RET-XXXXXXXX"
-             autocomplete="off" autocapitalize="characters" spellcheck="false" required />
-    </label>
-    <button type="submit" class="boton grande" [disabled]="procesando()">
-      <app-icono nombre="entregar" [tamano]="18" />
-      {{ procesando() ? 'Verificando…' : 'Entregar pedido' }}
-    </button>
-    @if (error()) {
-      <p class="mensaje-error" role="alert">{{ error() }}</p>
+  <!-- Región persistente: el lector de pantalla anuncia aquí cada entrega. -->
+  <div class="aviso-entrega" role="status" aria-live="polite">
+    @if (exito()) {
+      <p class="mensaje-ok exito">
+        <app-icono nombre="check-circle" [tamano]="24" />
+        {{ exito() }}
+      </p>
     }
-  </form>
+  </div>
 
-  @if (entregado(); as pedido) {
-    <div class="mensaje-ok exito" role="status">
-      <app-icono nombre="check-circle" [tamano]="28" />
-      <div>
-        <p class="exito-titulo">Pedido #{{ pedido.id }} entregado</p>
-        <p class="exito-total">Total {{ pedido.total | currency:'COP':'symbol-narrow':'1.0-0' }}</p>
+  @if (seleccionado(); as pedido) {
+    <section class="superficie confirmacion" aria-labelledby="titulo-confirmacion">
+      <header class="confirmacion-cabecera">
+        <h2 id="titulo-confirmacion" tabindex="-1" #tituloConfirmacion>Confirmar entrega · Pedido #{{ pedido.pedidoId }}</h2>
+        <span class="estado-pill" [class]="'estado-pill ' + pedido.estado">{{ etiquetaEstado(pedido.estado) }}</span>
+      </header>
+
+      @if (noEstaListo()) {
+        <p class="mensaje-error aviso-no-listo">Este pedido todavía no está marcado como listo.</p>
+      }
+
+      <app-items-pedido [items]="pedido.items" [grande]="true" />
+
+      <dl class="datos-pedido">
+        <div>
+          <dt>Cliente</dt>
+          <dd>
+            {{ pedido.clienteNombre ?? 'Venta de mostrador' }}
+            @if (pedido.clienteTelefono) {
+              <span class="telefono">· {{ pedido.clienteTelefono }}</span>
+            }
+          </dd>
+        </div>
+        <div>
+          <dt>Código</dt>
+          <dd class="tabular">{{ pedido.codigoRetiro }}</dd>
+        </div>
+        <div>
+          <dt>Total</dt>
+          <dd class="tabular">{{ pedido.total | currency:'COP':'symbol-narrow':'1.0-0' }}</dd>
+        </div>
+      </dl>
+
+      @if (error()) {
+        <p class="mensaje-error" role="alert">{{ error() }}</p>
+      }
+
+      <div class="acciones-confirmacion">
+        <button type="button" class="boton secundario" [disabled]="procesando()" (click)="cancelar()">
+          Cancelar
+        </button>
+        <button type="button" class="boton grande" [disabled]="procesando()" (click)="confirmar()">
+          <app-icono nombre="entregar" [tamano]="18" />
+          {{ procesando() ? 'Entregando…' : 'Confirmar entrega' }}
+        </button>
       </div>
-    </div>
+    </section>
+  } @else {
+    <form class="superficie formulario" (ngSubmit)="buscar()">
+      <label class="campo codigo-campo">
+        Código de retiro
+        <input #campoCodigo type="text" name="codigo" [(ngModel)]="codigo" placeholder="RET-XXXXXXXX"
+               autocomplete="off" autocapitalize="characters" spellcheck="false" required />
+      </label>
+      <button type="submit" class="boton grande" [disabled]="buscando()">
+        <app-icono nombre="search" [tamano]="18" />
+        {{ buscando() ? 'Buscando…' : 'Buscar' }}
+      </button>
+      @if (error()) {
+        <p class="mensaje-error" role="alert">{{ error() }}</p>
+      }
+    </form>
   }
+
+  <section class="listos" aria-labelledby="titulo-listos">
+    <h2 id="titulo-listos">Listos para entregar ({{ listos().length }})</h2>
+
+    @if (cargando()) {
+      <p class="estado-msj">Cargando pedidos…</p>
+    } @else if (errorCarga()) {
+      <p class="mensaje-error" role="alert">{{ errorCarga() }}</p>
+    } @else if (listos().length === 0) {
+      <p class="estado-msj">No hay pedidos listos por ahora.</p>
+    } @else {
+      <ul class="lista-listos">
+        @for (pedido of listos(); track pedido.pedidoId) {
+          <li>
+            <button type="button" class="tarjeta-listo"
+                    [class.elegida]="seleccionado()?.pedidoId === pedido.pedidoId"
+                    [attr.aria-pressed]="seleccionado()?.pedidoId === pedido.pedidoId"
+                    (click)="elegir(pedido)">
+              <span class="fila-listo">
+                <strong class="numero">#{{ pedido.pedidoId }}</strong>
+                <span class="espera">
+                  <app-icono nombre="reloj" [tamano]="16" />
+                  {{ espera(pedido) }}
+                </span>
+              </span>
+              <app-items-pedido [items]="pedido.items" [enLinea]="true" />
+              <span class="fila-listo secundario">
+                <span>{{ pedido.clienteNombre ?? 'Venta de mostrador' }}</span>
+                <span class="tabular">{{ pedido.codigoRetiro }}</span>
+              </span>
+            </button>
+          </li>
+        }
+      </ul>
+    }
+  </section>
 </div>

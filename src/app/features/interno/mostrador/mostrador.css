@@ -156,6 +156,14 @@
   transition: background-color 160ms var(--ease-out);
 }
 
+/* Con puntero táctil el control sube al mínimo cómodo para el dedo (44 px). */
+@media (pointer: coarse) {
+  .stepper button {
+    width: 44px;
+    height: 44px;
+  }
+}
+
 .stepper button:hover {
   background: var(--color-overlay-hover);
 }

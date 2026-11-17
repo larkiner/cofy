@@ -9,9 +9,20 @@
     </p>
   </div>
   <div class="acciones">
+    @if (veVariasSedes() && sedes().length > 0) {
+      <label class="campo">
+        Sede
+        <select name="filtroSede" [(ngModel)]="filtroSede" (ngModelChange)="cambiarFiltro()">
+          <option value="">Todas</option>
+          @for (s of sedes(); track s.id) {
+            <option [value]="s.id">{{ s.nombre }}</option>
+          }
+        </select>
+      </label>
+    }
     <label class="campo">
       Estado
-      <select name="filtroEstado" [(ngModel)]="filtroEstado" (ngModelChange)="cargar()">
+      <select name="filtroEstado" [(ngModel)]="filtroEstado" (ngModelChange)="cambiarFiltro()">
         <option value="">Todos</option>
         @for (e of estados; track e) {
           <option [value]="e">{{ etiquetaEstado(e) }}</option>
@@ -25,43 +36,76 @@
   </div>
 </header>
 
+<!-- Región persistente: el lector de pantalla anuncia aquí cada avance de pedido. -->
+<div class="solo-lectores" role="status" aria-live="polite">{{ anuncio() }}</div>
+
 @if (cargando()) {
   <app-esqueleto variante="fila" [cantidad]="4" etiqueta="Cargando pedidos…" />
-} @else if (error()) {
-  <p class="mensaje-error">{{ error() }}</p>
+} @else if (errorCarga() && pedidos().length === 0) {
+  <p class="mensaje-error" role="alert">{{ errorCarga() }}</p>
 } @else if (pedidos().length === 0) {
   <p class="estado-msj">No hay pedidos con ese filtro.</p>
 } @else {
+  @if (errorCarga()) {
+    <p class="mensaje-error" role="alert">
+      {{ errorCarga() }} Se muestran los últimos datos recibidos.
+    </p>
+  }
+
   <div class="tablero">
     @for (columna of columnas(); track columna.estado) {
       <section class="columna">
         <header class="columna-cabecera">
           <h2>{{ columna.titulo }}</h2>
-          <span class="estado-pill ENTREGADO">{{ columna.pedidos.length }}</span>
+          <span class="contador" [attr.aria-label]="columna.pedidos.length + ' pedidos'">{{ columna.pedidos.length }}</span>
         </header>
 
         @for (pedido of columna.pedidos; track pedido.pedidoId) {
-          <article class="pedido">
+          <article class="pedido" [class.demorado]="demorado(pedido)">
             <div class="fila">
               <strong class="numero">#{{ pedido.pedidoId }}</strong>
-              <span class="hora">
-                <app-icono nombre="reloj" [tamano]="14" />
-                {{ pedido.fechaPedido | date:'h:mm a' }}
+              <span class="espera" [class.alerta]="demorado(pedido)">
+                <app-icono nombre="reloj" [tamano]="16" />
+                {{ espera(pedido) }}
+                @if (demorado(pedido)) {
+                  <span class="solo-lectores">(demorado)</span>
+                }
               </span>
             </div>
-            @if (pedido.clienteNombre) {
-              <span class="cliente">{{ pedido.clienteNombre }}</span>
-            } @else {
-              <span class="cliente mostrador">Venta de mostrador</span>
-            }
-            <div class="fila">
+
+            <app-items-pedido [items]="pedido.items" [grande]="true" />
+
+            <div class="datos">
+              @if (pedido.clienteNombre) {
+                <span class="cliente">{{ pedido.clienteNombre }}</span>
+              } @else {
+                <span class="cliente mostrador">Venta de mostrador</span>
+              }
               @if (pedido.codigoRetiro) {
                 <span class="codigo">{{ pedido.codigoRetiro }}</span>
               }
+            </div>
+
+            <div class="datos secundario">
+              <span class="tabular">{{ pedido.fechaPedido | date:'h:mm a' }}</span>
+              @if (mostrarSedeEnTarjeta() && nombreSede(pedido); as sede) {
+                <span class="sede">{{ sede }}</span>
+              }
               <span class="total">{{ pedido.total | currency:'COP':'symbol-narrow':'1.0-0' }}</span>
             </div>
+
             @if (accionDe(pedido); as accion) {
-              <button type="button" class="boton" (click)="avanzar(pedido)">{{ accion.etiqueta }}</button>
+              <button
+                type="button"
+                class="boton"
+                [disabled]="estaOcupado(pedido)"
+                (click)="avanzar(pedido)"
+              >
+                {{ estaOcupado(pedido) ? 'Guardando…' : accion.etiqueta }}
+              </button>
+            }
+            @if (erroresAccion()[pedido.pedidoId]; as errorAccion) {
+              <p class="mensaje-error error-accion" role="alert">{{ errorAccion }}</p>
             }
           </article>
         } @empty {

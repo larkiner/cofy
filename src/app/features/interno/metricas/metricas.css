@@ -110,7 +110,8 @@
 
 .linea-punto-hit:focus-visible {
   outline: none;
-  box-shadow: none; /* el foco se ve en el punto activo y el tooltip */
+  stroke: var(--color-accent); /* anillo visible alrededor del punto, además del tooltip */
+  stroke-width: 2;
 }
 
 .linea-tooltip {

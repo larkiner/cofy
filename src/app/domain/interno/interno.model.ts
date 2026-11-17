@@ -2,6 +2,12 @@ import { ItemPedidoRequest } from '../pedidos/pedido.model';
 
 // ---------- Panel interno (personal) ----------
 
+/** Línea de un pedido tal como la ve la barra: qué preparar y cuántos. */
+export interface ItemTablero {
+  producto: string;
+  cantidad: number;
+}
+
 export interface PedidoEmpleado {
   pedidoId: number;
   codigoRetiro: string | null;
@@ -14,6 +20,8 @@ export interface PedidoEmpleado {
   clienteId: number | null;
   clienteNombre: string | null;
   clienteTelefono: string | null;
+  /** Solo en pedidos activos y en la API nueva; con la API anterior no viene. */
+  items?: ItemTablero[];
 }
 
 export interface PedidoInterno {

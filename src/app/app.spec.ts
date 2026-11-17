@@ -131,6 +131,45 @@ describe('App', () => {
     });
   });
 
+  describe('header del personal', () => {
+    afterEach(() => localStorage.clear());
+
+    async function crearComoBarista() {
+      const payload = btoa(JSON.stringify({ exp: Math.floor(Date.now() / 1000) + 3600 }));
+      localStorage.setItem('cafeteria_token', `cabecera.${payload}.firma`);
+      localStorage.setItem('cafeteria_email', 'barista@correo.com');
+      localStorage.setItem('cafeteria_rol', 'BARISTA');
+      const fixture = TestBed.createComponent(App);
+      await fixture.whenStable();
+      fixture.detectChanges();
+      return fixture;
+    }
+
+    it('oculta "Carta" y "Sucursales" en la navegación y la marca lleva a /interno', async () => {
+      const fixture = await crearComoBarista();
+      const el = fixture.nativeElement as HTMLElement;
+
+      const textoNav = el.querySelector('.navegacion')?.textContent ?? '';
+      expect(textoNav).not.toContain('Carta');
+      expect(textoNav).not.toContain('Sucursales');
+      expect(textoNav).toContain('Panel interno');
+      expect(el.querySelector('.marca')?.getAttribute('href')).toBe('/interno');
+    });
+
+    it('oculta "Carta" y "Sucursales" también en el menú móvil', async () => {
+      const fixture = await crearComoBarista();
+      const el = fixture.nativeElement as HTMLElement;
+
+      el.querySelector<HTMLButtonElement>('.boton-menu')!.click();
+      fixture.detectChanges();
+
+      const texto = el.querySelector('#menu-movil .menu-movil-nav')?.textContent ?? '';
+      expect(texto).not.toContain('Carta');
+      expect(texto).not.toContain('Sucursales');
+      expect(texto).toContain('Panel interno');
+    });
+  });
+
   describe('menú desplegable (móvil)', () => {
     async function crear() {
       const fixture = TestBed.createComponent(App);
