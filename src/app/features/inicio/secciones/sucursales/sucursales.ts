@@ -17,7 +17,7 @@ interface FilaHorario {
   selector: 'app-inicio-sucursales',
   imports: [Esqueleto, Icono],
   templateUrl: './sucursales.html',
-  styleUrl: './sucursales.css',
+  host: { class: 'block' },
 })
 export class InicioSucursales {
   readonly sucursales = input.required<Sucursal[] | null>();

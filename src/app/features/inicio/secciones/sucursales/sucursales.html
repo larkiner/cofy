@@ -1,20 +1,37 @@
-<section id="horario" class="sucursales">
-  <h2>Sucursales</h2>
+<section
+  id="horario"
+  class="sucursales mx-auto max-w-(--ancho-marca) px-(--margen-pagina) py-(--esp-seccion)"
+>
+  <h2
+    class="mb-8 font-display text-(length:--titulo-seccion) leading-[1.15] font-semibold text-text"
+  >
+    Sucursales
+  </h2>
 
   @if (sucursales(); as lista) {
     @if (lista.length) {
-      <div class="sucursales-grid">
+      <div class="grid grid-cols-[repeat(auto-fit,minmax(min(100%,240px),1fr))] gap-8">
         @for (s of lista; track s.id) {
-          <article class="sucursal">
-            <h3>{{ s.nombre }}</h3>
-            <p class="sucursal-direccion">{{ s.direccion }}</p>
+          <article class="sucursal flex flex-col gap-1 border-l border-border pl-4">
+            <h3
+              class="font-display text-(length:--titulo-bloque) leading-[1.2] font-semibold text-text"
+            >
+              {{ s.nombre }}
+            </h3>
+            <p class="sucursal-direccion text-(length:--texto-sm) leading-[1.5] text-muted">
+              {{ s.direccion }}
+            </p>
+            <!-- Teléfono y "Cómo llegar": objetivos táctiles de 44 px. -->
             @if (s.telefono) {
-              <a class="sucursal-telefono cifras" [href]="telefonoHref(s.telefono)">
+              <a
+                class="sucursal-telefono cifras inline-flex min-h-(--alto-control) items-center gap-[6px] self-start rounded-sm text-(length:--texto-sm) font-semibold text-text no-underline hover:underline hover:underline-offset-[3px]"
+                [href]="telefonoHref(s.telefono)"
+              >
                 {{ formatearTelefono(s.telefono) }}
               </a>
             }
             <a
-              class="sucursal-mapa"
+              class="sucursal-mapa inline-flex min-h-(--alto-control) items-center gap-[6px] self-start rounded-sm text-(length:--texto-sm) font-semibold text-text no-underline hover:underline hover:underline-offset-[3px]"
               [href]="enlaceMapa(s)"
               target="_blank"
               rel="noopener"
@@ -27,16 +44,22 @@
         }
       </div>
     } @else {
-      <p class="sucursales-vacio">Nuestras sucursales están en Medellín.</p>
+      <p class="text-(length:--texto-sm) text-muted">Nuestras sucursales están en Medellín.</p>
     }
   } @else {
     <app-esqueleto variante="sucursal" etiqueta="Cargando sucursales…" />
   }
 
-  <div class="horario-tabla">
+  <!-- Desde 900 px el horario pasa a una fila a todo el ancho bajo las sucursales, con el día
+       arriba y las horas debajo. -->
+  <div
+    class="mt-8 flex max-w-[420px] flex-col gap-[10px] border-t border-border pt-4 text-(length:--texto-sm) leading-[1.6] text-muted tablet:max-w-none tablet:flex-row tablet:gap-10"
+  >
     <h3 class="visualmente-oculto">Horario de atención</h3>
     @for (fila of horario; track fila.dia) {
-      <div class="horario-fila">
+      <div
+        class="horario-fila flex justify-between gap-3 tablet:flex-col tablet:justify-start tablet:gap-1"
+      >
         <span>{{ fila.dia }}</span>
         <span class="cifras">{{ fila.horas }}</span>
       </div>

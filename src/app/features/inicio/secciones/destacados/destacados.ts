@@ -16,7 +16,7 @@ export type EstadoDestacados = 'cargando' | 'error' | 'listo';
   selector: 'app-inicio-destacados',
   imports: [CurrencyPipe, Esqueleto, Icono, RouterLink],
   templateUrl: './destacados.html',
-  styleUrl: './destacados.css',
+  host: { class: 'block' },
 })
 export class InicioDestacados {
   readonly estado = input.required<EstadoDestacados>();

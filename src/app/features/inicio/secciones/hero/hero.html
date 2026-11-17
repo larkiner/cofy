@@ -1,7 +1,19 @@
-<section class="hero">
-  <div class="contenido">
-    <h1>El ritual de la calma, en cada taza</h1>
-    <p class="oferta">Pide desde el celular y retira con tu código en la sucursal que elijas.</p>
-    <a routerLink="/menu" class="boton claro">Ver la carta</a>
+<!-- Foto con un velo plano y texto claro (el velo es el ::before). Un solo botón.
+     Móvil: el hero deja asomar el título de las recomendaciones en la primera pantalla. -->
+<section
+  class="hero relative flex h-[clamp(380px,62svh,520px)] items-center overflow-hidden bg-dark bg-[url('/img/hero/inicio.jpg')] bg-cover bg-center bg-no-repeat text-[#fff] before:absolute before:inset-0 before:bg-[color-mix(in_oklch,var(--color-dark)_72%,transparent)] before:content-[''] min-[701px]:h-auto min-[701px]:min-h-[clamp(440px,66svh,620px)] min-[701px]:before:bg-transparent min-[701px]:before:bg-[linear-gradient(90deg,color-mix(in_oklch,var(--color-dark)_86%,transparent)_0%,color-mix(in_oklch,var(--color-dark)_60%,transparent)_55%,color-mix(in_oklch,var(--color-dark)_25%,transparent)_100%)]"
+>
+  <div
+    class="contenido relative mx-auto w-full max-w-(--ancho-marca) px-(--margen-pagina) py-8 motion-safe:animate-hero-entra min-[701px]:py-12"
+  >
+    <h1
+      class="max-w-[16ch] font-display text-(length:--titulo-display) leading-[1.02] font-medium tracking-[-0.01em] text-balance"
+    >
+      El ritual de la calma, en cada taza
+    </h1>
+    <p class="mt-4 mb-8 max-w-[44ch] text-(length:--texto-md) leading-[1.55]">
+      Pide desde el celular y retira con tu código en la sucursal que elijas.
+    </p>
+    <a routerLink="/menu" class="boton claro h-[48px] px-8">Ver la carta</a>
   </div>
 </section>

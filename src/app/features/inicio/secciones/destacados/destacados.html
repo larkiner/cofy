@@ -1,9 +1,21 @@
 @if (estado() !== 'listo' || items().length) {
-  <section id="destacados" class="destacados" aria-labelledby="destacados-titulo">
-    <div class="cabecera">
-      <h2 id="destacados-titulo">Recomendaciones de temporada</h2>
+  <section
+    id="destacados"
+    class="destacados mx-auto max-w-(--ancho-marca) px-(--margen-pagina) pt-(--esp-seccion)"
+    aria-labelledby="destacados-titulo"
+  >
+    <div class="mb-6 flex flex-wrap items-end justify-between gap-x-4 gap-y-2">
+      <h2
+        id="destacados-titulo"
+        class="font-display text-(length:--titulo-seccion) leading-[1.1] font-semibold text-text"
+      >
+        Recomendaciones de temporada
+      </h2>
       @if (estado() === 'listo') {
-        <a routerLink="/menu" class="ver-carta">
+        <a
+          routerLink="/menu"
+          class="ver-carta inline-flex min-h-(--alto-control) items-center gap-1 text-(length:--texto-sm) font-semibold whitespace-nowrap no-underline hover:underline hover:underline-offset-[3px]"
+        >
           Ver la carta <app-icono nombre="chevron-right" [tamano]="16" />
         </a>
       }
@@ -11,34 +23,52 @@
 
     @switch (estado()) {
       @case ('cargando') {
-        <app-esqueleto variante="destacado" etiqueta="Cargando recomendaciones…" />
+        <app-esqueleto
+          class="max-medio:-mx-(--margen-pagina) max-medio:overflow-hidden max-medio:px-(--margen-pagina)"
+          variante="destacado"
+          etiqueta="Cargando recomendaciones…"
+        />
       }
       @case ('error') {
-        <div class="error">
+        <div class="error flex flex-col items-start gap-2">
           <p class="mensaje-error" role="alert">No pudimos cargar las recomendaciones.</p>
           <a routerLink="/menu" class="boton secundario">Ver la carta</a>
         </div>
       }
       @default {
-        <div class="lista">
+        <!-- Tres columnas; hasta 820 px, fila deslizable que sangra hasta el borde de la pantalla y
+             deja asomar la tarjeta siguiente. -->
+        <div
+          class="lista grid grid-cols-[repeat(3,minmax(0,1fr))] gap-5 max-medio:-mx-(--margen-pagina) max-medio:snap-x max-medio:snap-mandatory max-medio:scroll-px-(--margen-pagina) max-medio:[scrollbar-width:thin] max-medio:auto-cols-[min(80%,340px)] max-medio:grid-flow-col max-medio:grid-cols-none max-medio:overflow-x-auto max-medio:overscroll-x-contain max-medio:px-(--margen-pagina) max-medio:pb-2"
+        >
           @for (item of items(); track item.productoId) {
-            <article class="destacado">
-              <div class="destacado-media">
+            <article
+              class="destacado relative flex h-[300px] flex-col justify-end overflow-hidden rounded-lg text-[#fff] shadow-card after:pointer-events-none after:absolute after:inset-0 after:bg-[linear-gradient(180deg,transparent_25%,rgb(0_0_0/0.82))] after:content-[''] max-medio:h-[240px] max-medio:snap-start"
+            >
+              <!-- El icono de taza lo pone styles.css (.destacado-media): aquí, sin foto, el fondo es
+                   espresso y el icono latte para que el texto blanco se lea igual que sobre una foto. -->
+              <div
+                class="destacado-media absolute inset-0 [&::before]:bg-[color-mix(in_oklch,var(--color-accent-light)_55%,transparent)] [&:not(:has(img))]:[background:var(--color-dark)]"
+              >
                 @if (item.imagenUrl) {
-                  <img [src]="item.imagenUrl" alt="" />
+                  <img class="size-full object-cover" [src]="item.imagenUrl" alt="" />
                 }
               </div>
-              <div class="info">
-                <div class="texto">
-                  <h3>{{ item.nombre }}</h3>
-                  <p class="precio cifras">
+              <div
+                class="info relative z-1 flex items-end justify-between gap-3 p-4 max-[360px]:flex-wrap max-[360px]:items-start"
+              >
+                <div class="min-w-0">
+                  <h3 class="line-clamp-2 text-(length:--texto-base) leading-[1.25] font-semibold">
+                    {{ item.nombre }}
+                  </h3>
+                  <p class="precio cifras mt-1 text-(length:--texto-sm)">
                     {{ item.precio | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}
                   </p>
                 </div>
                 @if (puedeAgregar()) {
                   <button
                     type="button"
-                    class="boton claro"
+                    class="boton claro shrink-0 px-4"
                     [attr.aria-label]="'Agregar ' + item.nombre + ' al carrito'"
                     (click)="agregar.emit(item)"
                   >

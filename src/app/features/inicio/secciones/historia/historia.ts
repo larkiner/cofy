@@ -4,6 +4,6 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'app-inicio-historia',
   templateUrl: './historia.html',
-  styleUrl: './historia.css',
+  host: { class: 'block' },
 })
 export class InicioHistoria {}

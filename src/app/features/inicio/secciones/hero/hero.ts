@@ -9,6 +9,6 @@ import { RouterLink } from '@angular/router';
   selector: 'app-inicio-hero',
   imports: [RouterLink],
   templateUrl: './hero.html',
-  styleUrl: './hero.css',
+  host: { class: 'block' },
 })
 export class InicioHero {}

@@ -9,6 +9,6 @@ import { RouterLink } from '@angular/router';
   selector: 'app-inicio-comunidad',
   imports: [RouterLink],
   templateUrl: './comunidad.html',
-  styleUrl: './comunidad.css',
+  host: { class: 'mt-(--esp-seccion) block' },
 })
 export class InicioComunidad {}
