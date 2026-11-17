@@ -32,7 +32,6 @@ const PEDIDOS_RECIENTES = 3;
   selector: 'app-perfil',
   imports: [DatePipe, EstadoVacio, Esqueleto, FormsModule, Icono, RouterLink, TarjetaPedido],
   templateUrl: './perfil.html',
-  styleUrl: './perfil.css',
 })
 export class Perfil {
   private readonly clienteService = inject(ClienteService);

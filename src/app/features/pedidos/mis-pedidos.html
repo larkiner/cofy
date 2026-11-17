@@ -1,4 +1,6 @@
-<section class="pedidos">
+@let h2 = 'mb-3 font-display text-(length:--titulo-bloque) font-semibold text-text';
+
+<section class="pedidos mx-auto max-w-(--ancho-lista) px-(--margen-pagina) pt-6 pb-[80px]">
   <header class="cabecera-pagina">
     <div>
       <h1>Mis pedidos</h1>
@@ -25,17 +27,17 @@
     <app-esqueleto variante="fila" etiqueta="Cargando pedidos…" />
   } @else {
     @if (error()) {
-      <div class="error-caja">
-        <p class="mensaje-error" role="alert">{{ error() }}</p>
+      <div class="mb-6 flex flex-wrap items-center gap-3">
+        <p class="mensaje-error m-0 flex-[1_1_18rem]" role="alert">{{ error() }}</p>
         <button type="button" class="boton secundario" (click)="cargar()">Reintentar</button>
       </div>
     }
 
     @if (pedidos().length > 0) {
       @if (enCurso().length > 0) {
-        <section class="grupo" aria-labelledby="grupo-en-curso">
-          <h2 id="grupo-en-curso">En curso</h2>
-          <ul class="tarjetas">
+        <section class="grupo [.grupo+&]:mt-8" aria-labelledby="grupo-en-curso">
+          <h2 id="grupo-en-curso" [class]="h2">En curso</h2>
+          <ul class="flex flex-col gap-4">
             @for (pedido of enCurso(); track pedido.pedidoId) {
               <li><app-tarjeta-pedido [pedido]="pedido" modo="en-curso" /></li>
             }
@@ -44,22 +46,26 @@
       }
 
       @if (pendientes().length > 0) {
-        <section class="grupo" aria-labelledby="grupo-pendientes">
-          <h2 id="grupo-pendientes">Pendientes de pago</h2>
-          <ul class="filas">
+        <section class="grupo [.grupo+&]:mt-8" aria-labelledby="grupo-pendientes">
+          <h2 id="grupo-pendientes" [class]="h2">Pendientes de pago</h2>
+          <ul>
             @for (pedido of pendientes(); track pedido.pedidoId) {
-              <li><app-tarjeta-pedido [pedido]="pedido" modo="historial" /></li>
+              <li class="border-b border-border first:border-t">
+                <app-tarjeta-pedido [pedido]="pedido" modo="historial" />
+              </li>
             }
           </ul>
         </section>
       }
 
       @if (anteriores().length > 0) {
-        <section class="grupo" aria-labelledby="grupo-anteriores">
-          <h2 id="grupo-anteriores">Anteriores</h2>
-          <ul class="filas">
+        <section class="grupo [.grupo+&]:mt-8" aria-labelledby="grupo-anteriores">
+          <h2 id="grupo-anteriores" [class]="h2">Anteriores</h2>
+          <ul>
             @for (pedido of anteriores(); track pedido.pedidoId) {
-              <li><app-tarjeta-pedido [pedido]="pedido" modo="historial" /></li>
+              <li class="border-b border-border first:border-t">
+                <app-tarjeta-pedido [pedido]="pedido" modo="historial" />
+              </li>
             }
           </ul>
         </section>

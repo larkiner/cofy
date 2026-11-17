@@ -1,9 +1,17 @@
-<section class="perfil">
+@let h2 = 'font-display text-(length:--titulo-bloque) leading-[1.2] font-semibold text-text';
+@let dato = 'flex justify-between gap-4 border-t border-border py-3';
+@let dt = 'text-(length:--texto-sm) text-muted';
+@let dd = 'text-right text-(length:--texto-sm) font-semibold wrap-anywhere text-text';
+
+<section class="perfil mx-auto max-w-(--ancho-tarea) px-(--margen-pagina) pt-6 pb-[80px]">
   <header class="cabecera-pagina">
     <h1>Mi cuenta</h1>
   </header>
 
-  <div class="columnas">
+  <!-- minmax(0, …): sin esto la columna única no se encoge y el contenido desborda. -->
+  <div
+    class="grid grid-cols-[minmax(0,1fr)] items-start gap-8 tablet:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] tablet:gap-12"
+  >
     <!-- ============ Datos del cliente ============ -->
     <section class="columna" aria-labelledby="titulo-datos">
       @if (cargandoPerfil()) {
@@ -22,8 +30,8 @@
           </div>
 
           @if (!editando()) {
-            <div class="cabeza">
-              <h2 id="titulo-datos">Datos personales</h2>
+            <div class="mb-4 flex items-center justify-between gap-3">
+              <h2 id="titulo-datos" [class]="h2">Datos personales</h2>
               <button
                 type="button"
                 class="boton secundario"
@@ -34,27 +42,27 @@
               </button>
             </div>
 
-            <dl class="datos">
-              <div class="dato">
-                <dt>Nombre</dt>
-                <dd>{{ p.nombre }}</dd>
+            <dl class="flex flex-col">
+              <div [class]="dato">
+                <dt [class]="dt">Nombre</dt>
+                <dd [class]="dd">{{ p.nombre }}</dd>
               </div>
-              <div class="dato">
-                <dt>Correo electrónico</dt>
-                <dd>{{ p.email }}</dd>
+              <div [class]="dato">
+                <dt [class]="dt">Correo electrónico</dt>
+                <dd [class]="dd">{{ p.email }}</dd>
               </div>
-              <div class="dato">
-                <dt>Teléfono</dt>
-                <dd class="cifras">{{ p.telefono || '—' }}</dd>
+              <div [class]="dato">
+                <dt [class]="dt">Teléfono</dt>
+                <dd [class]="dd + ' cifras'">{{ p.telefono || '—' }}</dd>
               </div>
-              <div class="dato">
-                <dt>Cliente desde</dt>
-                <dd>{{ p.fechaRegistro | date: 'd MMM yyyy' }}</dd>
+              <div [class]="dato">
+                <dt [class]="dt">Cliente desde</dt>
+                <dd [class]="dd">{{ p.fechaRegistro | date: 'd MMM yyyy' }}</dd>
               </div>
             </dl>
           } @else {
-            <form class="form-editar" (ngSubmit)="guardar()">
-              <h2 id="titulo-datos">Editar datos</h2>
+            <form class="flex flex-col gap-4" (ngSubmit)="guardar()">
+              <h2 id="titulo-datos" [class]="h2">Editar datos</h2>
 
               <label class="campo">
                 Nombre
@@ -86,25 +94,25 @@
                 <input type="email" [value]="p.email" disabled />
               </label>
 
-              <p class="nota">
+              <p class="text-(length:--texto-xs) leading-[1.4] text-muted">
                 El correo electrónico no se puede cambiar. Para cambiar la contraseña usa la opción
                 correspondiente.
               </p>
 
               @if (errorGuardar()) {
-                <p class="mensaje-error" role="alert">{{ errorGuardar() }}</p>
+                <p class="mensaje-error m-0" role="alert">{{ errorGuardar() }}</p>
               }
 
-              <div class="acciones">
+              <div class="flex gap-3">
                 <button
                   type="button"
-                  class="boton secundario"
+                  class="boton secundario flex-1"
                   (click)="cancelar()"
                   [disabled]="guardando()"
                 >
                   Cancelar
                 </button>
-                <button type="submit" class="boton" [disabled]="guardando()">
+                <button type="submit" class="boton flex-1" [disabled]="guardando()">
                   {{ guardando() ? 'Guardando…' : 'Guardar cambios' }}
                 </button>
               </div>
@@ -116,7 +124,7 @@
 
     <!-- ============ Pedidos recientes ============ -->
     <section class="columna" aria-labelledby="titulo-recientes">
-      <h2 id="titulo-recientes">Pedidos recientes</h2>
+      <h2 id="titulo-recientes" [class]="h2 + ' mb-3'">Pedidos recientes</h2>
 
       @if (cargandoPedidos()) {
         <app-esqueleto variante="fila" [cantidad]="2" etiqueta="Cargando historial…" />
@@ -127,24 +135,28 @@
           <a accion class="boton" routerLink="/menu">Ver la carta</a>
         </app-estado-vacio>
       } @else {
-        <ul class="recientes">
+        <ul class="flex flex-col gap-4">
           @for (pedido of recientes(); track pedido.pedidoId) {
-            <li [class.fila]="modoDe(pedido) === 'historial'">
+            <!-- Los pedidos en historial son filas: llevan divisor; las tarjetas en curso, no. -->
+            <li [class]="modoDe(pedido) === 'historial' ? 'border-b border-border' : ''">
               <app-tarjeta-pedido [pedido]="pedido" [modo]="modoDe(pedido)" />
             </li>
           }
         </ul>
-        <a class="boton secundario ver-todos" routerLink="/mis-pedidos">Ver todos mis pedidos</a>
+        <a class="boton secundario mt-4" routerLink="/mis-pedidos">Ver todos mis pedidos</a>
       }
     </section>
   </div>
 
   <!-- Franja del programa de fidelidad (texto vigente, pendiente de la decisión D4) -->
-  <div class="rewards-perfil superficie">
-    <span class="rp-icono" aria-hidden="true"><app-icono nombre="sprout" [tamano]="22" /></span>
-    <p class="rp-texto">
-      <strong class="rp-titulo">Rewards</strong>
-      Gana <strong>Granos</strong> con cada pedido y canjéalos por tus preparaciones favoritas.
+  <div class="rewards-perfil superficie mt-8 flex items-center gap-3">
+    <span class="inline-flex text-accent" aria-hidden="true"
+      ><app-icono nombre="sprout" [tamano]="22"
+    /></span>
+    <p class="text-(length:--texto-sm) leading-normal text-muted">
+      <strong class="block font-bold text-text">Rewards</strong>
+      Gana <strong class="font-bold text-text">Granos</strong> con cada pedido y canjéalos por tus
+      preparaciones favoritas.
     </p>
   </div>
 </section>

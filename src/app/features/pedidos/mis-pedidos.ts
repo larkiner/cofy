@@ -16,7 +16,6 @@ import { modoDePedido, TarjetaPedido } from '../../shared/ui/tarjeta-pedido/tarj
   selector: 'app-mis-pedidos',
   imports: [DatePipe, EstadoVacio, Esqueleto, Icono, RouterLink, TarjetaPedido],
   templateUrl: './mis-pedidos.html',
-  styleUrl: './mis-pedidos.css',
 })
 export class MisPedidos {
   private readonly pedidoService = inject(PedidoService);

@@ -9,7 +9,6 @@ import { AlternarPassword } from '../../../shared/ui/alternar-password/alternar-
   selector: 'app-login',
   imports: [FormsModule, RouterLink, AlternarPassword],
   templateUrl: './login.html',
-  styleUrl: '../auth.css',
 })
 export class Login {
   private readonly auth = inject(AuthService);

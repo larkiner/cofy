@@ -1,16 +1,48 @@
-<section class="auth">
-  <div class="auth-media" aria-hidden="true">
-    <img src="/img/auth/login.jpg" alt="" />
-    <div class="auth-media-overlay"></div>
-    <div class="auth-media-texto">
-      <p class="auth-media-frase">El ritual de la calma, en cada taza.</p>
+<!-- Panel dividido: foto y frase a un lado, formulario al otro (en registro, al revés). Bajo 900 px
+     no caben dos columnas: la foto pasa a ser el fondo de toda la pantalla (decorativa) y el
+     formulario queda en una tarjeta translúcida encima, bastante opaca para que el texto
+     mantenga contraste sobre cualquier zona de la foto; la frase se oculta porque taparía el
+     formulario. -->
+<section
+  class="auth grid min-h-[calc(100dvh-var(--alto-header))] grid-cols-[1.1fr_1fr] max-[901px]:relative max-[901px]:isolate max-[901px]:grid-cols-[1fr]"
+>
+  <div
+    class="auth-media relative overflow-hidden bg-(image:--gradient-hero) max-[901px]:absolute max-[901px]:inset-0 max-[901px]:-z-1"
+    aria-hidden="true"
+  >
+    <!-- login.jpg trae ~4 % de barra negra arriba y abajo incrustada en el archivo; en pantallas
+         estrechas el zoom la deja fuera del recorte del contenedor. -->
+    <img
+      class="absolute inset-0 size-full object-cover max-[901px]:scale-110"
+      src="/img/auth/login.jpg"
+      alt=""
+    />
+    <div
+      class="absolute inset-0 bg-[linear-gradient(180deg,rgb(20_14_10/0.15)_0%,rgb(20_14_10/0.75)_100%)] max-[901px]:bg-[linear-gradient(180deg,rgb(20_14_10/0.2)_0%,rgb(20_14_10/0.55)_100%)]"
+    ></div>
+    <div
+      class="absolute inset-x-0 bottom-0 p-[clamp(24px,4vw,44px)] text-[#fff] max-[901px]:hidden"
+    >
+      <p
+        class="max-w-[420px] font-display text-[length:clamp(1.375rem,2.6vw,1.75rem)] leading-[1.3] font-medium"
+      >
+        El ritual de la calma, en cada taza.
+      </p>
     </div>
   </div>
 
-  <div class="auth-panel">
-    <form class="tarjeta-auth" (ngSubmit)="enviar()">
-      <h1>Bienvenido de vuelta</h1>
-      <p class="sub-auth">Entra a tu cuenta de La aravica.</p>
+  <div
+    class="flex items-center justify-center bg-bg px-6 py-[clamp(32px,6vw,60px)] max-[901px]:bg-transparent"
+  >
+    <!-- El botón de ojo de Edge (::-ms-reveal) se oculta para no duplicar el de app-alternar-password. -->
+    <form
+      class="flex w-full max-w-[380px] flex-col gap-4 max-[901px]:rounded-lg max-[901px]:border max-[901px]:border-border-input max-[901px]:bg-[color-mix(in_srgb,var(--color-bg)_94%,transparent)] max-[901px]:px-5 max-[901px]:py-6 max-[901px]:backdrop-blur-[10px] [&_input::-ms-clear]:hidden [&_input::-ms-reveal]:hidden"
+      (ngSubmit)="enviar()"
+    >
+      <h1 class="font-display text-[2rem] leading-[1.15] font-semibold text-text">
+        Bienvenido de vuelta
+      </h1>
+      <p class="-mt-2 mb-2 text-(length:--texto-sm) text-muted">Entra a tu cuenta de La aravica.</p>
 
       <label class="campo">
         Correo electrónico
@@ -19,8 +51,10 @@
 
       <label class="campo">
         Contraseña
-        <span class="campo-password">
+        <!-- El botón de ojo se ancla al borde derecho de este contenedor; el input deja sitio. -->
+        <span class="relative flex">
           <input
+            class="flex-1 pr-12"
             [type]="verPassword() ? 'text' : 'password'"
             name="password"
             [(ngModel)]="password"
@@ -36,14 +70,21 @@
       }
 
       @if (error()) {
-        <p class="mensaje-error" role="alert">{{ error() }}</p>
+        <p class="mensaje-error m-0" role="alert">{{ error() }}</p>
       }
 
       <button type="submit" class="boton grande" [disabled]="cargando()">
         {{ cargando() ? 'Entrando…' : 'Iniciar sesión' }}
       </button>
 
-      <p class="enlace-secundario">¿No tienes cuenta? <a routerLink="/registro">Crear cuenta</a></p>
+      <p class="text-center text-(length:--texto-sm) text-muted">
+        ¿No tienes cuenta?
+        <a
+          class="inline-flex min-h-(--alto-control) items-center px-1 font-semibold text-accent underline underline-offset-[3px]"
+          routerLink="/registro"
+          >Crear cuenta</a
+        >
+      </p>
     </form>
   </div>
 </section>

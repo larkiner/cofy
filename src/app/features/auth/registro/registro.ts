@@ -9,7 +9,6 @@ import { AlternarPassword } from '../../../shared/ui/alternar-password/alternar-
   selector: 'app-registro',
   imports: [FormsModule, RouterLink, AlternarPassword],
   templateUrl: './registro.html',
-  styleUrl: '../auth.css',
 })
 export class Registro {
   private readonly auth = inject(AuthService);
