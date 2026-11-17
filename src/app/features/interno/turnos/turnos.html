@@ -15,7 +15,11 @@
   <p class="mensaje-error" role="alert">{{ error() }}</p>
 }
 
-<div class="turnos-grid" [class.con-asignacion]="esSupervisorOAdmin()">
+<!-- Con el formulario de asignación (supervisor/admin) hay dos columnas desde 960 px. -->
+<div
+  class="grid max-w-[640px] grid-cols-[minmax(0,1fr)] items-start gap-[24px] ancho:[&.con-asignacion]:max-w-none ancho:[&.con-asignacion]:grid-cols-[minmax(0,1fr)_340px]"
+  [class.con-asignacion]="esSupervisorOAdmin()"
+>
   <section>
     <h2>Mis turnos</h2>
     @if (cargandoTurnos()) {
@@ -28,27 +32,31 @@
         </div>
       </div>
     } @else {
-      <ul class="superficie lista-turnos">
+      <ul class="superficie p-0">
         @for (t of misTurnos(); track t.id) {
-          <li class="turno">
-            <div class="fecha">
-              <span class="fecha-dia">{{ t.fecha | date:'d' }}</span>
-              <span class="fecha-semana">{{ diaSemana(t) }}</span>
+          <li
+            class="grid grid-cols-[56px_1fr_auto] items-center gap-[16px] border-b border-border px-[20px] py-[14px] last:border-b-0"
+          >
+            <div class="flex flex-col items-center gap-[2px]">
+              <span class="cifras text-[22px] leading-[1.1] font-bold">{{
+                t.fecha | date: 'd'
+              }}</span>
+              <span class="text-[11px] font-semibold text-muted uppercase">{{ diaSemana(t) }}</span>
             </div>
-            <div class="horario">
-              <span class="horario-horas">
-                {{ t.horaInicio | date:'h:mm a' }}
+            <div class="flex min-w-0 flex-col gap-[2px]">
+              <span class="cifras text-[14px] font-semibold">
+                {{ t.horaInicio | date: 'h:mm a' }}
                 @if (t.horaFin) {
-                  – {{ t.horaFin | date:'h:mm a' }}
+                  – {{ t.horaFin | date: 'h:mm a' }}
                 }
               </span>
-              <span class="horario-mes">{{ mesAnio(t) }}</span>
+              <span class="cifras text-[12px] text-muted">{{ mesAnio(t) }}</span>
             </div>
-            <div class="turno-lado">
+            <div class="flex items-center gap-[12px]">
               @if (esHoy(t)) {
                 <span class="estado-pill LISTO">Hoy</span>
               }
-              <span class="duracion">{{ duracion(t) }}</span>
+              <span class="cifras text-[14px] text-muted">{{ duracion(t) }}</span>
             </div>
           </li>
         }
@@ -57,14 +65,16 @@
   </section>
 
   @if (esSupervisorOAdmin()) {
-    <form class="superficie formulario" (ngSubmit)="asignar()">
-      <h2>Asignar turno</h2>
+    <form class="superficie flex flex-col gap-[12px]" (ngSubmit)="asignar()">
+      <h2 class="m-0">Asignar turno</h2>
       <label class="campo">
         Trabajador
         <select name="trabajadorId" [(ngModel)]="trabajadorId" required>
           <option [ngValue]="null" disabled>Selecciona…</option>
           @for (t of trabajadores(); track t.id) {
-            <option [ngValue]="t.id">{{ t.nombre }} · {{ etiquetaRol(t.rol) }} · {{ t.sucursalNombre }}</option>
+            <option [ngValue]="t.id">
+              {{ t.nombre }} · {{ etiquetaRol(t.rol) }} · {{ t.sucursalNombre }}
+            </option>
           }
         </select>
       </label>
@@ -72,7 +82,7 @@
         Fecha
         <input type="date" name="fecha" [(ngModel)]="fecha" required />
       </label>
-      <div class="fila-doble">
+      <div class="grid grid-cols-2 gap-[12px]">
         <label class="campo">
           Hora inicio
           <input type="time" name="horaInicio" [(ngModel)]="horaInicio" required />
@@ -82,7 +92,7 @@
           <input type="time" name="horaFin" [(ngModel)]="horaFin" required />
         </label>
       </div>
-      <button type="submit" class="boton">Asignar turno</button>
+      <button type="submit" class="boton w-full">Asignar turno</button>
     </form>
   }
 </div>

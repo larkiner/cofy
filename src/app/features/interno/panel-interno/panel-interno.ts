@@ -9,7 +9,6 @@ import { etiquetaRol } from '../../../shared/util/etiquetas';
   selector: 'app-panel-interno',
   imports: [RouterOutlet, RouterLink, RouterLinkActive, Icono],
   templateUrl: './panel-interno.html',
-  styleUrl: './panel-interno.css',
 })
 export class PanelInterno {
   protected readonly auth = inject(AuthService);

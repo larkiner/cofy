@@ -1,37 +1,85 @@
-<section class="pi panel">
-  <nav class="lateral" aria-label="Panel interno">
-    <div class="grupo">
-      <p class="rotulo">Operación</p>
-      <a routerLink="/interno" routerLinkActive="activo" ariaCurrentWhenActive="page"
-         [routerLinkActiveOptions]="{ exact: true }">
+<!-- Móvil: tira horizontal con desplazamiento. Desde 960 px (`ancho:`): barra lateral fija con los
+     grupos Operación y Gestión. `.grupo` es `display: contents` en la tira para que sus enlaces
+     queden en la misma fila. Marcador: `pi` (ámbito de las primitivas del panel en styles.css). -->
+@let enlace =
+  'flex h-[40px] snap-start items-center gap-[12px] rounded-[10px] px-[12px] text-[14px] font-medium whitespace-nowrap text-muted transition-[background-color,color] duration-(--dur-rapida) ease-out hover:bg-overlay-hover hover:text-text aria-[current=page]:bg-[color-mix(in_oklch,var(--color-accent)_14%,transparent)] aria-[current=page]:font-semibold aria-[current=page]:text-text aria-[current=page]:hover:bg-[color-mix(in_oklch,var(--color-accent)_14%,transparent)] aria-[current=page]:hover:text-text aria-[current=page]:[&_app-icono]:text-accent';
+<section
+  class="pi mx-auto max-w-[1320px] px-[16px] pt-[20px] pb-[64px] ancho:grid ancho:grid-cols-[224px_minmax(0,1fr)] ancho:gap-[40px] ancho:px-[32px] ancho:pt-[28px] ancho:pb-[80px]"
+>
+  <nav
+    class="mb-[20px] flex snap-x snap-proximity gap-[4px] overflow-x-auto border-b border-border pb-[8px] ancho:sticky ancho:top-[calc(var(--alto-header)+24px)] ancho:mb-0 ancho:flex-col ancho:gap-0 ancho:self-start ancho:overflow-visible ancho:border-b-0 ancho:pb-0"
+    aria-label="Panel interno"
+  >
+    <div class="contents ancho:flex ancho:flex-col ancho:gap-[2px]">
+      <p
+        class="hidden ancho:mx-[12px] ancho:mt-0 ancho:mb-[6px] ancho:block ancho:text-[11px] ancho:font-semibold ancho:tracking-[0.06em] ancho:text-muted-2 ancho:uppercase"
+      >
+        Operación
+      </p>
+      <a
+        [class]="enlace"
+        routerLink="/interno"
+        routerLinkActive="activo"
+        ariaCurrentWhenActive="page"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
         <app-icono nombre="tablero" [tamano]="18" />
         <span>Tablero</span>
       </a>
-      <a routerLink="/interno/entregar" routerLinkActive="activo" ariaCurrentWhenActive="page">
+      <a
+        [class]="enlace"
+        routerLink="/interno/entregar"
+        routerLinkActive="activo"
+        ariaCurrentWhenActive="page"
+      >
         <app-icono nombre="entregar" [tamano]="18" />
         <span>Entregar</span>
       </a>
-      <a routerLink="/interno/mostrador" routerLinkActive="activo" ariaCurrentWhenActive="page">
+      <a
+        [class]="enlace"
+        routerLink="/interno/mostrador"
+        routerLinkActive="activo"
+        ariaCurrentWhenActive="page"
+      >
         <app-icono nombre="caja" [tamano]="18" />
         <span>Mostrador</span>
       </a>
-      <a routerLink="/interno/turnos" routerLinkActive="activo" ariaCurrentWhenActive="page">
+      <a
+        [class]="enlace"
+        routerLink="/interno/turnos"
+        routerLinkActive="activo"
+        ariaCurrentWhenActive="page"
+      >
         <app-icono nombre="calendario" [tamano]="18" />
         <span>Turnos</span>
       </a>
     </div>
 
     @if (auth.esAdmin() || esSupervisorOAdmin()) {
-      <div class="grupo">
-        <p class="rotulo">Gestión</p>
+      <div class="contents ancho:flex ancho:flex-col ancho:gap-[2px]">
+        <p
+          class="hidden ancho:mx-[12px] ancho:mt-[20px] ancho:mb-[6px] ancho:block ancho:text-[11px] ancho:font-semibold ancho:tracking-[0.06em] ancho:text-muted-2 ancho:uppercase"
+        >
+          Gestión
+        </p>
         @if (auth.esAdmin()) {
-          <a routerLink="/interno/inventario" routerLinkActive="activo" ariaCurrentWhenActive="page">
+          <a
+            [class]="enlace"
+            routerLink="/interno/inventario"
+            routerLinkActive="activo"
+            ariaCurrentWhenActive="page"
+          >
             <app-icono nombre="inventario" [tamano]="18" />
             <span>Inventario</span>
           </a>
         }
         @if (esSupervisorOAdmin()) {
-          <a routerLink="/interno/metricas" routerLinkActive="activo" ariaCurrentWhenActive="page">
+          <a
+            [class]="enlace"
+            routerLink="/interno/metricas"
+            routerLinkActive="activo"
+            ariaCurrentWhenActive="page"
+          >
             <app-icono nombre="grafica" [tamano]="18" />
             <span>Métricas</span>
           </a>
@@ -40,14 +88,16 @@
     }
 
     @if (rolLegible(); as rol) {
-      <p class="pie">
+      <p
+        class="hidden ancho:mt-[20px] ancho:flex ancho:items-center ancho:gap-[8px] ancho:border-t ancho:border-border ancho:px-[12px] ancho:pt-[12px] ancho:text-[12px] ancho:text-muted"
+      >
         <app-icono nombre="user" [tamano]="16" />
         <span>{{ rol }}</span>
       </p>
     }
   </nav>
 
-  <div class="contenido">
+  <div class="min-w-0">
     <router-outlet />
   </div>
 </section>

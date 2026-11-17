@@ -1,15 +1,19 @@
 <header class="encabezado">
   <div>
     <h1>Entregar pedido</h1>
-    <p class="bajada">Elige un pedido listo o busca el código de retiro del cliente, y confirma la entrega.</p>
+    <p class="bajada">
+      Elige un pedido listo o busca el código de retiro del cliente, y confirma la entrega.
+    </p>
   </div>
 </header>
 
-<div class="columna-unica">
-  <!-- Región persistente: el lector de pantalla anuncia aquí cada entrega. -->
-  <div class="aviso-entrega" role="status" aria-live="polite">
+<div class="flex max-w-[640px] flex-col gap-[16px]">
+  <!-- Región persistente: el lector de pantalla anuncia aquí cada entrega. Sin mensaje no ocupa sitio. -->
+  <div class="empty:hidden" role="status" aria-live="polite">
     @if (exito()) {
-      <p class="mensaje-ok exito">
+      <p
+        class="mensaje-ok exito m-0 gap-[14px] px-[20px] py-[16px] text-(length:--texto-md) font-bold"
+      >
         <app-icono nombre="check-circle" [tamano]="24" />
         {{ exito() }}
       </p>
@@ -17,70 +21,102 @@
   </div>
 
   @if (seleccionado(); as pedido) {
-    <section class="superficie confirmacion" aria-labelledby="titulo-confirmacion">
-      <header class="confirmacion-cabecera">
-        <h2 id="titulo-confirmacion" tabindex="-1" #tituloConfirmacion>Confirmar entrega · Pedido #{{ pedido.pedidoId }}</h2>
-        <span class="estado-pill" [class]="'estado-pill ' + pedido.estado">{{ etiquetaEstado(pedido.estado) }}</span>
+    <section
+      class="superficie confirmacion flex flex-col gap-[16px]"
+      aria-labelledby="titulo-confirmacion"
+    >
+      <header class="flex flex-wrap items-center justify-between gap-[8px]">
+        <h2 id="titulo-confirmacion" class="m-0" tabindex="-1" #tituloConfirmacion>
+          Confirmar entrega · Pedido #{{ pedido.pedidoId }}
+        </h2>
+        <span class="estado-pill" [class]="'estado-pill ' + pedido.estado">{{
+          etiquetaEstado(pedido.estado)
+        }}</span>
       </header>
 
       @if (noEstaListo()) {
-        <p class="mensaje-error aviso-no-listo">Este pedido todavía no está marcado como listo.</p>
+        <p class="mensaje-error aviso-no-listo m-0">
+          Este pedido todavía no está marcado como listo.
+        </p>
       }
 
       <app-items-pedido [items]="pedido.items" [grande]="true" />
 
-      <dl class="datos-pedido">
+      <dl
+        class="m-0 flex flex-col gap-[6px] text-(length:--texto-sm) [&_dd]:m-0 [&_dd]:text-right [&_dd]:font-semibold [&_dt]:text-muted [&>div]:flex [&>div]:justify-between [&>div]:gap-[12px]"
+      >
         <div>
           <dt>Cliente</dt>
           <dd>
             {{ pedido.clienteNombre ?? 'Venta de mostrador' }}
             @if (pedido.clienteTelefono) {
-              <span class="telefono">· {{ pedido.clienteTelefono }}</span>
+              <span class="font-normal text-muted">· {{ pedido.clienteTelefono }}</span>
             }
           </dd>
         </div>
         <div>
           <dt>Código</dt>
-          <dd class="tabular">{{ pedido.codigoRetiro }}</dd>
+          <dd class="cifras">{{ pedido.codigoRetiro }}</dd>
         </div>
         <div>
           <dt>Total</dt>
-          <dd class="tabular">{{ pedido.total | currency:'COP':'symbol-narrow':'1.0-0' }}</dd>
+          <dd class="cifras">{{ pedido.total | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</dd>
         </div>
       </dl>
 
       @if (error()) {
-        <p class="mensaje-error" role="alert">{{ error() }}</p>
+        <p class="mensaje-error m-0" role="alert">{{ error() }}</p>
       }
 
-      <div class="acciones-confirmacion">
-        <button type="button" class="boton secundario" [disabled]="procesando()" (click)="cancelar()">
+      <div class="acciones-confirmacion flex gap-[12px]">
+        <button
+          type="button"
+          class="boton secundario flex-1"
+          [disabled]="procesando()"
+          (click)="cancelar()"
+        >
           Cancelar
         </button>
-        <button type="button" class="boton grande" [disabled]="procesando()" (click)="confirmar()">
+        <button
+          type="button"
+          class="boton grande flex-2"
+          [disabled]="procesando()"
+          (click)="confirmar()"
+        >
           <app-icono nombre="entregar" [tamano]="18" />
           {{ procesando() ? 'Entregando…' : 'Confirmar entrega' }}
         </button>
       </div>
     </section>
   } @else {
-    <form class="superficie formulario" (ngSubmit)="buscar()">
-      <label class="campo codigo-campo">
+    <form class="superficie flex flex-col gap-[16px]" (ngSubmit)="buscar()">
+      <label class="campo">
         Código de retiro
-        <input #campoCodigo type="text" name="codigo" [(ngModel)]="codigo" placeholder="RET-XXXXXXXX"
-               autocomplete="off" autocapitalize="characters" spellcheck="false" required />
+        <!-- El texto de ayuda no hereda el espaciado grande de las letras (placeholder:tracking). -->
+        <input
+          #campoCodigo
+          class="cifras h-[56px] text-center text-[22px] font-semibold tracking-[0.12em] uppercase placeholder:tracking-[0.06em]"
+          type="text"
+          name="codigo"
+          [(ngModel)]="codigo"
+          placeholder="RET-XXXXXXXX"
+          autocomplete="off"
+          autocapitalize="characters"
+          spellcheck="false"
+          required
+        />
       </label>
       <button type="submit" class="boton grande" [disabled]="buscando()">
         <app-icono nombre="search" [tamano]="18" />
         {{ buscando() ? 'Buscando…' : 'Buscar' }}
       </button>
       @if (error()) {
-        <p class="mensaje-error" role="alert">{{ error() }}</p>
+        <p class="mensaje-error m-0" role="alert">{{ error() }}</p>
       }
     </form>
   }
 
-  <section class="listos" aria-labelledby="titulo-listos">
+  <section aria-labelledby="titulo-listos">
     <h2 id="titulo-listos">Listos para entregar ({{ listos().length }})</h2>
 
     @if (cargando()) {
@@ -90,24 +126,30 @@
     } @else if (listos().length === 0) {
       <p class="estado-msj">No hay pedidos listos por ahora.</p>
     } @else {
-      <ul class="lista-listos">
+      <ul class="grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-[12px]">
         @for (pedido of listos(); track pedido.pedidoId) {
           <li>
-            <button type="button" class="tarjeta-listo"
-                    [class.elegida]="seleccionado()?.pedidoId === pedido.pedidoId"
-                    [attr.aria-pressed]="seleccionado()?.pedidoId === pedido.pedidoId"
-                    (click)="elegir(pedido)">
-              <span class="fila-listo">
-                <strong class="numero">#{{ pedido.pedidoId }}</strong>
-                <span class="espera">
+            <button
+              type="button"
+              class="tarjeta-listo flex min-h-[44px] w-full cursor-pointer flex-col gap-[10px] rounded-[12px] border border-border bg-card p-[14px] text-left text-text transition-[background-color] duration-(--dur-rapida) ease-out hover:bg-overlay-hover aria-pressed:border-accent"
+              [attr.aria-pressed]="seleccionado()?.pedidoId === pedido.pedidoId"
+              (click)="elegir(pedido)"
+            >
+              <span class="flex items-center justify-between gap-[8px]">
+                <strong class="cifras text-[18px] font-bold">#{{ pedido.pedidoId }}</strong>
+                <span
+                  class="cifras inline-flex items-center gap-[4px] text-(length:--texto-sm) text-muted"
+                >
                   <app-icono nombre="reloj" [tamano]="16" />
                   {{ espera(pedido) }}
                 </span>
               </span>
               <app-items-pedido [items]="pedido.items" [enLinea]="true" />
-              <span class="fila-listo secundario">
+              <span
+                class="flex flex-wrap items-center justify-between gap-[8px] text-(length:--texto-xs) text-muted"
+              >
                 <span>{{ pedido.clienteNombre ?? 'Venta de mostrador' }}</span>
-                <span class="tabular">{{ pedido.codigoRetiro }}</span>
+                <span class="cifras">{{ pedido.codigoRetiro }}</span>
               </span>
             </button>
           </li>

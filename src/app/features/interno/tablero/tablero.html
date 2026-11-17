@@ -4,7 +4,7 @@
     <p class="bajada">
       Se actualiza solo cada 15 s
       @if (actualizadoEn(); as hora) {
-        · última lectura {{ hora | date:'h:mm:ss a' }}
+        · última lectura {{ hora | date: 'h:mm:ss a' }}
       }
     </p>
   </div>
@@ -52,19 +52,31 @@
     </p>
   }
 
-  <div class="tablero">
+  <div class="tablero grid grid-cols-3 items-start gap-[16px] max-tablet:grid-cols-[1fr]">
     @for (columna of columnas(); track columna.estado) {
-      <section class="columna">
-        <header class="columna-cabecera">
-          <h2>{{ columna.titulo }}</h2>
-          <span class="contador" [attr.aria-label]="columna.pedidos.length + ' pedidos'">{{ columna.pedidos.length }}</span>
+      <section class="flex flex-col gap-[10px] rounded-md bg-overlay-subtle p-[12px]">
+        <header class="flex items-center justify-between gap-[8px] px-[2px] pt-[2px]">
+          <h2 class="m-0 text-[14px]">{{ columna.titulo }}</h2>
+          <span
+            class="cifras min-w-[28px] rounded-pill border border-border bg-card px-[10px] py-[2px] text-center text-(length:--texto-sm) font-bold text-muted"
+            [attr.aria-label]="columna.pedidos.length + ' pedidos'"
+            >{{ columna.pedidos.length }}</span
+          >
         </header>
 
         @for (pedido of columna.pedidos; track pedido.pedidoId) {
-          <article class="pedido" [class.demorado]="demorado(pedido)">
-            <div class="fila">
-              <strong class="numero">#{{ pedido.pedidoId }}</strong>
-              <span class="espera" [class.alerta]="demorado(pedido)">
+          <!-- Lo primero que se lee es qué preparar (los ítems); cliente, código y total quedan
+               debajo. `demorado` y `alerta` son marcadores (pruebas) y a la vez las variantes. -->
+          <article
+            class="pedido flex flex-col gap-[10px] rounded-[12px] border border-border bg-card p-[14px] [&.demorado]:border-danger"
+            [class.demorado]="demorado(pedido)"
+          >
+            <div class="flex items-center justify-between gap-[8px]">
+              <strong class="numero cifras text-[18px] font-bold">#{{ pedido.pedidoId }}</strong>
+              <span
+                class="espera cifras inline-flex items-center gap-[4px] text-(length:--texto-sm) text-muted [&.alerta]:font-bold [&.alerta]:text-danger"
+                [class.alerta]="demorado(pedido)"
+              >
                 <app-icono nombre="reloj" [tamano]="16" />
                 {{ espera(pedido) }}
                 @if (demorado(pedido)) {
@@ -75,29 +87,38 @@
 
             <app-items-pedido [items]="pedido.items" [grande]="true" />
 
-            <div class="datos">
+            <div class="flex flex-wrap items-baseline justify-between gap-x-[8px] gap-y-[2px]">
               @if (pedido.clienteNombre) {
-                <span class="cliente">{{ pedido.clienteNombre }}</span>
+                <span class="text-(length:--texto-sm) text-text">{{ pedido.clienteNombre }}</span>
               } @else {
-                <span class="cliente mostrador">Venta de mostrador</span>
+                <span class="text-(length:--texto-sm) text-muted">Venta de mostrador</span>
               }
               @if (pedido.codigoRetiro) {
-                <span class="codigo">{{ pedido.codigoRetiro }}</span>
+                <span
+                  class="cifras text-(length:--texto-xs) font-semibold tracking-[0.04em] text-muted"
+                  >{{ pedido.codigoRetiro }}</span
+                >
               }
             </div>
 
-            <div class="datos secundario">
-              <span class="tabular">{{ pedido.fechaPedido | date:'h:mm a' }}</span>
+            <div
+              class="flex flex-wrap items-baseline justify-between gap-x-[8px] gap-y-[2px] text-(length:--texto-xs) text-muted"
+            >
+              <span class="cifras whitespace-nowrap">{{
+                pedido.fechaPedido | date: 'h:mm a'
+              }}</span>
               @if (mostrarSedeEnTarjeta() && nombreSede(pedido); as sede) {
-                <span class="sede">{{ sede }}</span>
+                <span class="sede font-semibold">{{ sede }}</span>
               }
-              <span class="total">{{ pedido.total | currency:'COP':'symbol-narrow':'1.0-0' }}</span>
+              <span class="cifras ml-auto">{{
+                pedido.total | currency: 'COP' : 'symbol-narrow' : '1.0-0'
+              }}</span>
             </div>
 
             @if (accionDe(pedido); as accion) {
               <button
                 type="button"
-                class="boton"
+                class="boton w-full"
                 [disabled]="estaOcupado(pedido)"
                 (click)="avanzar(pedido)"
               >
@@ -105,15 +126,15 @@
               </button>
             }
             @if (erroresAccion()[pedido.pedidoId]; as errorAccion) {
-              <p class="mensaje-error error-accion" role="alert">{{ errorAccion }}</p>
+              <p class="mensaje-error m-0" role="alert">{{ errorAccion }}</p>
             }
           </article>
         } @empty {
-          <p class="estado-msj sin-pedidos">Sin pedidos</p>
+          <p class="estado-msj p-[24px] text-center">Sin pedidos</p>
         }
 
         @if (columna.estado === 'LISTO') {
-          <p class="pie-columna">
+          <p class="px-[2px] text-[12px] text-muted">
             Se entregan con el código en <a routerLink="/interno/entregar">Entregar</a>
           </p>
         }
@@ -122,7 +143,7 @@
   </div>
 
   @if (otros().length > 0) {
-    <h2 class="titulo-otros">Otros pedidos</h2>
+    <h2 class="mt-[32px]">Otros pedidos</h2>
     <div class="tabla-contenedor">
       <table class="tabla">
         <thead>
@@ -138,14 +159,18 @@
         <tbody>
           @for (pedido of otros(); track pedido.pedidoId) {
             <tr>
-              <td class="numero">#{{ pedido.pedidoId }}</td>
+              <td class="numero cifras text-[14px] font-bold">#{{ pedido.pedidoId }}</td>
               <td>
-                <span class="estado-pill" [class]="'estado-pill ' + pedido.estado">{{ etiquetaEstado(pedido.estado) }}</span>
+                <span class="estado-pill" [class]="'estado-pill ' + pedido.estado">{{
+                  etiquetaEstado(pedido.estado)
+                }}</span>
               </td>
               <td>{{ pedido.clienteNombre ?? 'Venta de mostrador' }}</td>
-              <td class="tabular">{{ pedido.fechaPedido | date:'dd/MM h:mm a' }}</td>
-              <td class="tabular">{{ pedido.codigoRetiro }}</td>
-              <td class="num">{{ pedido.total | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
+              <td class="cifras whitespace-nowrap">
+                {{ pedido.fechaPedido | date: 'dd/MM h:mm a' }}
+              </td>
+              <td class="cifras whitespace-nowrap">{{ pedido.codigoRetiro }}</td>
+              <td class="num">{{ pedido.total | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</td>
             </tr>
           }
         </tbody>

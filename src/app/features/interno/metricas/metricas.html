@@ -1,3 +1,9 @@
+@let kpi = 'kpi flex flex-col gap-[4px] bg-card px-[20px] py-[16px]';
+@let kpiEtiqueta = 'text-[12px] font-semibold text-muted';
+<!-- El formato es-CO ("$ 11.933.500") es ancho: en móvil la cifra se ajusta a la celda. -->
+@let kpiValor =
+  'text-[26px] leading-[1.2] font-bold cifras max-angosto:text-[length:clamp(1rem,5.2vw,1.625rem)]';
+
 <header class="encabezado">
   <div>
     <h1>Métricas de ventas</h1>
@@ -25,62 +31,114 @@
 } @else if (metricas().length === 0) {
   <p class="estado-msj">Aún no hay ventas registradas.</p>
 } @else {
-  <div class="superficie kpis">
-    <div class="kpi">
-      <span class="kpi-label">Ventas totales</span>
-      <span class="kpi-valor">{{ kpis().totalVentas | currency:'COP':'symbol-narrow':'1.0-0' }}</span>
+  <!-- Franja dividida en celdas: el hueco de 1 px sobre el fondo del borde hace de divisor. -->
+  <div
+    class="superficie mb-[16px] grid grid-cols-4 gap-[1px] overflow-hidden bg-border p-0 max-angosto:grid-cols-2"
+  >
+    <div [class]="kpi">
+      <span [class]="kpiEtiqueta">Ventas totales</span>
+      <span [class]="kpiValor">{{
+        kpis().totalVentas | currency: 'COP' : 'symbol-narrow' : '1.0-0'
+      }}</span>
     </div>
-    <div class="kpi">
-      <span class="kpi-label">Pedidos</span>
-      <span class="kpi-valor">{{ kpis().totalPedidos }}</span>
+    <div [class]="kpi">
+      <span [class]="kpiEtiqueta">Pedidos</span>
+      <span [class]="kpiValor">{{ kpis().totalPedidos }}</span>
     </div>
-    <div class="kpi">
-      <span class="kpi-label">Ticket promedio</span>
-      <span class="kpi-valor">{{ kpis().ticketPromedio | currency:'COP':'symbol-narrow':'1.0-0' }}</span>
+    <div [class]="kpi">
+      <span [class]="kpiEtiqueta">Ticket promedio</span>
+      <span [class]="kpiValor">{{
+        kpis().ticketPromedio | currency: 'COP' : 'symbol-narrow' : '1.0-0'
+      }}</span>
     </div>
-    <div class="kpi">
-      <span class="kpi-label">Sucursales activas</span>
-      <span class="kpi-valor">{{ kpis().sucursalesActivas }}</span>
+    <div [class]="kpi">
+      <span [class]="kpiEtiqueta">Sucursales activas</span>
+      <span [class]="kpiValor">{{ kpis().sucursalesActivas }}</span>
     </div>
   </div>
 
-  <div class="graficas">
+  <div
+    class="mb-[32px] grid grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] gap-[16px] max-tablet:grid-cols-[1fr]"
+  >
     <section class="superficie">
       <h2>Ventas por día</h2>
       @if (serieDiaria().length === 0) {
         <p class="estado-msj">Sin datos para este filtro.</p>
       } @else {
-        <div class="linea-wrap">
-          <svg [attr.viewBox]="'0 0 ' + lineaAncho + ' ' + lineaAlto" class="linea-svg" role="img"
-               [attr.aria-label]="'Ventas totales por día'">
+        <div class="relative">
+          <svg
+            [attr.viewBox]="'0 0 ' + lineaAncho + ' ' + lineaAlto"
+            class="h-auto w-full overflow-visible"
+            role="img"
+            [attr.aria-label]="'Ventas totales por día'"
+          >
             @for (g of gridY(); track g.valor) {
-              <line class="linea-grid" x1="8" [attr.x2]="lineaAncho - 8" [attr.y1]="g.y" [attr.y2]="g.y" />
-              <text class="linea-tick" x="0" [attr.y]="g.y - 3">{{ formatCompacto(g.valor) }}</text>
+              <line
+                class="stroke-border stroke-1"
+                x1="8"
+                [attr.x2]="lineaAncho - 8"
+                [attr.y1]="g.y"
+                [attr.y2]="g.y"
+              />
+              <text class="fill-muted text-[11px]" x="0" [attr.y]="g.y - 3">
+                {{ formatCompacto(g.valor) }}
+              </text>
             }
-            <path class="linea-area" [attr.d]="areaPath()" />
-            <path class="linea-trazo" [attr.d]="lineaPath()" />
+            <path class="fill-accent stroke-none opacity-10" [attr.d]="areaPath()" />
+            <path
+              class="fill-none stroke-accent stroke-2 [stroke-linecap:round] [stroke-linejoin:round]"
+              [attr.d]="lineaPath()"
+            />
             @for (p of serieDiaria(); track p.fecha; let i = $index) {
               @if (p.mostrarEtiqueta) {
-                <text class="linea-fecha" [attr.x]="p.x" [attr.y]="lineaAlto - 8" text-anchor="middle">
-                  {{ p.fecha | date:'dd/MM' }}
+                <text
+                  class="fill-muted text-[11px]"
+                  [attr.x]="p.x"
+                  [attr.y]="lineaAlto - 8"
+                  text-anchor="middle"
+                >
+                  {{ p.fecha | date: 'dd/MM' }}
                 </text>
               }
-              <circle class="linea-punto-hit" [attr.cx]="p.x" [attr.cy]="p.y" r="12"
-                      role="img" [attr.tabindex]="i === puntoActivo() ? 0 : -1"
-                      [attr.aria-label]="(p.fecha | date:'dd/MM/yyyy') + ': ' + (p.total | currency:'COP':'symbol-narrow':'1.0-0')"
-                      (pointerenter)="hoverPunto.set(i)" (pointerleave)="hoverPunto.set(null)"
-                      (focus)="hoverPunto.set(i); puntoActivo.set(i)" (blur)="hoverPunto.set(null)"
-                      (keydown)="teclaPunto($event, i)" />
-              <circle class="linea-punto" [class.activo]="hoverPunto() === i" [attr.cx]="p.x" [attr.cy]="p.y" r="4" />
+              <!-- `linea-punto-hit` es el marcador que usa teclaPunto() para mover el foco. -->
+              <circle
+                class="linea-punto-hit cursor-pointer fill-transparent focus-visible:stroke-accent focus-visible:stroke-2 focus-visible:outline-none"
+                [attr.cx]="p.x"
+                [attr.cy]="p.y"
+                r="12"
+                role="img"
+                [attr.tabindex]="i === puntoActivo() ? 0 : -1"
+                [attr.aria-label]="
+                  (p.fecha | date: 'dd/MM/yyyy') +
+                  ': ' +
+                  (p.total | currency: 'COP' : 'symbol-narrow' : '1.0-0')
+                "
+                (pointerenter)="hoverPunto.set(i)"
+                (pointerleave)="hoverPunto.set(null)"
+                (focus)="hoverPunto.set(i); puntoActivo.set(i)"
+                (blur)="hoverPunto.set(null)"
+                (keydown)="teclaPunto($event, i)"
+              />
+              <circle
+                class="fill-accent stroke-card stroke-2 transition-[r] duration-(--dur-rapida) ease-out [&.activo]:[r:6]"
+                [class.activo]="hoverPunto() === i"
+                [attr.cx]="p.x"
+                [attr.cy]="p.y"
+                r="4"
+              />
             }
           </svg>
           @if (hoverPunto() !== null) {
             @let punto = serieDiaria()[hoverPunto()!];
-            <div class="linea-tooltip"
-                 [style.left.%]="(punto.x / lineaAncho) * 100"
-                 [style.top.%]="(punto.y / lineaAlto) * 100">
-              <strong>{{ punto.total | currency:'COP':'symbol-narrow':'1.0-0' }}</strong>
-              <span>{{ punto.fecha | date:'dd/MM/yyyy' }} · {{ punto.pedidos }} pedidos</span>
+            <div
+              class="cifras pointer-events-none absolute flex [transform:translate(-50%,-130%)] flex-col gap-[2px] rounded-[8px] bg-text px-[10px] py-[6px] text-[12px] whitespace-nowrap text-bg"
+              [style.left.%]="(punto.x / lineaAncho) * 100"
+              [style.top.%]="(punto.y / lineaAlto) * 100"
+            >
+              <strong>{{ punto.total | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</strong>
+              <span class="text-[11px] text-[color-mix(in_oklch,var(--color-bg)_75%,transparent)]"
+                >{{ punto.fecha | date: 'dd/MM/yyyy' }} · {{ punto.pedidos }} pedidos</span
+              >
             </div>
           }
         </div>
@@ -89,14 +147,24 @@
 
     <section class="superficie">
       <h2>Ventas por sucursal</h2>
-      <div class="barras">
+      <div class="flex flex-col gap-[12px]">
         @for (s of porSucursal(); track s.sucursalId) {
-          <div class="barra-fila" [title]="s.nombre + ': ' + s.pedidos + ' pedidos'">
-            <span class="barra-nombre">{{ s.nombre }}<span class="solo-lectores">, {{ s.pedidos }} pedidos</span></span>
-            <div class="barra-pista">
-              <div class="barra-fill" [style.width.%]="(s.total / maxBarra()) * 100"></div>
+          <div
+            class="grid grid-cols-[minmax(0,96px)_1fr_auto] items-center gap-[12px]"
+            [title]="s.nombre + ': ' + s.pedidos + ' pedidos'"
+          >
+            <span class="overflow-hidden text-[13px] text-ellipsis whitespace-nowrap"
+              >{{ s.nombre }}<span class="solo-lectores">, {{ s.pedidos }} pedidos</span></span
+            >
+            <div class="h-[12px] overflow-hidden rounded-pill bg-border">
+              <div
+                class="h-full min-w-[4px] rounded-pill bg-accent transition-[width] duration-200 ease-out"
+                [style.width.%]="(s.total / maxBarra()) * 100"
+              ></div>
             </div>
-            <span class="barra-valor">{{ s.total | currency:'COP':'symbol-narrow':'1.0-0' }}</span>
+            <span class="cifras text-[13px] font-semibold whitespace-nowrap">{{
+              s.total | currency: 'COP' : 'symbol-narrow' : '1.0-0'
+            }}</span>
           </div>
         }
       </div>
@@ -104,7 +172,7 @@
   </div>
 
   <h2>Detalle por día</h2>
-  <div class="tabla-contenedor detalle">
+  <div class="tabla-contenedor max-h-[420px]">
     <table class="tabla">
       <thead>
         <tr>
@@ -117,10 +185,12 @@
       <tbody>
         @for (m of detalleReciente(); track m.sucursalId + '-' + m.fecha) {
           <tr>
-            <td class="fecha">{{ m.fecha | date:'dd/MM/yyyy' }}</td>
+            <td class="cifras whitespace-nowrap">{{ m.fecha | date: 'dd/MM/yyyy' }}</td>
             <td>{{ m.sucursalNombre }}</td>
             <td class="num">{{ m.cantidadPedidos }}</td>
-            <td class="num total">{{ m.totalVentas | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
+            <td class="num font-semibold">
+              {{ m.totalVentas | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}
+            </td>
           </tr>
         }
       </tbody>

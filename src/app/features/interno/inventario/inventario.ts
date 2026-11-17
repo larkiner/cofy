@@ -21,7 +21,6 @@ const MAX_ORIGINAL_BYTES = 30 * 1024 * 1024;
   selector: 'app-inventario',
   imports: [CurrencyPipe, Esqueleto, FormsModule, Icono, ImagenProducto],
   templateUrl: './inventario.html',
-  styleUrl: './inventario.css',
 })
 export class Inventario {
   private readonly interno = inject(InternoService);

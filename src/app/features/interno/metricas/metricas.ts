@@ -30,7 +30,6 @@ const MARGEN = { arriba: 16, abajo: 28, izquierda: 8, derecha: 8 };
   selector: 'app-metricas',
   imports: [CurrencyPipe, DatePipe, Esqueleto, FormsModule],
   templateUrl: './metricas.html',
-  styleUrl: './metricas.css',
 })
 export class Metricas {
   private readonly interno = inject(InternoService);

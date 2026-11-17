@@ -34,7 +34,6 @@ const clave = (codigo: string) =>
   selector: 'app-entregar',
   imports: [CurrencyPipe, FormsModule, Icono, ItemsPedido],
   templateUrl: './entregar.html',
-  styleUrl: './entregar.css',
 })
 export class Entregar {
   /** Cada cuánto se refresca la lista de pedidos listos (15 s). */

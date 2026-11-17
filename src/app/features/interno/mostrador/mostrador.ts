@@ -24,7 +24,6 @@ const METODOS = ['EFECTIVO', 'TARJETA', 'NEQUI', 'DAVIPLATA', 'PSE'];
   selector: 'app-mostrador',
   imports: [CurrencyPipe, Esqueleto, FormsModule, Icono],
   templateUrl: './mostrador.html',
-  styleUrl: './mostrador.css',
 })
 export class Mostrador {
   private readonly menuService = inject(MenuService);

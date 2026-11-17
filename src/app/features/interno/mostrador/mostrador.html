@@ -1,3 +1,7 @@
+<!-- Botones − / + de cada línea: 32 px; con puntero táctil suben a 44 px. -->
+@let paso =
+  'inline-flex size-[32px] cursor-pointer items-center justify-center rounded-[8px] border border-border-input bg-transparent text-text transition-[background-color] duration-(--dur-rapida) ease-out hover:bg-overlay-hover pointer-coarse:size-[44px]';
+
 <header class="encabezado">
   <div>
     <h1>Venta de mostrador</h1>
@@ -10,15 +14,17 @@
     <app-icono nombre="check-circle" [tamano]="18" />
     <span>
       Venta registrada: pedido <strong>#{{ venta.pedidoId }}</strong> por
-      <strong>{{ venta.total | currency:'COP':'symbol-narrow':'1.0-0' }}</strong>
+      <strong>{{ venta.total | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</strong>
       ({{ etiquetaEstado(venta.estado) }}). Ya está en la cola de preparación.
     </span>
   </p>
 }
 
-<div class="mostrador-grid">
+<div
+  class="grid grid-cols-[minmax(0,1fr)] items-start gap-[24px] ancho:grid-cols-[minmax(0,1fr)_360px]"
+>
   <!-- Menú para agregar -->
-  <div class="menu">
+  <div class="flex flex-col gap-[24px]">
     @if (cargandoMenu()) {
       <app-esqueleto variante="tabla" [cantidad]="6" etiqueta="Cargando el menú…" />
     } @else if (menu().length === 0 && error()) {
@@ -27,14 +33,26 @@
     @for (grupo of grupos(); track grupo.categoria) {
       <section>
         <h2>{{ grupo.categoria }}</h2>
-        <div class="teselas">
+        <div class="grid grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-[10px]">
           @for (item of grupo.items; track item.productoId) {
-            <button type="button" class="tesela" [attr.aria-label]="'Agregar ' + item.nombre"
-                    (click)="agregar(item)">
-              <span class="tesela-nombre">{{ item.nombre }}</span>
-              <span class="tesela-precio">{{ item.precio | currency:'COP':'symbol-narrow':'1.0-0' }}</span>
+            <button
+              type="button"
+              class="tesela relative flex min-h-[80px] cursor-pointer flex-col justify-between gap-[8px] rounded-[12px] border border-border bg-card px-[14px] py-[12px] text-left font-body text-text transition-[border-color,transform,box-shadow] duration-(--dur-rapida) ease-out hover:border-accent [&:not(:disabled):active]:[transform:scale(0.98)]"
+              [attr.aria-label]="'Agregar ' + item.nombre"
+              (click)="agregar(item)"
+            >
+              <span class="pr-[24px] text-[14px] leading-[1.3] font-semibold">{{
+                item.nombre
+              }}</span>
+              <span class="cifras text-[14px] font-bold text-accent">{{
+                item.precio | currency: 'COP' : 'symbol-narrow' : '1.0-0'
+              }}</span>
               @if (cantidadDe(item.productoId); as cantidad) {
-                <span class="insignia" aria-hidden="true">{{ cantidad }}</span>
+                <span
+                  class="cifras absolute top-[8px] right-[8px] min-w-[20px] rounded-pill bg-accent px-[6px] py-[2px] text-center text-[11px] leading-[1.2] font-bold text-on-accent"
+                  aria-hidden="true"
+                  >{{ cantidad }}</span
+                >
               }
             </button>
           }
@@ -43,12 +61,16 @@
     }
   </div>
 
-  <!-- Cuenta actual -->
-  <aside class="superficie cuenta">
-    <div class="cuenta-cabecera">
-      <h2>Cuenta</h2>
+  <!-- Cuenta actual: desde 960 px queda fija junto al menú. -->
+  <aside
+    class="superficie flex flex-col gap-[16px] ancho:sticky ancho:top-[calc(var(--alto-header)+24px)]"
+  >
+    <div class="flex items-baseline justify-between gap-[8px]">
+      <h2 class="m-0">Cuenta</h2>
       @if (articulos() > 0) {
-        <span class="articulos">{{ articulos() }} {{ articulos() === 1 ? 'artículo' : 'artículos' }}</span>
+        <span class="cifras text-[12px] text-muted"
+          >{{ articulos() }} {{ articulos() === 1 ? 'artículo' : 'artículos' }}</span
+        >
       }
     </div>
 
@@ -58,37 +80,60 @@
         <p>Aún no hay productos. Toca uno del menú para agregarlo.</p>
       </div>
     } @else {
-      <ul class="lineas">
+      <ul class="flex flex-col gap-[12px]">
         @for (linea of lineas(); track linea.producto.productoId) {
-          <li class="linea">
-            <span class="linea-nombre">{{ linea.producto.nombre }}</span>
-            <span class="stepper">
-              <button type="button" [attr.aria-label]="'Quitar uno de ' + linea.producto.nombre"
-                      (click)="cambiarCantidad(linea.producto.productoId, -1)">
+          <li class="grid grid-cols-[1fr_auto_auto] items-center gap-[12px]">
+            <span class="text-[14px] leading-[1.3]">{{ linea.producto.nombre }}</span>
+            <span class="inline-flex items-center gap-[4px]">
+              <button
+                type="button"
+                [class]="paso"
+                [attr.aria-label]="'Quitar uno de ' + linea.producto.nombre"
+                (click)="cambiarCantidad(linea.producto.productoId, -1)"
+              >
                 <app-icono nombre="minus" [tamano]="14" />
               </button>
-              <span class="cantidad">{{ linea.cantidad }}</span>
-              <button type="button" [attr.aria-label]="'Agregar uno de ' + linea.producto.nombre"
-                      (click)="cambiarCantidad(linea.producto.productoId, 1)">
+              <span class="cifras min-w-[24px] text-center text-[14px] font-semibold">{{
+                linea.cantidad
+              }}</span>
+              <button
+                type="button"
+                [class]="paso"
+                [attr.aria-label]="'Agregar uno de ' + linea.producto.nombre"
+                (click)="cambiarCantidad(linea.producto.productoId, 1)"
+              >
                 <app-icono nombre="plus" [tamano]="14" />
               </button>
             </span>
-            <span class="subtotal">{{ linea.producto.precio * linea.cantidad | currency:'COP':'symbol-narrow':'1.0-0' }}</span>
+            <span class="cifras min-w-[72px] text-right text-[14px] font-semibold">{{
+              linea.producto.precio * linea.cantidad | currency: 'COP' : 'symbol-narrow' : '1.0-0'
+            }}</span>
           </li>
         }
       </ul>
 
-      <div class="total">
-        <span class="total-etiqueta">Total</span>
-        <span class="total-valor">{{ total() | currency:'COP':'symbol-narrow':'1.0-0' }}</span>
+      <div class="flex items-baseline justify-between gap-[8px] border-t border-border pt-[16px]">
+        <span class="text-[14px] text-muted">Total</span>
+        <span class="cifras text-[26px] font-bold">{{
+          total() | currency: 'COP' : 'symbol-narrow' : '1.0-0'
+        }}</span>
       </div>
 
-      <fieldset class="metodos">
-        <legend>Método de pago</legend>
-        <div class="chips">
+      <fieldset class="min-w-0 border-none">
+        <legend class="mb-[8px] text-[12px] font-semibold text-muted">Método de pago</legend>
+        <div class="flex flex-wrap gap-[8px]">
           @for (m of metodos; track m) {
-            <label class="chip">
-              <input type="radio" name="metodo" [value]="m" [(ngModel)]="metodo" />
+            <!-- Radios nativos estilados como chips: el estado sale del propio input (:has). -->
+            <label
+              class="relative inline-flex h-[36px] cursor-pointer items-center rounded-[8px] border border-border-input px-[14px] text-[13px] transition-[background-color,border-color] duration-(--dur-rapida) ease-out hover:not-has-checked:bg-overlay-hover has-checked:border-accent has-checked:bg-[color-mix(in_oklch,var(--color-accent)_16%,transparent)] has-checked:font-semibold has-focus-visible:shadow-(--ring)"
+            >
+              <input
+                class="pointer-events-none absolute size-[1px] opacity-0"
+                type="radio"
+                name="metodo"
+                [value]="m"
+                [(ngModel)]="metodo"
+              />
               <span>{{ etiquetaMetodo(m) }}</span>
             </label>
           }
@@ -96,11 +141,15 @@
       </fieldset>
 
       @if (error()) {
-        <p class="mensaje-error" role="alert">{{ error() }}</p>
+        <p class="mensaje-error m-0" role="alert">{{ error() }}</p>
       }
 
       <button type="button" class="boton grande" [disabled]="procesando()" (click)="cobrar()">
-        {{ procesando() ? 'Registrando…' : 'Cobrar ' + (total() | currency:'COP':'symbol-narrow':'1.0-0') }}
+        {{
+          procesando()
+            ? 'Registrando…'
+            : 'Cobrar ' + (total() | currency: 'COP' : 'symbol-narrow' : '1.0-0')
+        }}
       </button>
     }
   </aside>

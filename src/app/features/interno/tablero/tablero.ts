@@ -37,7 +37,6 @@ const tiempo = (pedido: PedidoEmpleado) => new Date(pedido.fechaPedido).getTime(
   selector: 'app-tablero',
   imports: [CurrencyPipe, DatePipe, Esqueleto, FormsModule, Icono, ItemsPedido, RouterLink],
   templateUrl: './tablero.html',
-  styleUrl: './tablero.css',
 })
 export class Tablero {
   /** Cada cuánto se refresca el tablero solo (15 s). */

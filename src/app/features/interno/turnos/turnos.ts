@@ -12,7 +12,6 @@ import { etiquetaRol } from '../../../shared/util/etiquetas';
   selector: 'app-turnos',
   imports: [DatePipe, Esqueleto, FormsModule, Icono],
   templateUrl: './turnos.html',
-  styleUrl: './turnos.css',
 })
 export class Turnos {
   private readonly interno = inject(InternoService);

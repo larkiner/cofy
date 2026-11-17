@@ -5,7 +5,9 @@
   </div>
   @if (!cargandoProductos()) {
     <div class="acciones">
-      <p class="resumen">{{ resumen().total }} productos · {{ resumen().noDisponibles }} no disponibles</p>
+      <p class="cifras text-[13px] text-muted">
+        {{ resumen().total }} productos · {{ resumen().noDisponibles }} no disponibles
+      </p>
     </div>
   }
 </header>
@@ -20,7 +22,10 @@
   <p class="mensaje-error" role="alert">{{ error() }}</p>
 }
 
-<div class="inv-grid">
+<!-- Una columna por debajo de 1100 px: el aside queda después de la tabla. -->
+<div
+  class="grid grid-cols-[minmax(0,1fr)] items-start gap-[24px] min-[1100px]:grid-cols-[minmax(0,1fr)_340px]"
+>
   <!-- ================= PRODUCTOS ================= -->
   <section>
     <h2>Productos</h2>
@@ -34,17 +39,22 @@
               <th>Producto</th>
               <th class="num">Precio</th>
               <th>Estado</th>
-              <th class="acciones-col"><span class="visualmente-oculto">Acciones</span></th>
+              <th class="text-right"><span class="visualmente-oculto">Acciones</span></th>
             </tr>
           </thead>
           <tbody>
             @for (p of productos(); track p.id) {
-              <tr [class.editando]="editandoId() === p.id">
+              <tr
+                class="[&.editando]:bg-[color-mix(in_oklch,var(--color-accent)_10%,transparent)]"
+                [class.editando]="editandoId() === p.id"
+              >
                 <td>
-                  <span class="producto-nombre">{{ p.nombre }}</span>
-                  <span class="producto-categoria">{{ nombreCategoria(p.categoriaId) }}</span>
+                  <span class="block text-[14px] font-semibold">{{ p.nombre }}</span>
+                  <span class="mt-[2px] block text-[12px] text-muted">{{
+                    nombreCategoria(p.categoriaId)
+                  }}</span>
                 </td>
-                <td class="num">{{ p.precio | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
+                <td class="num">{{ p.precio | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</td>
                 <td>
                   @if (p.disponible === 'S') {
                     <span class="estado-pill PAGADO">
@@ -58,16 +68,25 @@
                     </span>
                   }
                 </td>
-                <td class="acciones-col">
-                  <div class="celda-acciones">
-                    <button type="button" class="boton fantasma" [attr.aria-label]="'Editar ' + p.nombre"
-                            (click)="editar(p)">
+                <td class="text-right">
+                  <div class="flex justify-end gap-[4px]">
+                    <button
+                      type="button"
+                      class="boton fantasma"
+                      [attr.aria-label]="'Editar ' + p.nombre"
+                      (click)="editar(p)"
+                    >
                       <app-icono nombre="editar" [tamano]="14" />
                       Editar
                     </button>
-                    <button type="button" class="boton fantasma"
-                            [attr.aria-label]="(p.disponible === 'S' ? 'Desactivar ' : 'Activar ') + p.nombre"
-                            (click)="alternarDisponible(p)">
+                    <button
+                      type="button"
+                      class="boton fantasma"
+                      [attr.aria-label]="
+                        (p.disponible === 'S' ? 'Desactivar ' : 'Activar ') + p.nombre
+                      "
+                      (click)="alternarDisponible(p)"
+                    >
                       {{ p.disponible === 'S' ? 'Desactivar' : 'Activar' }}
                     </button>
                   </div>
@@ -81,18 +100,33 @@
   </section>
 
   <!-- ================= FORMULARIOS ================= -->
-  <aside class="lateral-inv">
-    <form id="form-producto" class="superficie formulario" (ngSubmit)="guardarProducto()">
-      <h2>{{ editandoId() === null ? 'Nuevo producto' : 'Editar ' + nombreEditando }}</h2>
+  <aside
+    class="flex max-w-[560px] flex-col gap-[16px] min-[1100px]:sticky min-[1100px]:top-[calc(var(--alto-header)+24px)] min-[1100px]:max-w-none"
+  >
+    <form
+      id="form-producto"
+      class="superficie flex flex-col gap-[12px]"
+      (ngSubmit)="guardarProducto()"
+    >
+      <h2 class="m-0">
+        {{ editandoId() === null ? 'Nuevo producto' : 'Editar ' + nombreEditando }}
+      </h2>
       <label class="campo">
         Nombre
-        <input id="prod-nombre" type="text" name="prodNombre" [(ngModel)]="prodNombre" required maxlength="100" />
+        <input
+          id="prod-nombre"
+          type="text"
+          name="prodNombre"
+          [(ngModel)]="prodNombre"
+          required
+          maxlength="100"
+        />
       </label>
       <label class="campo">
         Descripción
         <input type="text" name="prodDescripcion" [(ngModel)]="prodDescripcion" maxlength="300" />
       </label>
-      <div class="fila-doble precio">
+      <div class="grid grid-cols-[120px_minmax(0,1fr)] gap-[12px]">
         <label class="campo">
           Precio (COP)
           <input type="number" name="prodPrecio" [(ngModel)]="prodPrecio" required min="1" />
@@ -115,49 +149,87 @@
         </select>
       </label>
 
-      <div class="campo imagen-campo" role="group" aria-labelledby="etiqueta-imagen">
+      <div class="campo gap-[8px]" role="group" aria-labelledby="etiqueta-imagen">
         <span id="etiqueta-imagen">Imagen del producto (opcional)</span>
-        <div class="imagen-fila">
-          <div class="imagen-vista" [class.cargando]="preparandoImagen()">
+        <div class="flex items-center gap-[14px]">
+          <div
+            class="grid size-[88px] shrink-0 place-items-center overflow-hidden rounded-[12px] border border-dashed border-border-input bg-input-bg text-muted-2 transition-opacity duration-[180ms] ease-out [&.cargando]:opacity-50"
+            [class.cargando]="preparandoImagen()"
+          >
             @if (vistaImagen(); as vista) {
               <app-imagen-producto [src]="vista" alt="Vista previa de la imagen del producto" />
             } @else {
               <app-icono nombre="imagen" [tamano]="28" />
             }
           </div>
-          <div class="imagen-acciones">
+          <div class="flex min-w-0 flex-col items-start gap-[6px]">
+            <!-- El input real queda en el DOM (teclado y lectores de pantalla); el botón es su etiqueta. -->
             <input
               id="archivo-imagen"
-              class="archivo-oculto"
+              class="peer solo-lectores"
               type="file"
               accept="image/jpeg,image/png,image/webp"
               [disabled]="preparandoImagen() || guardando()"
               (change)="seleccionarImagen($event)"
             />
-            <label class="boton secundario" for="archivo-imagen" [class.deshabilitado]="preparandoImagen() || guardando()">
+            <label
+              class="boton secundario w-full cursor-pointer peer-focus-visible:shadow-(--ring) pointer-coarse:min-h-[44px] [&.deshabilitado]:cursor-not-allowed [&.deshabilitado]:opacity-50"
+              for="archivo-imagen"
+              [class.deshabilitado]="preparandoImagen() || guardando()"
+            >
               <app-icono nombre="subir" [tamano]="16" />
-              {{ preparandoImagen() ? 'Preparando…' : vistaImagen() ? 'Cambiar imagen' : 'Elegir imagen' }}
+              {{
+                preparandoImagen()
+                  ? 'Preparando…'
+                  : vistaImagen()
+                    ? 'Cambiar imagen'
+                    : 'Elegir imagen'
+              }}
             </label>
             @if (vistaImagen() && !preparandoImagen() && !guardando()) {
-              <button type="button" class="boton fantasma" (click)="quitarImagen()">Quitar</button>
+              <button
+                type="button"
+                class="boton fantasma w-full pointer-coarse:min-h-[44px]"
+                (click)="quitarImagen()"
+              >
+                Quitar
+              </button>
             }
-            <p class="imagen-ayuda">Desde tu galería, cámara o computador · JPG, PNG o WEBP. Se sube al guardar el producto.</p>
+            <p class="m-0 text-[12px] font-normal text-muted">
+              Desde tu galería, cámara o computador · JPG, PNG o WEBP. Se sube al guardar el
+              producto.
+            </p>
           </div>
         </div>
         @if (errorImagen()) {
-          <p class="mensaje-error" role="alert">{{ errorImagen() }}</p>
+          <p class="mensaje-error m-0" role="alert">{{ errorImagen() }}</p>
         }
-        <details class="url-alterna">
-          <summary>Usar una URL en lugar de una foto</summary>
-          <input type="text" name="prodImagenUrl" [(ngModel)]="prodImagenUrl" maxlength="300"
-                 aria-label="URL de la imagen" placeholder="https://…" />
+        <details>
+          <summary
+            class="w-fit cursor-pointer text-[12px] font-normal text-muted hover:text-text pointer-coarse:py-[10px]"
+          >
+            Usar una URL en lugar de una foto
+          </summary>
+          <input
+            class="mt-[8px] w-full"
+            type="text"
+            name="prodImagenUrl"
+            [(ngModel)]="prodImagenUrl"
+            maxlength="300"
+            aria-label="URL de la imagen"
+            placeholder="https://…"
+          />
         </details>
       </div>
-      <button type="submit" class="boton" [disabled]="guardando() || preparandoImagen()">
-        {{ guardando() ? 'Guardando…' : editandoId() === null ? 'Crear producto' : 'Guardar cambios' }}
+      <button type="submit" class="boton w-full" [disabled]="guardando() || preparandoImagen()">
+        {{
+          guardando() ? 'Guardando…' : editandoId() === null ? 'Crear producto' : 'Guardar cambios'
+        }}
       </button>
       @if (editandoId() !== null) {
-        <button type="button" class="boton secundario" (click)="cancelarEdicion()">Cancelar</button>
+        <button type="button" class="boton secundario w-full" (click)="cancelarEdicion()">
+          Cancelar
+        </button>
       }
     </form>
 
@@ -166,19 +238,19 @@
       @if (cargandoCategorias()) {
         <app-esqueleto variante="tabla" [cantidad]="3" etiqueta="Cargando categorías…" />
       } @else {
-        <ul class="categorias">
+        <ul class="mb-[16px] flex flex-col border-t border-border">
           @for (c of categorias(); track c.id) {
-            <li>
-              <span class="categoria-nombre">{{ c.nombre }}</span>
+            <li class="flex flex-col gap-[2px] border-b border-border py-[10px]">
+              <span class="text-[14px] font-semibold">{{ c.nombre }}</span>
               @if (c.descripcion) {
-                <span class="categoria-descripcion">{{ c.descripcion }}</span>
+                <span class="text-[12px] text-muted">{{ c.descripcion }}</span>
               }
             </li>
           }
         </ul>
       }
 
-      <form class="formulario form-categoria" (ngSubmit)="crearCategoria()">
+      <form class="mt-[4px] flex flex-col gap-[12px]" (ngSubmit)="crearCategoria()">
         <label class="campo">
           Nombre
           <input type="text" name="catNombre" [(ngModel)]="catNombre" required maxlength="50" />
@@ -187,7 +259,7 @@
           Descripción
           <input type="text" name="catDescripcion" [(ngModel)]="catDescripcion" maxlength="200" />
         </label>
-        <button type="submit" class="boton secundario">Agregar categoría</button>
+        <button type="submit" class="boton secundario w-full">Agregar categoría</button>
       </form>
     </section>
   </aside>
