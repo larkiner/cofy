@@ -16,9 +16,11 @@
 
    Orden de capas (Tailwind): theme < base < components < utilities.
    - @theme static: tokens de diseño; además generan utilidades (bg-accent, text-muted,
-     rounded-pill, shadow-card, font-display, tablet:…). "static" porque las hojas de
-     componente aún usan var(--color-…) a mano: las variables deben emitirse aunque
-     ninguna utilidad las use.
+     rounded-pill, shadow-card, font-display, tablet:…). "static" porque las primitivas de
+     abajo y los valores arbitrarios de las plantillas (bg-[color-mix(…var(--color-accent)…)])
+     usan var(--…) a mano: las variables deben emitirse aunque ninguna utilidad las use.
+   - Desde la migración del 2026-11-17 este es el ÚNICO archivo de estilos: los componentes
+     no tienen hoja propia; se estilan con utilidades en su plantilla (y host: { class }).
    - :root.dark (sin capa): redefine los valores oscuros de los mismos tokens.
    - @layer base: reset y base global.
    - @layer components: primitivas (.boton, .campo, .superficie…) y el ámbito .pi.
