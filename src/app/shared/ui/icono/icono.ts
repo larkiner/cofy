@@ -51,7 +51,7 @@ export type NombreIcono =
   selector: 'app-icono',
   standalone: true,
   templateUrl: './icono.html',
-  styleUrl: './icono.css',
+  host: { class: 'inline-flex shrink-0 leading-[0]' },
 })
 export class Icono {
   readonly nombre = input.required<NombreIcono>();

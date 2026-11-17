@@ -1,73 +1,102 @@
+<!-- Las clases `esqueleto-bloque` y `esqueleto-tarjeta` (color y brillo) viven en styles.css. -->
 <div class="esqueleto" role="status" aria-busy="true">
   <span class="visualmente-oculto">{{ etiqueta() }}</span>
 
-  <div class="piezas" [class]="'piezas ' + variante()" aria-hidden="true">
-    @switch (variante()) {
-      @case ('producto') {
+  @switch (variante()) {
+    @case ('producto') {
+      <div
+        class="piezas producto grid grid-cols-[repeat(auto-fill,minmax(min(100%,260px),1fr))] gap-6"
+        aria-hidden="true"
+      >
         @for (i of piezas(); track i) {
-          <div class="pieza tarjeta">
-            <div class="bloque imagen"></div>
-            <div class="cuerpo">
-              <div class="bloque linea ancho-70"></div>
-              <div class="bloque linea ancho-100"></div>
-              <div class="bloque linea ancho-40"></div>
+          <div class="pieza esqueleto-tarjeta">
+            <div class="bloque esqueleto-bloque h-[170px] rounded-none"></div>
+            <div class="flex flex-col gap-[10px] px-[18px] pt-4 pb-5">
+              <div class="bloque esqueleto-bloque h-[14px] w-[70%] rounded-pill"></div>
+              <div class="bloque esqueleto-bloque h-[14px] w-full rounded-pill"></div>
+              <div class="bloque esqueleto-bloque h-[14px] w-[40%] rounded-pill"></div>
             </div>
           </div>
         }
-      }
-      @case ('destacado') {
-        @for (i of piezas(); track i) {
-          <div class="pieza bloque destacado-bloque"></div>
-        }
-      }
-      @case ('fila') {
-        @for (i of piezas(); track i) {
-          <div class="pieza tarjeta fila-tarjeta">
-            <div class="par">
-              <div class="bloque linea ancho-40"></div>
-              <div class="bloque pildora"></div>
-            </div>
-            <div class="bloque linea ancho-70"></div>
-            <div class="bloque linea ancho-30"></div>
-          </div>
-        }
-      }
-      @case ('sucursal') {
-        @for (i of piezas(); track i) {
-          <div class="pieza columna">
-            <div class="bloque linea titulo ancho-70"></div>
-            <div class="bloque linea ancho-100"></div>
-            <div class="bloque linea ancho-40"></div>
-          </div>
-        }
-      }
-      @case ('texto') {
-        @for (i of piezas(); track i) {
-          <div class="bloque linea" [class.ancho-70]="$last" [class.ancho-100]="!$last"></div>
-        }
-      }
-      @case ('tabla') {
-        @for (i of piezas(); track i) {
-          <div class="pieza fila-tabla">
-            <div class="bloque linea ancho-100"></div>
-          </div>
-        }
-      }
-      @case ('metricas') {
-        <div class="kpis">
-          @for (i of [0, 1, 2, 3]; track i) {
-            <div class="kpi tarjeta">
-              <div class="bloque linea ancho-70"></div>
-              <div class="bloque linea valor ancho-100"></div>
-            </div>
-          }
-        </div>
-        <div class="graficas">
-          @for (i of [0, 1]; track i) {
-            <div class="grafica tarjeta bloque"></div>
-          }
-        </div>
-      }
+      </div>
     }
-  </div>
+    @case ('destacado') {
+      <!-- Misma geometría que las recomendaciones: tres columnas iguales y, desde tableta, fila deslizable. -->
+      <div
+        class="piezas destacado grid grid-cols-[repeat(3,minmax(0,1fr))] gap-5 max-medio:auto-cols-[min(80%,340px)] max-medio:grid-flow-col max-medio:grid-cols-none"
+        aria-hidden="true"
+      >
+        @for (i of piezas(); track i) {
+          <div class="pieza bloque esqueleto-bloque h-[300px] rounded-lg max-medio:h-[240px]"></div>
+        }
+      </div>
+    }
+    @case ('fila') {
+      <div class="piezas fila flex flex-col gap-[14px]" aria-hidden="true">
+        @for (i of piezas(); track i) {
+          <div class="pieza esqueleto-tarjeta flex flex-col gap-3 px-[18px] py-4">
+            <div class="flex items-center justify-between">
+              <div class="bloque esqueleto-bloque h-[14px] w-[40%] rounded-pill"></div>
+              <div class="bloque esqueleto-bloque h-[22px] w-[84px] rounded-pill"></div>
+            </div>
+            <div class="bloque esqueleto-bloque h-[14px] w-[70%] rounded-pill"></div>
+            <div class="bloque esqueleto-bloque h-[14px] w-[30%] rounded-pill"></div>
+          </div>
+        }
+      </div>
+    }
+    @case ('sucursal') {
+      <div
+        class="piezas sucursal grid grid-cols-[repeat(auto-fit,minmax(min(100%,240px),1fr))] gap-7"
+        aria-hidden="true"
+      >
+        @for (i of piezas(); track i) {
+          <div class="pieza flex flex-col gap-[10px] border-l border-border pl-4">
+            <div class="bloque esqueleto-bloque h-[22px] w-[70%] rounded-pill"></div>
+            <div class="bloque esqueleto-bloque h-[14px] w-full rounded-pill"></div>
+            <div class="bloque esqueleto-bloque h-[14px] w-[40%] rounded-pill"></div>
+          </div>
+        }
+      </div>
+    }
+    @case ('texto') {
+      <div class="piezas texto flex flex-col gap-3" aria-hidden="true">
+        @for (i of piezas(); track i) {
+          <div
+            class="bloque esqueleto-bloque h-[14px] rounded-pill"
+            [class]="$last ? 'w-[70%]' : 'w-full'"
+          ></div>
+        }
+      </div>
+    }
+    @case ('tabla') {
+      <div class="piezas tabla flex flex-col" aria-hidden="true">
+        @for (i of piezas(); track i) {
+          <div class="pieza border-b border-border py-3">
+            <div class="bloque esqueleto-bloque h-[14px] w-full rounded-pill"></div>
+          </div>
+        }
+      </div>
+    }
+    @case ('metricas') {
+      <div class="piezas metricas" aria-hidden="true">
+        <div class="mb-5 grid grid-cols-[repeat(auto-fit,minmax(160px,1fr))] gap-3">
+          @for (i of [0, 1, 2, 3]; track i) {
+            <div class="kpi esqueleto-tarjeta flex flex-col gap-[10px] px-4 py-[14px]">
+              <div class="bloque esqueleto-bloque h-[14px] w-[70%] rounded-pill"></div>
+              <div class="bloque esqueleto-bloque h-[26px] w-full rounded-pill"></div>
+            </div>
+          }
+        </div>
+        <div
+          class="grid grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] gap-4 max-[801px]:grid-cols-[1fr]"
+        >
+          @for (i of [0, 1]; track i) {
+            <!-- Sin `esqueleto-bloque`: aquí la tarjeta pisaba el fondo del bloque y no había brillo. -->
+            <div class="grafica bloque esqueleto-tarjeta h-[220px]"></div>
+          }
+        </div>
+      </div>
+    }
+  }
 </div>

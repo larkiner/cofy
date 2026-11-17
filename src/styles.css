@@ -5,6 +5,11 @@
    interruptor que las variables CSS de abajo. */
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* `hover:` igual que el :hover de CSS. Tailwind 4 lo envuelve por defecto en
+   @media (hover: hover), y los estilos originales no lo hacían: así el toque en
+   pantallas táctiles se comporta como antes de la migración. */
+@custom-variant hover (&:hover);
+
 /* ============================================================
    Estilos globales — sistema "Heritage Hearth" (claro) /
    "Nocturnal Brew / Warm Roast" (oscuro)
@@ -89,6 +94,37 @@
     from {
       opacity: 0;
       transform: translateY(14px);
+    }
+  }
+
+  /* Aviso flotante (shared/ui/aviso): la entrada es algo más lenta que la salida. Se usan con
+     motion-safe:animate-aviso-entra / motion-safe:animate-aviso-sale. */
+  --animate-aviso-entra: aviso-entra 220ms var(--ease-out);
+  --animate-aviso-sale: aviso-sale 150ms ease-in forwards;
+
+  @keyframes aviso-entra {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+  }
+
+  @keyframes aviso-sale {
+    to {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+  }
+
+  /* Brillo del esqueleto de carga (lo aplica la clase .esqueleto-bloque, más abajo). */
+  --animate-esqueleto-brillo: esqueleto-brillo 1.5s ease-in-out infinite;
+
+  @keyframes esqueleto-brillo {
+    from {
+      background-position: 130% 0;
+    }
+    to {
+      background-position: -130% 0;
     }
   }
 }
@@ -711,6 +747,51 @@
     padding: var(--esp-8) var(--esp-4);
     color: var(--color-muted);
     text-align: center;
+  }
+
+  /* Esqueleto de carga (shared/ui/esqueleto). Se queda como clase y no como utilidades porque
+     junta variables locales, un degradado animado con su tamaño/posición y la condición de
+     «reducir movimiento»: en utilidades quedaría ilegible. Solo usa tokens (claro y oscuro). */
+  .esqueleto-bloque {
+    --esq-base: color-mix(in oklch, var(--color-border) 65%, transparent);
+    --esq-brillo: color-mix(in oklch, var(--color-border) 22%, transparent);
+    background-color: var(--esq-base);
+    border-radius: var(--radius-sm);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .esqueleto-bloque {
+      background-image: linear-gradient(
+        90deg,
+        transparent 0%,
+        var(--esq-brillo) 50%,
+        transparent 100%
+      );
+      background-size: 220% 100%;
+      background-repeat: no-repeat;
+      animation: var(--animate-esqueleto-brillo);
+    }
+  }
+
+  /* Tarjeta del esqueleto (producto, fila, kpi, gráfica). */
+  .esqueleto-tarjeta {
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+
+  /* Tiquete del código de retiro (shared/ui/codigo-retiro): las muescas laterales son dos
+     degradados radiales usados como máscara; --muesca la cambia la variante grande. El resto de
+     su estilo va en utilidades en la plantilla. */
+  .tiquete {
+    --muesca: 7px;
+    -webkit-mask:
+      radial-gradient(circle var(--muesca) at 0 50%, #0000 97%, #000) left / 51% 100% no-repeat,
+      radial-gradient(circle var(--muesca) at 100% 50%, #0000 97%, #000) right / 51% 100% no-repeat;
+    mask:
+      radial-gradient(circle var(--muesca) at 0 50%, #0000 97%, #000) left / 51% 100% no-repeat,
+      radial-gradient(circle var(--muesca) at 100% 50%, #0000 97%, #000) right / 51% 100% no-repeat;
   }
 
   /* ============================================================

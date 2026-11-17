@@ -1,30 +1,48 @@
 <!-- Región viva siempre presente y solo con texto: la lee el lector de pantalla sin los botones. -->
-<p class="visualmente-oculto" role="status" aria-live="polite" aria-atomic="true">{{ anuncio() }}</p>
+<p class="visualmente-oculto" role="status" aria-live="polite" aria-atomic="true">
+  {{ anuncio() }}
+</p>
 
+<!-- Toast global: esquina inferior derecha en escritorio, ancho casi completo en móvil.
+     Mismo par de colores que la tarjeta Rewards (contrasta en ambos temas).
+     Entrada algo más lenta que la salida; sin animación con «reducir movimiento». -->
 @if (avisos.aviso(); as aviso) {
   <div
-    class="aviso"
-    animate.enter="aviso-entra"
-    animate.leave="aviso-sale"
+    class="aviso fixed right-[24px] bottom-[24px] z-70 grid w-[min(380px,calc(100vw-32px))] grid-cols-[auto_1fr_auto] items-start gap-3 rounded-md border border-[color-mix(in_oklch,var(--color-accent-light)_22%,transparent)] bg-dark py-[14px] pr-[14px] pl-4 text-[#f4efe8] shadow-card-hover max-movil:right-4 max-movil:bottom-[calc(16px+env(safe-area-inset-bottom))] max-movil:left-4 max-movil:w-auto"
+    animate.enter="motion-safe:animate-aviso-entra"
+    animate.leave="motion-safe:animate-aviso-sale"
     (mouseenter)="avisos.pausar()"
     (mouseleave)="avisos.reanudar()"
     (focusin)="avisos.pausar()"
     (focusout)="alPerderFoco($event)"
     (keydown.escape)="avisos.cerrar()"
   >
-    <span class="aviso-icono" aria-hidden="true"><app-icono nombre="check" [tamano]="18" /></span>
-    <div class="aviso-texto">
-      <p class="aviso-titulo">{{ aviso.titulo }}</p>
+    <span
+      class="grid size-[32px] place-items-center rounded-pill bg-[color-mix(in_oklch,var(--color-accent-light)_20%,transparent)] text-accent-light"
+      aria-hidden="true"
+      ><app-icono nombre="check" [tamano]="18"
+    /></span>
+    <div class="min-w-0">
+      <p class="text-[14px] font-semibold wrap-anywhere">{{ aviso.titulo }}</p>
       @if (aviso.detalle) {
-        <p class="aviso-detalle">{{ aviso.detalle }}</p>
+        <p class="text-[13px] opacity-80">{{ aviso.detalle }}</p>
       }
       @if (aviso.accion; as accion) {
-        <a class="aviso-accion" [routerLink]="accion.ruta" (click)="avisos.cerrar()">
+        <a
+          class="mt-[6px] inline-flex items-center gap-1 text-[13px] font-bold text-accent-light no-underline hover:text-accent-light hover:underline hover:underline-offset-[3px]"
+          [routerLink]="accion.ruta"
+          (click)="avisos.cerrar()"
+        >
           {{ accion.texto }} <app-icono nombre="chevron-right" [tamano]="14" />
         </a>
       }
     </div>
-    <button type="button" class="aviso-cerrar" aria-label="Cerrar aviso" (click)="avisos.cerrar()">
+    <button
+      type="button"
+      class="grid size-[36px] cursor-pointer place-items-center rounded-pill border-none bg-transparent text-inherit opacity-75 hover:bg-[rgb(255_255_255/0.08)] hover:opacity-100 pointer-coarse:size-[44px]"
+      aria-label="Cerrar aviso"
+      (click)="avisos.cerrar()"
+    >
       <app-icono nombre="x" [tamano]="16" />
     </button>
   </div>

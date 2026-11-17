@@ -16,7 +16,7 @@ const PASOS = [
   selector: 'app-seguimiento-pedido',
   imports: [Icono],
   templateUrl: './seguimiento-pedido.html',
-  styleUrl: './seguimiento-pedido.css',
+  host: { class: 'block' },
 })
 export class SeguimientoPedido {
   readonly estado = input.required<string>();

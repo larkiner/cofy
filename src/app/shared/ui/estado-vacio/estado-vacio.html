@@ -1,10 +1,22 @@
-<div class="vacio">
-  <span class="medallon"><app-icono [nombre]="icono()" [tamano]="28" /></span>
+<div class="vacio py-[clamp(var(--esp-8),8vw,var(--esp-16))]">
+  <span
+    class="grid size-[64px] place-items-center rounded-pill bg-[color-mix(in_oklch,var(--color-accent)_14%,transparent)] text-accent"
+  >
+    <app-icono [nombre]="icono()" [tamano]="28" />
+  </span>
   @if (nivel() === 3) {
-    <h3 class="titulo">{{ titulo() }}</h3>
+    <h3
+      class="titulo font-display text-(length:--titulo-bloque) leading-[1.2] font-semibold text-text"
+    >
+      {{ titulo() }}
+    </h3>
   } @else {
-    <h2 class="titulo">{{ titulo() }}</h2>
+    <h2
+      class="titulo font-display text-(length:--titulo-bloque) leading-[1.2] font-semibold text-text"
+    >
+      {{ titulo() }}
+    </h2>
   }
-  <div class="texto"><ng-content /></div>
-  <div class="accion"><ng-content select="[accion]" /></div>
+  <div class="texto max-w-[44ch] text-muted empty:hidden"><ng-content /></div>
+  <div class="accion mt-2 empty:hidden"><ng-content select="[accion]" /></div>
 </div>

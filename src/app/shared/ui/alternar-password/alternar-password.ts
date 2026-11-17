@@ -18,12 +18,12 @@ import { Icono } from '../icono/icono';
   selector: 'app-alternar-password',
   imports: [Icono],
   templateUrl: './alternar-password.html',
-  styleUrl: './alternar-password.css',
+  host: { class: 'absolute inset-y-0 right-0 flex' },
 })
 export class AlternarPassword {
   readonly visible = model(false);
 
   protected alternar(): void {
-    this.visible.update(v => !v);
+    this.visible.update((v) => !v);
   }
 }

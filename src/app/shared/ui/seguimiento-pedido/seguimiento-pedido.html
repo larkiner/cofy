@@ -1,13 +1,17 @@
 @if (pasos(); as lista) {
-  <ol class="pasos" aria-label="Seguimiento del pedido">
+  <ol class="grid list-none grid-cols-[repeat(3,1fr)] gap-2" aria-label="Seguimiento del pedido">
     @for (paso of lista; track paso.texto) {
+      <!-- Conector (::after) entre marcas: del borde de una marca al borde de la siguiente. -->
       <li
-        class="paso"
+        class="paso group relative flex flex-col items-center gap-[6px] text-center text-(length:--texto-xs) text-muted not-last:after:absolute not-last:after:top-[11px] not-last:after:left-[calc(50%+16px)] not-last:after:h-[2px] not-last:after:w-[calc(100%+var(--esp-2)-32px)] not-last:after:bg-border-input not-last:after:content-[''] aria-[current=step]:font-bold aria-[current=step]:text-text [&.hecho]:text-text [&.hecho:not(:last-child)]:after:bg-accent"
         [class.hecho]="paso.hecho"
         [class.actual]="paso.actual"
         [attr.aria-current]="paso.actual ? 'step' : null"
       >
-        <span class="marca" aria-hidden="true">
+        <span
+          class="grid size-[24px] place-items-center rounded-pill border-2 border-border-input bg-bg text-on-accent group-aria-[current=step]:border-accent group-aria-[current=step]:[box-shadow:inset_0_0_0_4px_var(--color-bg),inset_0_0_0_12px_var(--color-accent)] group-[.hecho]:border-accent group-[.hecho]:bg-accent"
+          aria-hidden="true"
+        >
           @if (paso.hecho) {
             <app-icono nombre="check" [tamano]="14" />
           }

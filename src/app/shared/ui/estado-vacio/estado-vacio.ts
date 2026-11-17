@@ -15,7 +15,7 @@ import { Icono, NombreIcono } from '../icono/icono';
   selector: 'app-estado-vacio',
   imports: [Icono],
   templateUrl: './estado-vacio.html',
-  styleUrl: './estado-vacio.css',
+  host: { class: 'block' },
 })
 export class EstadoVacio {
   readonly icono = input.required<NombreIcono>();

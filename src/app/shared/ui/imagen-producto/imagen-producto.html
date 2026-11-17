@@ -1,2 +1,17 @@
-<img class="fondo" [src]="src()" alt="" aria-hidden="true" loading="lazy" decoding="async" />
-<img class="foto" [src]="src()" [alt]="alt()" loading="lazy" decoding="async" />
+<!-- Relleno: la misma foto ampliada y desenfocada (decorativa). -->
+<img
+  class="absolute inset-0 size-full scale-115 object-cover filter-[blur(18px)_saturate(1.1)_brightness(0.8)]"
+  [src]="src()"
+  alt=""
+  aria-hidden="true"
+  loading="lazy"
+  decoding="async"
+/>
+<!-- La foto, entera. -->
+<img
+  class="relative block size-full object-contain"
+  [src]="src()"
+  [alt]="alt()"
+  loading="lazy"
+  decoding="async"
+/>

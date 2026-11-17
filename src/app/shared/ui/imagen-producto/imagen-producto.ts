@@ -11,7 +11,7 @@ import { Component, input } from '@angular/core';
   selector: 'app-imagen-producto',
   standalone: true,
   templateUrl: './imagen-producto.html',
-  styleUrl: './imagen-producto.css',
+  host: { class: 'relative block size-full overflow-hidden bg-card' },
 })
 export class ImagenProducto {
   readonly src = input.required<string>();

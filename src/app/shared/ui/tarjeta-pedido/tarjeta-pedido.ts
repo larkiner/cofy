@@ -27,7 +27,7 @@ export function modoDePedido(estado: string): ModoTarjetaPedido {
   selector: 'app-tarjeta-pedido',
   imports: [CodigoRetiro, CurrencyPipe, DatePipe, SeguimientoPedido],
   templateUrl: './tarjeta-pedido.html',
-  styleUrl: './tarjeta-pedido.css',
+  host: { class: 'block' },
 })
 export class TarjetaPedido {
   readonly pedido = input.required<PedidoCliente>();

@@ -8,7 +8,6 @@ import { ItemTablero } from '../../../domain/interno/interno.model';
 @Component({
   selector: 'app-items-pedido',
   templateUrl: './items-pedido.html',
-  styleUrl: './items-pedido.css',
 })
 export class ItemsPedido {
   readonly items = input<ItemTablero[] | undefined>([]);

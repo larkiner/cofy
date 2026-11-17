@@ -9,7 +9,7 @@ import { Component, computed, input } from '@angular/core';
 @Component({
   selector: 'app-codigo-retiro',
   templateUrl: './codigo-retiro.html',
-  styleUrl: './codigo-retiro.css',
+  host: { class: 'inline-block max-w-full' },
 })
 export class CodigoRetiro {
   readonly codigo = input.required<string>();

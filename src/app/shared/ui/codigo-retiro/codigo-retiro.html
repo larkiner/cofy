@@ -1,9 +1,9 @@
 <span
-  class="tiquete"
+  class="tiquete inline-block max-w-full font-body leading-none font-bold tracking-[0.08em] whitespace-nowrap tabular-nums [&.compacto]:rounded-sm [&.compacto]:border [&.compacto]:border-accent [&.compacto]:px-4 [&.compacto]:py-2 [&.compacto]:text-(length:--texto-sm) [&.compacto]:text-text [&.grande]:rounded-md [&.grande]:bg-dark [&.grande]:px-8 [&.grande]:py-5 [&.grande]:text-[length:clamp(1.25rem,5.4vw,1.75rem)] [&.grande]:text-accent-light [&.grande]:[--muesca:10px]"
   [class.grande]="variante() === 'grande'"
   [class.compacto]="variante() === 'compacto'"
   role="group"
   [attr.aria-label]="'Código de retiro ' + codigo()"
   ><span class="prefijo">{{ tramos().prefijo }}</span
-  ><span class="resto">{{ tramos().resto }}</span></span
+  ><span class="resto ml-[0.15em]">{{ tramos().resto }}</span></span
 >

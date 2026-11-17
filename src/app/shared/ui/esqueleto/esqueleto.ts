@@ -1,13 +1,7 @@
 import { Component, computed, input } from '@angular/core';
 
 export type VarianteEsqueleto =
-  | 'producto'
-  | 'destacado'
-  | 'fila'
-  | 'sucursal'
-  | 'texto'
-  | 'tabla'
-  | 'metricas';
+  'producto' | 'destacado' | 'fila' | 'sucursal' | 'texto' | 'tabla' | 'metricas';
 
 /** Cantidad de piezas por defecto de cada variante (las de métricas son fijas). */
 const CANTIDAD_POR_DEFECTO: Record<VarianteEsqueleto, number> = {
@@ -28,7 +22,7 @@ const CANTIDAD_POR_DEFECTO: Record<VarianteEsqueleto, number> = {
 @Component({
   selector: 'app-esqueleto',
   templateUrl: './esqueleto.html',
-  styleUrl: './esqueleto.css',
+  host: { class: 'block' },
 })
 export class Esqueleto {
   readonly variante = input.required<VarianteEsqueleto>();

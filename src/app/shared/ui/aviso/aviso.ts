@@ -11,7 +11,6 @@ import { Icono } from '../icono/icono';
   selector: 'app-aviso',
   imports: [RouterLink, Icono],
   templateUrl: './aviso.html',
-  styleUrl: './aviso.css',
 })
 export class AvisoFlotante {
   protected readonly avisos = inject(AvisoService);

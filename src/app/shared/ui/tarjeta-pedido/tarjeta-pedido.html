@@ -1,39 +1,49 @@
 @let p = pedido();
 @if (modo() === 'en-curso') {
-  <article class="en-curso superficie">
-    <header class="cabeza">
-      <h3 class="numero">Pedido #{{ p.pedidoId }}</h3>
+  <article class="superficie flex flex-col gap-4">
+    <header class="flex items-center justify-between gap-3">
+      <h3 class="numero text-(length:--texto-base) leading-[1.3] font-bold text-text">
+        Pedido #{{ p.pedidoId }}
+      </h3>
       <span class="estado-pill" [class]="p.estado">{{ etiqueta() }}</span>
     </header>
 
     @if (p.codigoRetiro; as codigo) {
-      <div class="codigo">
-        <p class="rotulo">Código de retiro</p>
+      <div>
+        <p class="mb-[6px] text-(length:--texto-xs) text-muted">Código de retiro</p>
         <app-codigo-retiro [codigo]="codigo" variante="compacto" />
       </div>
     }
 
     <app-seguimiento-pedido [estado]="p.estado" />
 
-    <div class="pie">
-      <p class="meta">
+    <div class="flex items-end justify-between gap-3 border-t border-border pt-3">
+      <p class="text-(length:--texto-sm) text-muted">
         {{ p.sucursalNombre }} ·
         <time [attr.datetime]="p.fechaPedido">{{ p.fechaPedido | date: 'd MMM, h:mm a' }}</time>
       </p>
-      <p class="total cifras">{{ p.total | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</p>
+      <p class="total cifras font-bold text-text">
+        {{ p.total | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}
+      </p>
     </div>
   </article>
 } @else {
-  <article class="historial">
-    <h3 class="numero">Pedido #{{ p.pedidoId }}</h3>
-    <span class="estado-pill" [class]="p.estado">{{ etiqueta() }}</span>
-    <p class="meta">
+  <article
+    class="historial grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-[2px] py-3"
+  >
+    <h3 class="numero text-(length:--texto-base) leading-[1.3] font-bold text-text">
+      Pedido #{{ p.pedidoId }}
+    </h3>
+    <span class="estado-pill justify-self-end" [class]="p.estado">{{ etiqueta() }}</span>
+    <p class="text-(length:--texto-sm) text-muted">
       {{ p.sucursalNombre }} ·
       <time [attr.datetime]="p.fechaPedido">{{ p.fechaPedido | date: 'd MMM yyyy, h:mm a' }}</time>
     </p>
-    <p class="total cifras">{{ p.total | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</p>
+    <p class="total cifras justify-self-end font-bold text-text">
+      {{ p.total | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}
+    </p>
     @if (p.codigoRetiro) {
-      <p class="codigo-texto">
+      <p class="codigo-texto col-span-full text-(length:--texto-xs) text-muted">
         Código <span class="cifras">{{ p.codigoRetiro }}</span>
       </p>
     }
