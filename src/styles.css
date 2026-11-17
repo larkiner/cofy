@@ -116,6 +116,57 @@
     }
   }
 
+  /* Shell (app.html): panel de cuenta y menú móvil que entran desde arriba, rebote del contador
+     del carrito y barra de progreso de navegación. Todas con motion-safe:animate-…. */
+  --animate-panel-entra: panel-entra 200ms var(--ease-out);
+  --animate-rebote-contador: rebote-contador 400ms var(--ease-out);
+  --animate-progreso-aparece: progreso-aparece 150ms 200ms forwards;
+  --animate-progreso-corre: progreso-corre 1.1s ease-in-out infinite;
+
+  @keyframes panel-entra {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+  }
+
+  @keyframes rebote-contador {
+    0% {
+      transform: scale(1);
+    }
+    40% {
+      transform: scale(1.35);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  @keyframes progreso-aparece {
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes progreso-corre {
+    from {
+      transform: translateX(-100%);
+    }
+    to {
+      transform: translateX(250%);
+    }
+  }
+
+  /* Entrada del contenido del hero del inicio (motion-safe:animate-hero-entra). */
+  --animate-hero-entra: hero-entra 480ms var(--ease-out) both;
+
+  @keyframes hero-entra {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+  }
+
   /* Brillo del esqueleto de carga (lo aplica la clase .esqueleto-bloque, más abajo). */
   --animate-esqueleto-brillo: esqueleto-brillo 1.5s ease-in-out infinite;
 

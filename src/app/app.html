@@ -1,18 +1,45 @@
+<!-- Clases que se repiten más de tres veces en esta plantilla. -->
+@let botonIcono =
+  'items-center justify-center size-[44px] rounded-pill border-none bg-transparent text-text cursor-pointer hover:bg-overlay-hover focus-visible:shadow-(--ring) focus-visible:outline-none';
+@let enlaceNav =
+  'flex items-center border-b-2 border-transparent py-1 font-medium text-muted no-underline hover:text-text aria-[current=page]:border-indicador aria-[current=page]:text-text';
+@let enlaceMenu =
+  'flex min-h-[48px] items-center rounded-sm px-3 text-[16px] font-medium text-text no-underline hover:bg-overlay-hover aria-[current=page]:bg-overlay-hover aria-[current=page]:font-bold';
+@let enlacePie =
+  'inline-flex min-h-(--alto-control) items-center px-2 font-semibold text-accent no-underline hover:underline';
+
 <a class="saltar-contenido" href="/" (click)="saltarAlContenido($event)">Saltar al contenido</a>
 
-<header class="encabezado" #encabezado>
-  <a class="marca" [routerLink]="auth.esPersonal() ? '/interno' : '/'">La aravica</a>
+<!-- Header "glass": pegajoso y translúcido con desenfoque de fondo; sin soporte de backdrop-filter,
+     fondo sólido para no perder legibilidad del contenido que pasa por debajo. -->
+<header
+  class="encabezado sticky top-0 z-50 flex items-center justify-between gap-4 border-b border-(color:--glass-border) bg-(--glass-bg) px-[clamp(16px,4vw,40px)] py-3 [backdrop-filter:saturate(180%)_blur(16px)] not-supports-[((-webkit-backdrop-filter:blur(1px))_or_(backdrop-filter:blur(1px)))]:bg-bg"
+  #encabezado
+>
+  <a
+    class="marca font-display text-[length:clamp(20px,4.5vw,24px)] font-normal whitespace-nowrap text-text italic no-underline"
+    [routerLink]="auth.esPersonal() ? '/interno' : '/'"
+    >La aravica</a
+  >
 
-  <nav class="navegacion" aria-label="Navegación principal">
+  <nav
+    class="navegacion ml-8 flex flex-1 items-center gap-[26px] text-[14px] max-medio:ml-6 max-medio:gap-[18px] max-movil:hidden"
+    aria-label="Navegación principal"
+  >
     @if (!auth.esPersonal()) {
-      <a class="nav-link" routerLink="/menu" routerLinkActive="activo" ariaCurrentWhenActive="page">
+      <a
+        [class]="enlaceNav"
+        routerLink="/menu"
+        routerLinkActive="activo"
+        ariaCurrentWhenActive="page"
+      >
         Carta
       </a>
-      <a class="nav-link" routerLink="/" fragment="horario">Sucursales</a>
+      <a [class]="enlaceNav" routerLink="/" fragment="horario">Sucursales</a>
     }
     @if (auth.esCliente()) {
       <a
-        class="nav-link"
+        [class]="enlaceNav"
         routerLink="/mis-pedidos"
         routerLinkActive="activo"
         ariaCurrentWhenActive="page"
@@ -22,7 +49,7 @@
     }
     @if (auth.esPersonal()) {
       <a
-        class="nav-link"
+        [class]="enlaceNav"
         routerLink="/interno"
         routerLinkActive="activo"
         ariaCurrentWhenActive="page"
@@ -32,10 +59,10 @@
     }
   </nav>
 
-  <div class="acciones-encabezado">
+  <div class="flex items-center gap-[6px]">
     <button
       type="button"
-      class="boton-icono solo-escritorio"
+      [class]="botonIcono + ' flex max-movil:hidden'"
       (click)="tema.alternar()"
       [attr.aria-label]="tema.oscuro() ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'"
     >
@@ -44,7 +71,8 @@
 
     @if (!auth.esPersonal()) {
       <a
-        class="boton-icono enlace-carrito"
+        class="enlace-carrito"
+        [class]="botonIcono + ' relative flex no-underline'"
         routerLink="/carrito"
         routerLinkActive="activo"
         ariaCurrentWhenActive="page"
@@ -52,15 +80,20 @@
       >
         <app-icono nombre="shopping-bag" />
         @if (carrito.cantidadTotal() > 0) {
-          <span class="contador" [class.rebota]="contadorRebota()" aria-hidden="true">{{ carrito.cantidadTotal() }}</span>
+          <span
+            class="contador absolute top-[2px] right-[2px] inline-flex h-[16px] min-w-[16px] items-center justify-center rounded-pill bg-accent px-1 text-[10px] font-bold text-on-accent tabular-nums"
+            [class]="contadorRebota() ? 'motion-safe:animate-rebote-contador' : ''"
+            aria-hidden="true"
+            >{{ carrito.cantidadTotal() }}</span
+          >
         }
       </a>
     }
 
-    <div class="cuenta solo-escritorio" #contenedorCuenta>
+    <div class="cuenta relative max-movil:hidden" #contenedorCuenta>
       <button
         type="button"
-        class="boton-icono"
+        [class]="botonIcono + ' flex'"
         (click)="alternarCuenta()"
         [attr.aria-expanded]="cuentaAbierta()"
         aria-controls="panel-cuenta"
@@ -71,17 +104,21 @@
       </button>
 
       @if (cuentaAbierta()) {
-        <div class="panel-cuenta" id="panel-cuenta">
+        <div
+          class="absolute top-[calc(100%+8px)] right-0 z-60 flex min-w-[224px] flex-col items-stretch gap-2 rounded-md border border-border bg-bg p-[14px] text-text shadow-card-hover motion-safe:animate-panel-entra"
+          id="panel-cuenta"
+        >
           <ng-container [ngTemplateOutlet]="opcionesCuenta" />
         </div>
       }
     </div>
 
     <!-- Móvil: todo lo que no cabe en el header (navegación, tema y cuenta) baja a este menú. -->
-    <div class="contenedor-menu-movil" #contenedorMenu>
+    <div class="contents" #contenedorMenu>
       <button
         type="button"
-        class="boton-icono boton-menu"
+        class="boton-menu"
+        [class]="botonIcono + ' hidden max-movil:flex'"
         (click)="alternarMenu()"
         [attr.aria-expanded]="menuAbierto()"
         aria-controls="menu-movil"
@@ -92,22 +129,25 @@
       </button>
 
       @if (menuAbierto()) {
-        <div class="menu-movil" id="menu-movil">
-          <nav class="menu-movil-nav" aria-label="Navegación móvil">
+        <div
+          class="absolute top-full right-2 left-2 z-60 max-h-[calc(100dvh-var(--alto-header)-16px)] overflow-y-auto rounded-md border border-border bg-bg p-2 text-text shadow-card-hover motion-safe:animate-panel-entra movil:hidden"
+          id="menu-movil"
+        >
+          <nav class="menu-movil-nav flex flex-col" aria-label="Navegación móvil">
             @if (!auth.esPersonal()) {
               <a
-                class="menu-movil-enlace"
+                [class]="enlaceMenu"
                 routerLink="/menu"
                 routerLinkActive="activo"
                 ariaCurrentWhenActive="page"
               >
                 Carta
               </a>
-              <a class="menu-movil-enlace" routerLink="/" fragment="horario">Sucursales</a>
+              <a [class]="enlaceMenu" routerLink="/" fragment="horario">Sucursales</a>
             }
             @if (auth.esCliente()) {
               <a
-                class="menu-movil-enlace"
+                [class]="enlaceMenu"
                 routerLink="/mis-pedidos"
                 routerLinkActive="activo"
                 ariaCurrentWhenActive="page"
@@ -117,7 +157,7 @@
             }
             @if (auth.esPersonal()) {
               <a
-                class="menu-movil-enlace"
+                [class]="enlaceMenu"
                 routerLink="/interno"
                 routerLinkActive="activo"
                 ariaCurrentWhenActive="page"
@@ -127,11 +167,15 @@
             }
           </nav>
 
-          <div class="menu-movil-cuenta">
+          <div class="mt-2 flex flex-col gap-2 border-t border-border px-3 pt-3 pb-2">
             <ng-container [ngTemplateOutlet]="opcionesCuenta" />
           </div>
 
-          <button type="button" class="menu-movil-tema" (click)="tema.alternar()">
+          <button
+            type="button"
+            class="mt-1 flex min-h-[48px] w-full cursor-pointer items-center gap-[10px] rounded-b-sm border-0 border-t border-border bg-transparent px-3 text-[15px] font-medium text-text hover:bg-overlay-hover"
+            (click)="tema.alternar()"
+          >
             <app-icono [nombre]="tema.oscuro() ? 'sun' : 'moon'" [tamano]="18" />
             {{ tema.oscuro() ? 'Modo claro' : 'Modo oscuro' }}
           </button>
@@ -141,28 +185,51 @@
   </div>
 
   @if (navegando()) {
-    <div class="progreso-navegacion" aria-hidden="true"></div>
+    <!-- Barra de progreso de navegación: solo aparece si la página tarda y se omite con
+         "reducir movimiento". -->
+    <div
+      class="progreso-navegacion pointer-events-none absolute right-0 -bottom-px left-0 h-[2px] overflow-hidden motion-safe:animate-progreso-aparece motion-safe:opacity-0 motion-safe:before:absolute motion-safe:before:inset-0 motion-safe:before:w-[40%] motion-safe:before:animate-progreso-corre motion-safe:before:rounded-[2px] motion-safe:before:bg-accent motion-safe:before:content-['']"
+      aria-hidden="true"
+    ></div>
   }
 </header>
 
 <!-- Opciones de cuenta: las comparten el panel de escritorio y el menú móvil. -->
 <ng-template #opcionesCuenta>
   @if (auth.logueado()) {
-    <p class="panel-cuenta-usuario">{{ auth.email() }}</p>
-    <p class="panel-cuenta-rol">{{ rolLegible() }}</p>
+    <p class="text-[14px] font-semibold wrap-anywhere">{{ auth.email() }}</p>
+    <p class="panel-cuenta-rol mb-1 text-[12px] text-muted">{{ rolLegible() }}</p>
     @if (auth.esCliente()) {
-      <a class="panel-cuenta-enlace" routerLink="/perfil" (click)="cerrarMenus()">
+      <a
+        class="flex min-h-(--alto-control) items-center gap-2 rounded-sm px-3 text-[14px] font-medium text-text no-underline hover:bg-overlay-hover"
+        routerLink="/perfil"
+        (click)="cerrarMenus()"
+      >
         <app-icono nombre="user" [tamano]="16" />
         Mi cuenta
       </a>
     }
-    <button type="button" class="salir" (click)="cerrarSesion()">
+    <button
+      type="button"
+      class="flex min-h-(--alto-control) cursor-pointer items-center justify-center gap-[6px] rounded-pill border border-text bg-transparent px-5 text-[14px] font-semibold text-text hover:bg-overlay-hover hover:filter-[brightness(0.92)]"
+      (click)="cerrarSesion()"
+    >
       <app-icono nombre="log-out" [tamano]="16" />
       Cerrar sesión
     </button>
   } @else {
-    <a class="panel-cuenta-enlace" routerLink="/login" (click)="cerrarMenus()">Iniciar sesión</a>
-    <a class="panel-cuenta-enlace" routerLink="/registro" (click)="cerrarMenus()">Crear cuenta</a>
+    <a
+      class="flex min-h-(--alto-control) items-center gap-2 rounded-sm px-3 text-[14px] font-medium text-text no-underline hover:bg-overlay-hover"
+      routerLink="/login"
+      (click)="cerrarMenus()"
+      >Iniciar sesión</a
+    >
+    <a
+      class="flex min-h-(--alto-control) items-center gap-2 rounded-sm px-3 text-[14px] font-medium text-text no-underline hover:bg-overlay-hover"
+      routerLink="/registro"
+      (click)="cerrarMenus()"
+      >Crear cuenta</a
+    >
   }
 </ng-template>
 
@@ -172,21 +239,27 @@
 <app-aviso />
 
 @if (!auth.esPersonal()) {
-  <footer class="pie">
-    <div class="pie-marca">La aravica</div>
-    <p class="pie-lema">El ritual de la calma, en cada taza.</p>
-    <p class="pie-direccion">Tostado en Medellín, Antioquia · Lun–Vie 6:30 am – 8:00 pm</p>
-    <nav class="pie-enlaces">
-      <a routerLink="/">Inicio</a>
-      <a routerLink="/menu">Carta</a>
-      <a routerLink="/" fragment="horario">Sucursales</a>
+  <footer
+    class="pie mt-10 flex flex-col items-center gap-[10px] border-t border-border bg-card px-6 py-[clamp(40px,6vw,56px)] text-center"
+  >
+    <div class="font-display text-[24px] font-normal text-text italic">La aravica</div>
+    <p class="font-body text-[15px] tracking-[0.01em] text-accent">
+      El ritual de la calma, en cada taza.
+    </p>
+    <p class="text-[13px] text-muted">Tostado en Medellín, Antioquia · Lun–Vie 6:30 am – 8:00 pm</p>
+    <nav class="my-[2px] flex flex-wrap justify-center gap-x-3 text-[14px]">
+      <a [class]="enlacePie" routerLink="/">Inicio</a>
+      <a [class]="enlacePie" routerLink="/menu">Carta</a>
+      <a [class]="enlacePie" routerLink="/" fragment="horario">Sucursales</a>
       @if (!auth.logueado()) {
-        <a routerLink="/registro">Crear cuenta</a>
+        <a [class]="enlacePie" routerLink="/registro">Crear cuenta</a>
       }
     </nav>
-    <p class="pie-copy">
+    <p class="mt-1 text-[12px] text-muted-2">
       © 2026 La aravica · Tostado con intención en Colombia · Iconos de
-      <a href="https://icons8.com" target="_blank" rel="noopener">Icons8</a>
+      <a class="text-inherit underline" href="https://icons8.com" target="_blank" rel="noopener"
+        >Icons8</a
+      >
     </p>
   </footer>
 }

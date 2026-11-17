@@ -33,7 +33,6 @@ import { etiquetaRol } from './shared/util/etiquetas';
   selector: 'app-root',
   imports: [RouterOutlet, RouterLink, RouterLinkActive, NgTemplateOutlet, Icono, AvisoFlotante],
   templateUrl: './app.html',
-  styleUrl: './app.css',
 })
 export class App {
   protected readonly auth = inject(AuthService);
